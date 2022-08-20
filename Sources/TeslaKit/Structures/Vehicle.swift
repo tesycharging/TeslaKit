@@ -112,26 +112,7 @@ extension Vehicle: Equatable {
 }
 
 extension Vehicle {
-    public func loadVehicle<T: TKMappable>() -> T? {
-        var mappedData: T? = nil
-        guard let dataString: String = UserDefaults.group.widgetjson else {
-            return mappedData
-        }
-        let data = Data(dataString.utf8)
-        do {
-            let json: Any = try JSONSerialization.jsonObject(with: data)
-            mappedData = Mapper<T>().map(JSONObject: json)
-        } catch let error {
-            print(error.localizedDescription)
-        }
-        return mappedData
-    }
-    
-    var loadLastVehicle: Vehicle {
-        return loadVehicle() ?? Vehicle()
-    }
-    
-    var kindOfVehcile: KindOfVehicle {
+    public var kindOfVehcile: KindOfVehicle {
         if id == "" {
             return KindOfVehicle.novehicle
         } else if self.id == "1" {
@@ -141,7 +122,7 @@ extension Vehicle {
         }
     }
     
-    var batteryCapacity: Double {
+    public var batteryCapacity: Double {
         for code in self.options {
             switch code.code {
             case "BT37":

@@ -259,7 +259,7 @@ extension VehicleState: DataResponse {
 }
 
 extension VehicleState {
-    func localizedOdometer(distanceUnit: DistanceUnit) -> String {
+    public func localizedOdometer(distanceUnit: DistanceUnit) -> String {
         if distanceUnit == .metric {
             return Distance(imperial: odometer).localizedMetric
         } else {

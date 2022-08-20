@@ -14,7 +14,7 @@ public struct VehicleAllData: Identifiable {
     public var value: String
     public var odd: Bool
     
-    init(_ key: String, _ value: String, _ odd: Bool) {
+    public init(_ key: String, _ value: String, _ odd: Bool) {
         self.key = key
         self.value = value
         self.odd = odd
@@ -26,7 +26,7 @@ public protocol AllVehicleValues {
 }
 
 extension AllVehicleValues {
-    func values() -> [VehicleAllData] {
+    public func values() -> [VehicleAllData] {
         var result = [VehicleAllData]()
         let map = allValues.JSON.sorted{ (first, second) -> Bool in
             return first.key < second.key

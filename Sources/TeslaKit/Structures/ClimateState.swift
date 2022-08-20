@@ -142,7 +142,7 @@ extension ClimateState: DataResponse {
 }
 
 extension ClimateState {
-    func localizedInsideTemperature(temperatureUnits: TemperatureUnit) -> String {
+    public func localizedInsideTemperature(temperatureUnits: TemperatureUnit) -> String {
         if temperatureUnits == .celsius {
             return Temperature(celsius: self.insideTemperature ?? 0).localizedCelsius
         } else {
@@ -150,7 +150,7 @@ extension ClimateState {
         }
     }
     
-    func localizedOutsideTemperature(temperatureUnits: TemperatureUnit) -> String {
+    public func localizedOutsideTemperature(temperatureUnits: TemperatureUnit) -> String {
         if temperatureUnits == .celsius {
             return Temperature(celsius: self.outsideTemperature ?? 0).localizedCelsius
         } else {

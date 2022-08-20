@@ -208,7 +208,7 @@ extension ChargeState: DataResponse {
 }
 
 extension ChargeState {
-    var chargerType : ChargerType {
+    public var chargerType : ChargerType {
         if fastChargerBrand == nil {
             return ChargerType.chargingQ
         } else {
@@ -226,15 +226,15 @@ extension ChargeState {
         }
     }
     
-    var localizedChargeLimitSoc: String {
+    public var localizedChargeLimitSoc: String {
         String(self.chargeLimitSoc)+" %"
     }
     
-    var localizedBatteryLevel: String {
+    public var localizedBatteryLevel: String {
         String(format:"%.0f", self.batteryLevel*1)+" %"
     }
     
-    func localizedBatteryRange(distanceUnit: DistanceUnit) -> String {
+    public func localizedBatteryRange(distanceUnit: DistanceUnit) -> String {
         if distanceUnit == .metric {
             return Distance(imperial: batteryRange).localizedMetric
         } else {
@@ -242,7 +242,7 @@ extension ChargeState {
         }
     }
     
-    var localizedTimeToFullCharge: String {
+    public var localizedTimeToFullCharge: String {
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .short
         formatter.allowedUnits = [.hour, .minute ]
@@ -250,11 +250,11 @@ extension ChargeState {
         return formatter.string(from: self.timeToFullCharge * 60 * 60) ?? "--"
     }
     
-    var localizedChargeEnergyAdded: String {
+    public var localizedChargeEnergyAdded: String {
         String(format:"%.1f", self.chargeEnergyAdded*1) + " " + ChargeUnit.capacity.description
     }
     
-    var localizedPower: String {
+    public var localizedPower: String {
         //String(format:"%.1f", self.chargeState.chargerPower) + " kW"
         String(self.chargerPower) + ChargeUnit.power.description
     }

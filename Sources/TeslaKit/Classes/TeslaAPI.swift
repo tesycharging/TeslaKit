@@ -301,7 +301,7 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
                 switch result {
                     case .success(let token):
                         self?.token = token
-                        UserDefaults.group.teslatoken =  self?.token.jsonString
+                        UserDefaults.standard.set(self?.token.jsonString, forKey: "teslatoken")
                         completion(Result.success(token))
                     case .failure(let error):
                         if case let TeslaError.networkError(error: internalError) = error {
@@ -351,8 +351,8 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
             switch result {
                 case .success(let token):
                     self.token = token
-                    UserDefaults.group.teslatoken = self.token.jsonString
-                    completion(Result.success(token))
+                UserDefaults.standard.set(self.token.jsonString, forKey: "teslatoken")
+                completion(Result.success(token))
                 case .failure(let error):
                     if case let TeslaError.networkError(error: internalError) = error {
                         if internalError.code == 401 {
@@ -419,7 +419,7 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
         }
     }
     
-    func checkAuthentication(completion: @escaping (Result<AuthToken, Error>) -> ()) {
+    public func checkAuthentication(completion: @escaping (Result<AuthToken, Error>) -> ()) {
         guard let token = self.token else { completion(Result.failure(TeslaError.authenticationRequired)); return }
 
         if checkToken() {
@@ -711,14 +711,14 @@ internal func prettyPrint(json data: Data) throws -> String {
 }
 
 
-final class WebCacheCleaner {
+final public class WebCacheCleaner {
     
-    class func clean() {
+    public class func clean() {
         /* let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeCookies, WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
          let date = Date(timeIntervalSince1970: 0)
          WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes as! Set<String>, modifiedSince: date, completionHandler: {})*/
-        UserDefaults.group.removeDomainObject(forKey: "teslatoken")
-        teslaAPI.token = nil
+        UserDefaults.standard.removeObject(forKey: "teslatoken") 
+        //teslaAPI.token = nil
         
         let storage = HTTPCookieStorage.shared
         storage.cookies?.forEach() {
