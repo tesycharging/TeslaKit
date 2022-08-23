@@ -149,7 +149,7 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     }
 
     ///
-    public var endpoint: String {
+    public var path: String {
         return "command/" + self.rawValue
     }
 }
