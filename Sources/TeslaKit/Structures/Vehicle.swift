@@ -12,7 +12,8 @@ import Foundation
 import ObjectMapper
 
 ///
-public struct Vehicle {
+public struct Vehicle: AllVehicleValues {
+    public var allValues: Map
 
     /// The unique identifier of the vehicle
     public var id: String = ""
@@ -63,7 +64,9 @@ public struct Vehicle {
     public var vehicleConfig: VehicleConfig = VehicleConfig()
 
     ///
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 
     ///
     public var timestamp: TimeInterval { return self.climateState.timestamp }
@@ -72,6 +75,8 @@ public struct Vehicle {
 
 extension Vehicle: DataResponse {
     public mutating func mapping(map: Map) {
+        allValues = map
+        print(self.values())
         let isVehicleData: Bool = !(map.JSON["id_s"] is String)
         if isVehicleData {
             displayName <- map["response.display_name"]

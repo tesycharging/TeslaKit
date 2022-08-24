@@ -9,7 +9,7 @@
 //
 import Foundation
 
-enum Endpoint {
+public enum Endpoint {
     case revoke
     case oAuth2Authorization(auth: AuthCodeRequest)
     case oAuth2AuthorizationCN(auth: AuthCodeRequest)
@@ -18,7 +18,7 @@ enum Endpoint {
     case oAuth2revoke(token: String)
     case oAuth2revokeCN(token: String)
 	case vehicles	// return VehicleCollection
-    case vehicleSummary(vehicleID: String)  // vehicle from teslamotors.com, not the car itself
+    case vehicleSummary(vehicleID: String)  // vehicle summary without all states
 	case mobileAccess(vehicleID: String) // returns a boolean true if car allows mobileAccess
 	case allStates(vehicleID: String)  // complete vehicle infos from the car itself
 	case chargeState(vehicleID: String)  // specific vehicle dates form the car itself
@@ -31,13 +31,13 @@ enum Endpoint {
 	case wakeUp(vehicleID: String)		// returns true if wakeup command was successful (eventhought the car is not fully online yet)
 	case command(vehicleID: String, command: Command)
     case products
-    case getEnergySiteStatus(siteID: String)
+    /*case getEnergySiteStatus(siteID: String)
     case getEnergySiteLiveStatus(siteID: String)
     case getEnergySiteInfo(siteID: String)
     case getEnergySiteHistory(siteID: String, period: EnergySiteHistory.Period)
     case getBatteryStatus(batteryID: String)
     case getBatteryData(batteryID: String)
-    case getBatteryPowerHistory(batteryID: String)
+    case getBatteryPowerHistory(batteryID: String)*/
 }
 
 extension Endpoint {
@@ -79,11 +79,11 @@ extension Endpoint {
             case .wakeUp(let vehicleID):
                 return "/api/1/vehicles/\(vehicleID)/wake_up"
             case let .command(vehicleID, command):
-                return "/api/1/vehicles/\(vehicleID)/\(command.path())"
+                return "/api/1/vehicles/\(vehicleID)/\(command.path)"
             case .products:
                 return "/api/1/products"
             
-            // Energy Data
+           /* // Energy Data
             case .getEnergySiteStatus(let siteID):
                 return "/api/1/energy_sites/\(siteID)/site_status"
             case .getEnergySiteLiveStatus(let siteID):
@@ -97,7 +97,7 @@ extension Endpoint {
             case .getBatteryData(let batteryID):
                 return "/api/1/powerwalls/\(batteryID)/"
             case .getBatteryPowerHistory(let batteryID):
-                return "/api/1/powerwalls/\(batteryID)/powerhistory"
+                return "/api/1/powerwalls/\(batteryID)/powerhistory"*/
         }
 	}
 	
@@ -105,7 +105,7 @@ extension Endpoint {
 		switch self {
             case .revoke, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command:
                 return "POST"
-        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .chargeState, .climateState, .driveState, .guiSettings, .vehicleState, .vehicleConfig, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .oAuth2revokeCN, .products, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory:
+        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .chargeState, .climateState, .driveState, .guiSettings, .vehicleState, .vehicleConfig, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .oAuth2revokeCN, .products/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
                 return "GET"
 		}
 	}
@@ -116,8 +116,8 @@ extension Endpoint {
                 return auth.parameters()
             case let .oAuth2revoke(token):
                 return [URLQueryItem(name: "token", value: token)]
-            case let .getEnergySiteHistory(_, period):
-                return [URLQueryItem(name: "period", value: period.rawValue), URLQueryItem(name: "kind", value: "energy")]
+            /*case let .getEnergySiteHistory(_, period):
+                return [URLQueryItem(name: "period", value: period.rawValue), URLQueryItem(name: "kind", value: "energy")]*/
             default:
                 return []
         }

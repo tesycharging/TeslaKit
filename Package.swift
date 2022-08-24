@@ -24,8 +24,5 @@ let package = Package(
         .target(
             name: "TeslaKit",
             dependencies: ["ObjectMapper"]),
-        .testTarget(
-            name: "TeslaKitTests",
-            dependencies: ["TeslaKit"]),
     ]
 )

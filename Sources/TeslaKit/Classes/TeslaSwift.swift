@@ -1,4 +1,4 @@
-//
+/*//
 //  TeslaSwift.swift
 //  TeslaSwift
 //
@@ -37,3 +37,4 @@ public let teslaJSONDecoder: JSONDecoder = {
     return decoder
 }()
 
+*/

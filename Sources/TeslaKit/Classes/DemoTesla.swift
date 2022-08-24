@@ -12,7 +12,7 @@ import ObjectMapper
 public class DemoTesla {
     public static let shared = DemoTesla()
 	public var vehicle: Vehicle?
-	public var vehicles: VehicleCollection?
+	public var vehicles: VehicleCollection = VehicleCollection()
     
     public var chargingState: ChargingState = ChargingState.disconnected
     public var chargePortLatch: ChargePortLatchState = ChargePortLatchState.disengaged
@@ -34,11 +34,11 @@ public class DemoTesla {
     public var power: Int = 100
 	
 	public init() {
-		self.vehicle: Vehicle = requestDemoVehicle()
-		let vehicles = [Vehicle]()
+        self.vehicle = requestDemoVehicle()
+        var vehicles = [Vehicle]()
+        vehicles.append(self.vehicle ?? Vehicle())
 		// Vin = "VIN#DEMO"
-		vehicles.append(self.vehicle)
-		self.vehicles = vehicles
+        self.vehicles = VehicleCollection(vehicles: vehicles)
 	}
     
     public func startCharging() {
@@ -47,26 +47,26 @@ public class DemoTesla {
         } else {
             chargingState = ChargingState.charging
         }
-		self.vehicle.chargeState.chargingState = chargingState
+        self.vehicle!.chargeState.chargingState = chargingState
     }
     
     public func charging() {
         chargeEnergyAdded = chargeEnergyAdded + 2.0
         batteryLevel = batteryLevel + 2.0
         timeToFullCharge = (75 / 100 * (Double(chargeLimitSoc) - batteryLevel) / 45 * exp(0.153007256714785))
-		self.vehicle.chargeState.chargeEnergyAdded =  chargeEnergyAdded
-		self.vehicle.chargeState.batteryLevel = batteryLevel
-		self.vehicle.chargeState.timeToFullCharge = timeToFullCharge
+        self.vehicle!.chargeState.chargeEnergyAdded =  chargeEnergyAdded
+		self.vehicle!.chargeState.batteryLevel = batteryLevel
+		self.vehicle!.chargeState.timeToFullCharge = timeToFullCharge
         
         if Double(chargeLimitSoc) <= batteryLevel {
             chargingState = ChargingState.complete
-			self.vehicle.chargeState.chargingState = chargingState
+			self.vehicle!.chargeState.chargingState = chargingState
         }
     }
     
     public func setChargingState(chargingState: ChargingState) {
         self.chargingState = chargingState
-		self.vehicle.chargeState.chargingState = chargingState
+		self.vehicle!.chargeState.chargingState = chargingState
     }
     
     

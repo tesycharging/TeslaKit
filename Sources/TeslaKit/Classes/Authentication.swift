@@ -111,7 +111,7 @@ class AuthTokenRequestWeb: Encodable {
 }
 
 @available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
-class AuthCodeRequest: Encodable {
+public class AuthCodeRequest: Encodable {
 
     var responseType: String = "code"
     var clientID = oAuthWebClientID
