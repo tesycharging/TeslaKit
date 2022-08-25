@@ -76,7 +76,6 @@ public struct Vehicle: AllVehicleValues {
 extension Vehicle: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
-        print(self.values())
         let isVehicleData: Bool = !(map.JSON["id_s"] is String)
         if isVehicleData {
             displayName <- map["response.display_name"]

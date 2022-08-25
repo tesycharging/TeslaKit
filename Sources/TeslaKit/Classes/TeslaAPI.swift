@@ -45,7 +45,7 @@ let ErrorInfo = "ErrorInfo"
 private var nullBody = ""
 
 open class TeslaAPI: NSObject, URLSessionDelegate {
-    open var debuggingEnabled = true
+    open var debuggingEnabled = false
 	open var demoMode = false
 
     open fileprivate(set) var token: AuthToken?
