@@ -279,21 +279,25 @@ extension TeslaAPI {
     
     - returns: An array of Vehicles.
     */
-    public func getVehicles(completion: @escaping (Result<VehicleCollection?, Error>) -> ()) {
+    public func getVehicles(completion: @escaping (Result<[String:Vehicle], Error>) -> ()) {
         checkAuthentication { (result: Result<AuthToken, Error>) in
             switch result {
                 case .failure(let error):
                     completion(Result.failure(error))
                 case .success(_):
                 if self.demoMode {
-						completion(Result.success(DemoTesla.shared.vehicles))
+                    completion(Result.success(["VIN#DEMO":DemoTesla.shared.vehicle!]))
 					} else {
                         self.vehicleRequest(.vehicles, body: nullBody) { (result2: Result<VehicleCollection?, Error>) in
 							switch result2 {
-								case .failure(let error):
+                            case .failure(let error):
 								completion(Result.failure(error))
-								case .success(let data):
-									completion(Result.success(data))
+                            case .success(let data):
+                                var dict = [String:Vehicle]()
+                                for element in data!.vehicles {
+                                    dict[element.vin?.vinString ?? ""] = element
+                                }
+                                completion(Result.success(dict))
 							}
 						}
 					}
