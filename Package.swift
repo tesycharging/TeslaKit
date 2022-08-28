@@ -24,5 +24,6 @@ let package = Package(
         .target(
             name: "TeslaKit",
             dependencies: ["ObjectMapper"]),
+			//resources: [.copy("Resources")],
     ]
 )

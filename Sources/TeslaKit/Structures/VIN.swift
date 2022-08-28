@@ -10,7 +10,8 @@ import Foundation
 import ObjectMapper
 
 ///
-public struct VIN: CustomStringConvertible {
+public struct VIN: CustomStringConvertible, AllVehicleValues {
+    public var allValues: Map 
 
     /// The minimum length to allow VIN parsing
     public static let minimumLength: Int = 15
@@ -52,7 +53,9 @@ public struct VIN: CustomStringConvertible {
     public var serialNo: String = ""
 
     ///
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 
     ///
     public init?(vinString: String) {
@@ -70,6 +73,7 @@ public struct VIN: CustomStringConvertible {
         self.manufactureLocation = VINComponent.ManufactureLocation(rawValue: String(vin[10..<11])) ?? .unknown
         self.serialCharacter = String(vin[11..<12])
         self.serialNo = String(vin[12...vin.count-1])
+        self.allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
 
     ///
@@ -96,6 +100,6 @@ extension String {
 
 extension VIN: Mappable {
     public mutating func mapping(map: Map) {
-        
+        allValues = map
     }
 }

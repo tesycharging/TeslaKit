@@ -29,6 +29,7 @@ public struct Vehicle: AllVehicleValues {
 
     /// The options of the vehicle
     public var options: [VehicleOption] = []
+	public var optionValues: [VehicleAllData] = []
 
     /// The vehicle's vehicle identification number
     public var vin: VIN?
@@ -105,6 +106,11 @@ extension Vehicle: DataResponse {
             remoteStartEnabled <- map["remote_start_enabled"]
             tokens <- map["tokens"]
         }
+        var i = 0
+		for entry in options {
+            optionValues.append(VehicleAllData(entry.code, (entry.name + " " + entry.description), i % 2 == 0))
+			i = i + 1
+		}
     }
 }
 

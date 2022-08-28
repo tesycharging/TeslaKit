@@ -17,7 +17,7 @@ public struct VehicleAllData: Identifiable {
     public init(_ key: String, _ value: String, _ odd: Bool) {
         self.key = key
         self.value = value
-        self.odd = odd
+        self.odd = odd // just for nice display purposes
     }
 }
 
@@ -26,14 +26,14 @@ public protocol AllVehicleValues {
 }
 
 extension AllVehicleValues {
-    public func values() -> [VehicleAllData] {
+    public func values(childStructs: Bool = true) -> [VehicleAllData] {
         var result = [VehicleAllData]()
         let map = allValues.JSON.sorted{ (first, second) -> Bool in
             return first.key < second.key
         }
         var i = 0
         for (k, v) in map {
-            if v is NSDictionary {
+            if (v is NSDictionary) && childStructs {
                 for (k1, v1) in (v as! NSDictionary) {
                     //print("key: \(k).\(k1), value: \(v1)")
                     let p = k.replacingOccurrences(of: "_", with: " ")

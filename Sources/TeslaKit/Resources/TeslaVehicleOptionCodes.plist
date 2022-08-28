@@ -1,0 +1,2428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MDLS</key>
+	<dict>
+		<key>name</key>
+		<string>Model S</string>
+		<key>description</key>
+		<string>This vehicle is a Model S</string>
+	</dict>
+	<key>MS03</key>
+	<dict>
+		<key>name</key>
+		<string>Model S</string>
+		<key>description</key>
+		<string>This vehicle is a Model S</string>
+	</dict>
+	<key>MS04</key>
+	<dict>
+		<key>name</key>
+		<string>Model S</string>
+		<key>description</key>
+		<string>This vehicle is a Model S</string>
+	</dict>
+	<key>MDLX</key>
+	<dict>
+		<key>name</key>
+		<string>Model X</string>
+		<key>description</key>
+		<string>This vehicle is a Model X</string>
+	</dict>
+	<key>MDL3</key>
+	<dict>
+		<key>name</key>
+		<string>Model 3</string>
+		<key>description</key>
+		<string>This vehicle is a Model 3</string>
+	</dict>
+	<key>MDLY</key>
+	<dict>
+		<key>name</key>
+		<string>Model Y</string>
+		<key>description</key>
+		<string>This vehicle is a Model Y</string>
+	</dict>
+	<key>RENA</key>
+	<dict>
+		<key>name</key>
+		<string>Region: North America</string>
+	</dict>
+	<key>RENC</key>
+	<dict>
+		<key>name</key>
+		<string>Region: Canada</string>
+	</dict>
+	<key>REEU</key>
+	<dict>
+		<key>name</key>
+		<string>Region: Europe</string>
+	</dict>
+	<key>ACL1</key>
+	<dict>
+		<key>name</key>
+		<string>Ludicrous Mode</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>AD02</key>
+	<dict>
+		<key>name</key>
+		<string>NEMA 14-50</string>
+	</dict>
+	<key>AD04</key>
+	<dict>
+		<key>name</key>
+		<string>European 3-Phase</string>
+	</dict>
+	<key>AD05</key>
+	<dict>
+		<key>name</key>
+		<string>European 3-Phase, IT</string>
+	</dict>
+	<key>AD06</key>
+	<dict>
+		<key>name</key>
+		<string>Schuko (1 phase, 230V 13A)</string>
+	</dict>
+	<key>AD07</key>
+	<dict>
+		<key>name</key>
+		<string>Red IEC309 (3 phase, 400V 16A)</string>
+	</dict>
+	<key>AD08</key>
+	<dict>
+		<key>name</key>
+		<string>Blue Charging Adapter</string>
+	</dict>
+	<key>AD09</key>
+	<dict>
+		<key>name</key>
+		<string>Adapter, Swiss (1 phase, 10A)</string>
+	</dict>
+	<key>AD10</key>
+	<dict>
+		<key>name</key>
+		<string> Adapter, Denmark (1 phase, 13A)</string>
+	</dict>
+	<key>AD11</key>
+	<dict>
+		<key>name</key>
+		<string>Adapter, Italy (1 phase, 13A)</string>
+	</dict>
+	<key>AD15</key>
+	<dict>
+		<key>name</key>
+		<string>Adapter</string>
+		<key>description</key>
+		<string>J1772</string>
+	</dict>
+	<key>ADPX2</key>
+	<dict>
+		<key>name</key>
+		<string>Type 2 Public Charging Connector</string>
+	</dict>
+	<key>ADX4</key>
+	<dict>
+		<key>name</key>
+		<string>No European 3-Phase</string>
+	</dict>
+	<key>ADX5</key>
+	<dict>
+		<key>name</key>
+		<string>European 3-Phase, IT</string>
+	</dict>
+	<key>ADX6</key>
+	<dict>
+		<key>name</key>
+		<string>No - Adapter, Schuko (1 phase, 13A)</string>
+	</dict>
+	<key>ADX7</key>
+	<dict>
+		<key>name</key>
+		<string>No - 3-ph Red IEC309 (3 phase, 16A)</string>
+	</dict>
+	<key>ADX9</key>
+	<dict>
+		<key>name</key>
+		<string>No - Adapter, Swiss (1 phase, 10A)</string>
+	</dict>
+	<key>ADX8</key>
+	<dict>
+		<key>name</key>
+		<string>Blue IEC309 (1 phase, 230V 32A)</string>
+	</dict>
+	<key>AF00</key>
+	<dict>
+		<key>name</key>
+		<string>No HEPA Filter</string>
+		<key>description</key>
+		<string>Standard air filter, no air ionizer</string>
+	</dict>
+	<key>AF02</key>
+	<dict>
+		<key>name</key>
+		<string>HEPA Filter</string>
+	</dict>
+	<key>AH00</key>
+	<dict>
+		<key>name</key>
+		<string>No Accessory Hitch</string>
+	</dict>
+	<key>APB1</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot with convenience features</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>APBS</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot</string>
+		<key>description</key>
+		<string>Model 3 Autopilot</string>
+	</dict>
+	<key>APF0</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot Firmware 2.0 Base</string>
+	</dict>
+	<key>APF1</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot Firmware 2.0 Enhanced</string>
+	</dict>
+	<key>APFB</key>
+	<dict>
+		<key>name</key>
+		<string>Full Self-Driving Hardware</string>
+		<key>description</key>
+		<string>Car has FSD hardware, but sofware option is not purchased</string>
+	</dict>
+	<key>APF2</key>
+	<dict>
+		<key>name</key>
+		<string>Full Self-Driving Hardware (Activated)</string>
+		<key>description</key>
+		<string>Car has active FSD software purchase</string>
+	</dict>
+	<key>APH1</key>
+	<dict>
+		<key>name</key>
+		<string>Hardware 1.0</string>
+	</dict>
+	<key>APH2</key>
+	<dict>
+		<key>name</key>
+		<string>Hardware 2.0</string>
+	</dict>
+	<key>APH3</key>
+	<dict>
+		<key>name</key>
+		<string>Hardware 2.5</string>
+	</dict>
+	<key>APPF</key>
+	<dict>
+		<key>name</key>
+		<string>Full Self-Driving Capability</string>
+	</dict>
+	<key>APH4</key>
+	<dict>
+		<key>name</key>
+		<string>Hardware 3.0</string>
+	</dict>
+	<key>AU00</key>
+	<dict>
+		<key>name</key>
+		<string>No Audio Package</string>
+	</dict>
+	<key>AU01</key>
+	<dict>
+		<key>name</key>
+		<string>Ultra High Fidelity Sound</string>
+	</dict>
+	<key>AU3P</key>
+	<dict>
+		<key>name</key>
+		<string>Sound Studio Package</string>
+		<key>description</key>
+		<string>Premium audio package</string>
+	</dict>
+	<key>BC0B</key>
+	<dict>
+		<key>name</key>
+		<string>Black Brake Calipers</string>
+	</dict>
+	<key>BC0R</key>
+	<dict>
+		<key>name</key>
+		<string>Red Brake Calipers</string>
+	</dict>
+	<key>BC3B</key>
+	<dict>
+		<key>name</key>
+		<string>Black Brake Calipers, Model 3</string>
+	</dict>
+	<key>BCMB</key>
+	<dict>
+		<key>name</key>
+		<string>Black Brake Calipers, Mando Brakes</string>
+	</dict>
+	<key>BCYR</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Brakes</string>
+	</dict>
+	<key>BG30</key>
+	<dict>
+		<key>name</key>
+		<string>No Badge</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>BG31</key>
+	<dict>
+		<key>name</key>
+		<string>AWD Badge</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>BG32</key>
+	<dict>
+		<key>name</key>
+		<string>Performance AWD Badge</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>BP00</key>
+	<dict>
+		<key>name</key>
+		<string>No Ludicrous</string>
+	</dict>
+	<key>BP01</key>
+	<dict>
+		<key>name</key>
+		<string>Ludicrous Speed Upgrade</string>
+	</dict>
+	<key>BP02</key>
+	<dict>
+		<key>name</key>
+		<string>Non-Performance Uncorked Acceleration</string>
+	</dict>
+	<key>BR00</key>
+	<dict>
+		<key>name</key>
+		<string>No Battery Firmware Limit</string>
+	</dict>
+	<key>BR03</key>
+	<dict>
+		<key>name</key>
+		<string>Battery Firmware Limit (60kWh)</string>
+	</dict>
+	<key>BR05</key>
+	<dict>
+		<key>name</key>
+		<string>Battery Firmware Limit (75kWh)</string>
+	</dict>
+	<key>BS00</key>
+	<dict>
+		<key>name</key>
+		<string>Blind Spot Sensor Package</string>
+	</dict>
+	<key>BS01</key>
+	<dict>
+		<key>name</key>
+		<string>Special Production Flag</string>
+	</dict>
+	<key>BT37</key>
+	<dict>
+		<key>name</key>
+		<string>75 kWh (Model 3)</string>
+	</dict>
+	<key>BT40</key>
+	<dict>
+		<key>name</key>
+		<string>40 kWh</string>
+	</dict>
+	<key>BT60</key>
+	<dict>
+		<key>name</key>
+		<string>60 kWh</string>
+	</dict>
+	<key>BT70</key>
+	<dict>
+		<key>name</key>
+		<string>70 kWh</string>
+	</dict>
+	<key>BT85</key>
+	<dict>
+		<key>name</key>
+		<string>85 kWh</string>
+	</dict>
+	<key>BTX4</key>
+	<dict>
+		<key>name</key>
+		<string>90 kWh</string>
+	</dict>
+	<key>BTX5</key>
+	<dict>
+		<key>name</key>
+		<string>75 kWh</string>
+	</dict>
+	<key>BTX6</key>
+	<dict>
+		<key>name</key>
+		<string>100 kWh</string>
+	</dict>
+	<key>BTX7</key>
+	<dict>
+		<key>name</key>
+		<string>75 kWh</string>
+	</dict>
+	<key>BTX8</key>
+	<dict>
+		<key>name</key>
+		<string>85 kWh</string>
+	</dict>
+	<key>CC01</key>
+	<dict>
+		<key>name</key>
+		<string>Five Seat Interior</string>
+	</dict>
+	<key>CC02</key>
+	<dict>
+		<key>name</key>
+		<string>Six Seat Interior</string>
+	</dict>
+	<key>CC03</key>
+	<dict>
+		<key>name</key>
+		<string>Seven Seat Interior</string>
+	</dict>
+	<key>CC04</key>
+	<dict>
+		<key>name</key>
+		<string>Seven Seat Interior</string>
+	</dict>
+	<key>CC12</key>
+	<dict>
+		<key>name</key>
+		<string>Six Seat Interior with Center Console</string>
+	</dict>
+	<key>CDM0</key>
+	<dict>
+		<key>name</key>
+		<string>No CHAdeMO Charging Adaptor</string>
+	</dict>
+	<key>CF00</key>
+	<dict>
+		<key>name</key>
+		<string>High Power Charger</string>
+	</dict>
+	<key>CF01</key>
+	<dict>
+		<key>name</key>
+		<string>48amp charger</string>
+	</dict>
+	<key>CH00</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Charger (40 Amp)</string>
+	</dict>
+	<key>CH01</key>
+	<dict>
+		<key>name</key>
+		<string>Dual Chargers (80 Amp)</string>
+		<key>description</key>
+		<string>Twin 10kW charge config</string>
+	</dict>
+	<key>CH04</key>
+	<dict>
+		<key>name</key>
+		<string>72 Amp Charger (Model S/X)</string>
+	</dict>
+	<key>CH05</key>
+	<dict>
+		<key>name</key>
+		<string>48 Amp Charger (Model S/X)</string>
+	</dict>
+	<key>CH07</key>
+	<dict>
+		<key>name</key>
+		<string>48 Amp Charger (Model 3)</string>
+	</dict>
+	<key>COL0</key>
+	<dict>
+		<key>name</key>
+		<string>Signature</string>
+	</dict>
+	<key>COL1</key>
+	<dict>
+		<key>name</key>
+		<string>Solid</string>
+	</dict>
+	<key>COL2</key>
+	<dict>
+		<key>name</key>
+		<string>Metallic</string>
+	</dict>
+	<key>COL3</key>
+	<dict>
+		<key>name</key>
+		<string>Tesla Multi-Coat</string>
+	</dict>
+	<key>COBE</key>
+	<dict>
+		<key>name</key>
+		<string>Country: Belgium</string>
+	</dict>
+	<key>CODE</key>
+	<dict>
+		<key>name</key>
+		<string>Country: Germany</string>
+	</dict>
+	<key>COES</key>
+	<dict>
+		<key>name</key>
+		<string>Country: Spain</string>
+	</dict>
+	<key>COFR</key>
+	<dict>
+		<key>name</key>
+		<string>Country: France</string>
+	</dict>
+	<key>CONL</key>
+	<dict>
+		<key>name</key>
+		<string>Country: Netherlands</string>
+	</dict>
+	<key>COUS</key>
+	<dict>
+		<key>name</key>
+		<string>Country: United States</string>
+	</dict>
+	<key>CPF0</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Connectivity</string>
+	</dict>
+	<key>CPF1</key>
+	<dict>
+		<key>name</key>
+		<string>Premium Connectivity</string>
+	</dict>
+	<key>CPW1</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Performance Wheels</string>
+	</dict>
+	<key>CW00</key>
+	<dict>
+		<key>name</key>
+		<string>No Weather Package</string>
+		<key>description</key>
+		<string>No Cold Weather Package</string>
+	</dict>
+	<key>CW02</key>
+	<dict>
+		<key>name</key>
+		<string>Weather Package</string>
+		<key>description</key>
+		<string>Subzero Weather Package</string>
+	</dict>
+	<key>DA00</key>
+	<dict>
+		<key>name</key>
+		<string>No Autopilot</string>
+	</dict>
+	<key>DA01</key>
+	<dict>
+		<key>name</key>
+		<string>Active Safety (ACC,LDW,SA)</string>
+		<key>description</key>
+		<string>Drivers Assistance Package</string>
+	</dict>
+	<key>DA02</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot Convenience Features</string>
+	</dict>
+	<key>DCF0</key>
+	<dict>
+		<key>name</key>
+		<string>Autopilot Convenience Features</string>
+	</dict>
+	<key>DRLH</key>
+	<dict>
+		<key>name</key>
+		<string>Left Hand Drive</string>
+	</dict>
+	<key>BC3R</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Brakes</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>DRRH</key>
+	<dict>
+		<key>name</key>
+		<string>Right Hand Drive</string>
+	</dict>
+	<key>DSH5</key>
+	<dict>
+		<key>name</key>
+		<string>Dashboard</string>
+		<key>description</key>
+		<string>PUR Dashboard Pad</string>
+	</dict>
+	<key>DSH7</key>
+	<dict>
+		<key>name</key>
+		<string>Alcantara Dashboard Accents</string>
+	</dict>
+	<key>DSHG</key>
+	<dict>
+		<key>name</key>
+		<string>PUR Dash Pad</string>
+	</dict>
+	<key>DU00</key>
+	<dict>
+		<key>name</key>
+		<string>Drive Unit - IR</string>
+	</dict>
+	<key>DU01</key>
+	<dict>
+		<key>name</key>
+		<string>Drive Unit - Infineon</string>
+	</dict>
+	<key>DV2W</key>
+	<dict>
+		<key>name</key>
+		<string>Rear-Wheel Drive</string>
+	</dict>
+	<key>DV4W</key>
+	<dict>
+		<key>name</key>
+		<string>All-Wheel Drive</string>
+	</dict>
+	<key>FC3P</key>
+	<dict>
+		<key>name</key>
+		<string>Front Console Front Console (Premium)</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>FG00</key>
+	<dict>
+		<key>name</key>
+		<string>No Exterior Lighting Package</string>
+	</dict>
+	<key>FG01</key>
+	<dict>
+		<key>name</key>
+		<string>Fog Lamps</string>
+		<key>description</key>
+		<string>Exterior Lighting Package</string>
+	</dict>
+	<key>FG02</key>
+	<dict>
+		<key>name</key>
+		<string>Fog Lamps</string>
+		<key>description</key>
+		<string>Fog Lamps</string>
+	</dict>
+	<key>FG31</key>
+	<dict>
+		<key>name</key>
+		<string>Fog Lamps</string>
+		<key>description</key>
+		<string>Premium Fog Lights - Model 3</string>
+	</dict>
+	<key>FM3B</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Package</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>FM3U</key>
+	<dict>
+		<key>name</key>
+		<string>Acceleration Boost</string>
+		<key>description</key>
+		<string>Model 3 Long Range All-Wheel Drive</string>
+	</dict>
+	<key>FMP6</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Firmware</string>
+	</dict>
+	<key>FR01</key>
+	<dict>
+		<key>name</key>
+		<string>Base Front Row</string>
+	</dict>
+	<key>FR02</key>
+	<dict>
+		<key>name</key>
+		<string>Ventilated Front Seats</string>
+	</dict>
+	<key>FR03</key>
+	<dict>
+		<key>name</key>
+		<string>FR03</string>
+	</dict>
+	<key>FR04</key>
+	<dict>
+		<key>name</key>
+		<string>FR04</string>
+	</dict>
+	<key>GLFR</key>
+	<dict>
+		<key>name</key>
+		<string>Assembly</string>
+		<key>description</key>
+		<string>Final Assembly Fremont</string>
+	</dict>
+	<key>HC00</key>
+	<dict>
+		<key>name</key>
+		<string>No Home Charging installation</string>
+	</dict>
+	<key>HC01</key>
+	<dict>
+		<key>name</key>
+		<string>Home Charging Installation</string>
+	</dict>
+	<key>HM31</key>
+	<dict>
+		<key>name</key>
+		<string>Teck Package - Homelink</string>
+		<key>description</key>
+		<string>Homelink</string>
+	</dict>
+	<key>HL31</key>
+	<dict>
+		<key>name</key>
+		<string>Head Lamp</string>
+		<key>description</key>
+		<string>Model 3 Uplevel Headlamps</string>
+	</dict>
+	<key>HP00</key>
+	<dict>
+		<key>name</key>
+		<string>No HPWC Ordered</string>
+	</dict>
+	<key>HP01</key>
+	<dict>
+		<key>name</key>
+		<string>HPWC Ordered</string>
+	</dict>
+	<key>ID3W</key>
+	<dict>
+		<key>name</key>
+		<string>Wood Decor</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>IDBA</key>
+	<dict>
+		<key>name</key>
+		<string>Dark Ash Wood Decor</string>
+	</dict>
+	<key>IDBO</key>
+	<dict>
+		<key>name</key>
+		<string>Figured Ash Wood Decor</string>
+	</dict>
+	<key>IDCF</key>
+	<dict>
+		<key>name</key>
+		<string>Carbon Fiber Decor</string>
+	</dict>
+	<key>IDHM</key>
+	<dict>
+		<key>name</key>
+		<string>Matte Obeche Wood Decor</string>
+	</dict>
+	<key>IDOK</key>
+	<dict>
+		<key>name</key>
+		<string>Oak Decor</string>
+	</dict>
+	<key>IDOM</key>
+	<dict>
+		<key>name</key>
+		<string>Matte Obeche Wood Decor</string>
+	</dict>
+	<key>IDOG</key>
+	<dict>
+		<key>name</key>
+		<string>Gloss Obeche Wood Decor</string>
+	</dict>
+	<key>IDLW</key>
+	<dict>
+		<key>name</key>
+		<string>Lacewood Decor</string>
+	</dict>
+	<key>IDPB</key>
+	<dict>
+		<key>name</key>
+		<string>Piano Black Decor</string>
+	</dict>
+	<key>IN3BB</key>
+	<dict>
+		<key>name</key>
+		<string>All Black Partial Premium Interior</string>
+	</dict>
+	<key>IN3BW</key>
+	<dict>
+		<key>name</key>
+		<string>Black and White Interior</string>
+		<key>description</key>
+		<string>Model 3 Interior</string>
+	</dict>
+	<key>IN3PB</key>
+	<dict>
+		<key>name</key>
+		<string>All Black Premium Interior</string>
+		<key>description</key>
+		<string>Model 3 Interior</string>
+	</dict>
+	<key>IN3PW</key>
+	<dict>
+		<key>name</key>
+		<string>All White Premium Interior</string>
+		<key>description</key>
+		<string>Model 3 Interior</string>
+	</dict>
+	<key>INBBW</key>
+	<dict>
+		<key>name</key>
+		<string>White Interior</string>
+	</dict>
+	<key>INB3C</key>
+	<dict>
+		<key>name</key>
+		<string>Premium beige interior with oak wood finishes</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>INBC3W</key>
+	<dict>
+		<key>name</key>
+		<string>Premium black and white interior with Carbon Fiber decor</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>INBFP</key>
+	<dict>
+		<key>name</key>
+		<string>Classic Black Interior</string>
+	</dict>
+	<key>INBPP</key>
+	<dict>
+		<key>name</key>
+		<string>Black Interior</string>
+	</dict>
+	<key>INBPW</key>
+	<dict>
+		<key>name</key>
+		<string>White Seats Interior</string>
+	</dict>
+	<key>INBTB</key>
+	<dict>
+		<key>name</key>
+		<string>Multi-Pattern Black Interior</string>
+	</dict>
+	<key>INFBP</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Interior</string>
+	</dict>
+	<key>INLPC</key>
+	<dict>
+		<key>name</key>
+		<string>Cream Interior</string>
+	</dict>
+	<key>INLPP</key>
+	<dict>
+		<key>name</key>
+		<string>Black / Light Headliner Interior</string>
+	</dict>
+	<key>INWPT</key>
+	<dict>
+		<key>name</key>
+		<string>Tan Interior</string>
+	</dict>
+	<key>INYPB</key>
+	<dict>
+		<key>name</key>
+		<string>All Black Premium Interior</string>
+	</dict>
+	<key>INYPW</key>
+	<dict>
+		<key>name</key>
+		<string>Black and White Premium Interior</string>
+	</dict>
+	<key>IL31</key>
+	<dict>
+		<key>name</key>
+		<string>Interior Ambient Lighting Interior</string>
+	</dict>
+	<key>IVBPP</key>
+	<dict>
+		<key>name</key>
+		<string>All Black Interior</string>
+	</dict>
+	<key>IVBSW</key>
+	<dict>
+		<key>name</key>
+		<string>Ultra White Interior</string>
+	</dict>
+	<key>IVBTB</key>
+	<dict>
+		<key>name</key>
+		<string>All Black Interior</string>
+	</dict>
+	<key>IVLPC</key>
+	<dict>
+		<key>name</key>
+		<string>Vegan Cream Interior</string>
+	</dict>
+	<key>IX00</key>
+	<dict>
+		<key>name</key>
+		<string>No Extended Nappa Leather Trim</string>
+	</dict>
+	<key>IX01</key>
+	<dict>
+		<key>name</key>
+		<string>Extended Nappa Leather Trim</string>
+	</dict>
+	<key>LLP1</key>
+	<dict>
+		<key>name</key>
+		<string>LLP1</string>
+	</dict>
+	<key>LLP2</key>
+	<dict>
+		<key>name</key>
+		<string>LLP2</string>
+	</dict>
+	<key>LP00</key>
+	<dict>
+		<key>name</key>
+		<string>Lighting Package</string>
+		<key>description</key>
+		<string>No Lighting Package</string>
+	</dict>
+	<key>LP01</key>
+	<dict>
+		<key>name</key>
+		<string>Lighting Package</string>
+		<key>description</key>
+		<string>Premium Interior Lighting</string>
+	</dict>
+	<key>LT00</key>
+	<dict>
+		<key>name</key>
+		<string>Vegan interior</string>
+	</dict>
+	<key>LT01</key>
+	<dict>
+		<key>name</key>
+		<string>Standard interior</string>
+	</dict>
+	<key>LT1B</key>
+	<dict>
+		<key>name</key>
+		<string>Lower Trim</string>
+		<key>description</key>
+		<string>Lower Trim</string>
+	</dict>
+	<key>LT3W</key>
+	<dict>
+		<key>name</key>
+		<string>LT3W</string>
+	</dict>
+	<key>LT4B</key>
+	<dict>
+		<key>name</key>
+		<string>LT4B</string>
+	</dict>
+	<key>LT4C</key>
+	<dict>
+		<key>name</key>
+		<string>LT4C</string>
+	</dict>
+	<key>LT4W</key>
+	<dict>
+		<key>name</key>
+		<string>LT4W</string>
+	</dict>
+	<key>LT5C</key>
+	<dict>
+		<key>name</key>
+		<string>LT5C</string>
+	</dict>
+	<key>LT5P</key>
+	<dict>
+		<key>name</key>
+		<string>LT5P</string>
+	</dict>
+	<key>LT6P</key>
+	<dict>
+		<key>name</key>
+		<string>LT6P</string>
+	</dict>
+	<key>LT6W</key>
+	<dict>
+		<key>name</key>
+		<string>White Base Lower Trim</string>
+	</dict>
+	<key>LTPB</key>
+	<dict>
+		<key>name</key>
+		<string>Lower Trim PUR Black</string>
+	</dict>
+	<key>LTPW</key>
+	<dict>
+		<key>name</key>
+		<string>Lower Trim PUR White</string>
+	</dict>
+	<key>ME01</key>
+	<dict>
+		<key>name</key>
+		<string>Memory Seats</string>
+	</dict>
+	<key>ME02</key>
+	<dict>
+		<key>name</key>
+		<string>Seat Memory</string>
+		<key>description</key>
+		<string>Seat Memory LHD Driver</string>
+	</dict>
+	<key>MI00</key>
+	<dict>
+		<key>name</key>
+		<string>2015 Production Refresh</string>
+	</dict>
+	<key>MI01</key>
+	<dict>
+		<key>name</key>
+		<string>2016 Production Refresh</string>
+	</dict>
+	<key>MI02</key>
+	<dict>
+		<key>name</key>
+		<string>2017 Production Refresh</string>
+	</dict>
+	<key>MI03</key>
+	<dict>
+		<key>name</key>
+		<string>201? Production Refresh</string>
+		<key>description</key>
+		<string>Found on Model X ordered 11/2018 delivered 3/2019</string>
+	</dict>
+	<key>MR31</key>
+	<dict>
+		<key>name</key>
+		<string>Tech Package - Mirror -YES</string>
+		<key>description</key>
+		<string>Uplevel Mirrors</string>
+	</dict>
+	<key>MT300</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT301</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Plus Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT302</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT303</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT304</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive Performance</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT305</key>
+	<dict>
+		<key>name</key>
+		<string>Mid Range Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT307</key>
+	<dict>
+		<key>name</key>
+		<string>Mid Range Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT308</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Plus Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2019 Refresh</string>
+	</dict>
+	<key>MT309</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Plus Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2019 Refresh</string>
+	</dict>
+	<key>MT336</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Plus Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2020 Refresh</string>
+	</dict>
+	<key>MT320</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range Plus Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2021 Refresh</string>
+	</dict>
+	<key>MT310</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT311</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive Performance</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>MT315</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2021 Refresh</string>
+	</dict>
+	<key>MT316</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive</string>
+		<key>description</key>
+		<string>Model 3 2021 Refresh</string>
+	</dict>
+	<key>MT317</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive Performance</string>
+		<key>description</key>
+		<string>Model 3 2021 Refresh</string>
+	</dict>
+	<key>MTS01</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS03</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS04</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS05</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS06</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS07</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range Plus</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTS08</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model S Raven Refresh</string>
+	</dict>
+	<key>MTS09</key>
+	<dict>
+		<key>name</key>
+		<string>Plaid</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>MTX01</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Range</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>MTX03</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>MTX04</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>MTX05</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range Plus</string>
+		<key>description</key>
+		<string>Model X 2021 Refresh</string>
+	</dict>
+	<key>MTX06</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model X 2021 Refresh</string>
+	</dict>
+	<key>MTX07</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range Plus</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>MTX08</key>
+	<dict>
+		<key>name</key>
+		<string>Performance</string>
+		<key>description</key>
+		<string>Model X 2021 Refresh</string>
+	</dict>
+	<key>MTY02</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range Rear-Wheel Drive</string>
+		<key>description</key>
+		<string>Model Y</string>
+	</dict>
+	<key>MTY03</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive</string>
+		<key>description</key>
+		<string>Model Y</string>
+	</dict>
+	<key>MTY04</key>
+	<dict>
+		<key>name</key>
+		<string>Long Range All-Wheel Drive Performance</string>
+		<key>description</key>
+		<string>Model Y</string>
+	</dict>
+	<key>OSSB</key>
+	<dict>
+		<key>name</key>
+		<string>Safety CA Black</string>
+	</dict>
+	<key>OSSW</key>
+	<dict>
+		<key>name</key>
+		<string>Safety CA White</string>
+	</dict>
+	<key>PA00</key>
+	<dict>
+		<key>name</key>
+		<string>No Paint Armor</string>
+	</dict>
+	<key>PBCW</key>
+	<dict>
+		<key>name</key>
+		<string>Solid White Color</string>
+	</dict>
+	<key>PBSB</key>
+	<dict>
+		<key>name</key>
+		<string>Solid Black Color</string>
+	</dict>
+	<key>PBT85</key>
+	<dict>
+		<key>name</key>
+		<string>Performance 85kWh</string>
+	</dict>
+	<key>PC30</key>
+	<dict>
+		<key>name</key>
+		<string>No Performance Chassis</string>
+	</dict>
+	<key>PC31</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Chassis</string>
+	</dict>
+	<key>PF00</key>
+	<dict>
+		<key>name</key>
+		<string>No Performance Legacy Package</string>
+	</dict>
+	<key>PF01</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Legacy Package</string>
+	</dict>
+	<key>PI00</key>
+	<dict>
+		<key>name</key>
+		<string>No Premium Interior</string>
+	</dict>
+	<key>PI01</key>
+	<dict>
+		<key>name</key>
+		<string>Premium Upgrades Package</string>
+	</dict>
+	<key>PK00</key>
+	<dict>
+		<key>name</key>
+		<string>Parking Sensors</string>
+		<key>description</key>
+		<string>No Parking Sensors</string>
+	</dict>
+	<key>PMAB</key>
+	<dict>
+		<key>name</key>
+		<string>Anza Brown Metallic Color</string>
+	</dict>
+	<key>PMBL</key>
+	<dict>
+		<key>name</key>
+		<string>Obsidian Black Multi-Coat Color</string>
+	</dict>
+	<key>PMMB</key>
+	<dict>
+		<key>name</key>
+		<string>Monterey Blue Metallic Color</string>
+	</dict>
+	<key>PMNG</key>
+	<dict>
+		<key>name</key>
+		<string>Midnight Silver Metallic Color</string>
+	</dict>
+	<key>PMSG</key>
+	<dict>
+		<key>name</key>
+		<string>Green Metallic Color</string>
+	</dict>
+	<key>PMSS</key>
+	<dict>
+		<key>name</key>
+		<string>San Simeon Silver Metallic Color</string>
+	</dict>
+	<key>PMTG</key>
+	<dict>
+		<key>name</key>
+		<string>Dolphin Grey Metallic Color</string>
+	</dict>
+	<key>PPMR</key>
+	<dict>
+		<key>name</key>
+		<string>Red Multi-Coat Color</string>
+	</dict>
+	<key>PPSB</key>
+	<dict>
+		<key>name</key>
+		<string>Deep Blue Metallic Color</string>
+	</dict>
+	<key>PPSR</key>
+	<dict>
+		<key>name</key>
+		<string>Signature Red Color</string>
+	</dict>
+	<key>PPSW</key>
+	<dict>
+		<key>name</key>
+		<string>Pearl White Multi-Coat Color</string>
+	</dict>
+	<key>PPTI</key>
+	<dict>
+		<key>name</key>
+		<string>Titanium Metallic Color</string>
+	</dict>
+	<key>PL30</key>
+	<dict>
+		<key>name</key>
+		<string>No Aluminum Pedal</string>
+	</dict>
+	<key>PL31</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Pedals</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>PRM30</key>
+	<dict>
+		<key>name</key>
+		<string>Partial Premium Interior</string>
+	</dict>
+	<key>PRM31</key>
+	<dict>
+		<key>name</key>
+		<string>Premium Interior</string>
+	</dict>
+	<key>PRM3S</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Interior</string>
+	</dict>
+	<key>PRMY1</key>
+	<dict>
+		<key>name</key>
+		<string>Premium Interior</string>
+	</dict>
+	<key>PS00</key>
+	<dict>
+		<key>name</key>
+		<string>No Parcel Shelf</string>
+	</dict>
+	<key>PS01</key>
+	<dict>
+		<key>name</key>
+		<string>Parcel Shelf</string>
+	</dict>
+	<key>RS3H</key>
+	<dict>
+		<key>name</key>
+		<string>Second Row Seat Rear Seats (Heated)</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>PX00</key>
+	<dict>
+		<key>name</key>
+		<string>No Performance Plus Package</string>
+	</dict>
+	<key>PX01</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Plus</string>
+	</dict>
+	<key>PX4D</key>
+	<dict>
+		<key>name</key>
+		<string>90 kWh Performance</string>
+	</dict>
+	<key>PX6D</key>
+	<dict>
+		<key>name</key>
+		<string>Zero to 60 in 2.5 sec</string>
+	</dict>
+	<key>P85D</key>
+	<dict>
+		<key>name</key>
+		<string>P85D</string>
+	</dict>
+	<key>QLBS</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Interior</string>
+	</dict>
+	<key>QLFC</key>
+	<dict>
+		<key>name</key>
+		<string>Cream Premium Interior</string>
+	</dict>
+	<key>QLFP</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Interior</string>
+	</dict>
+	<key>QLFW</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Interior</string>
+	</dict>
+	<key>QLPW</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Interior</string>
+	</dict>
+	<key>QLWS</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Interior</string>
+	</dict>
+	<key>QNET</key>
+	<dict>
+		<key>name</key>
+		<string>Tan NextGen</string>
+	</dict>
+	<key>QPBT</key>
+	<dict>
+		<key>name</key>
+		<string>Black Textile Interior</string>
+	</dict>
+	<key>QPMP</key>
+	<dict>
+		<key>name</key>
+		<string>Black seats</string>
+	</dict>
+	<key>QTBS</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Interior</string>
+	</dict>
+	<key>QTBW</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Seats</string>
+	</dict>
+	<key>QTFC</key>
+	<dict>
+		<key>name</key>
+		<string>Cream Premium Interior</string>
+	</dict>
+	<key>QTFP</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Seats</string>
+	</dict>
+	<key>QTFW</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Interior</string>
+	</dict>
+	<key>QTPB</key>
+	<dict>
+		<key>name</key>
+		<string>Black Leather Tesla Premium Seats</string>
+	</dict>
+	<key>QTPC</key>
+	<dict>
+		<key>name</key>
+		<string>Cream Premium Seats</string>
+	</dict>
+	<key>QTPP</key>
+	<dict>
+		<key>name</key>
+		<string>Black Premium Seats</string>
+	</dict>
+	<key>QTPT</key>
+	<dict>
+		<key>name</key>
+		<string>Tan Premium Seats</string>
+	</dict>
+	<key>QTTB</key>
+	<dict>
+		<key>name</key>
+		<string>Multi-Pattern Black Seats</string>
+	</dict>
+	<key>QTWS</key>
+	<dict>
+		<key>name</key>
+		<string>White Premium Interior</string>
+	</dict>
+	<key>QVBM</key>
+	<dict>
+		<key>name</key>
+		<string>Multi-Pattern Black Seats</string>
+	</dict>
+	<key>QVPC</key>
+	<dict>
+		<key>name</key>
+		<string>Vegan Cream Seats</string>
+	</dict>
+	<key>QVPP</key>
+	<dict>
+		<key>name</key>
+		<string>Vegan Cream Seats</string>
+	</dict>
+	<key>QVSW</key>
+	<dict>
+		<key>name</key>
+		<string>White Tesla Seats</string>
+	</dict>
+	<key>QXMB</key>
+	<dict>
+		<key>name</key>
+		<string>Black Leather Seat</string>
+	</dict>
+	<key>RCX0</key>
+	<dict>
+		<key>name</key>
+		<string>No Rear Console</string>
+	</dict>
+	<key>RCX1</key>
+	<dict>
+		<key>name</key>
+		<string>Rear Console</string>
+	</dict>
+	<key>RF3G</key>
+	<dict>
+		<key>name</key>
+		<string>Glass Roof</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>RFBK</key>
+	<dict>
+		<key>name</key>
+		<string>Black Roof</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>RFBC</key>
+	<dict>
+		<key>name</key>
+		<string>Body Color Roof</string>
+		<key>description</key>
+		<string>Model S</string>
+	</dict>
+	<key>RFFG</key>
+	<dict>
+		<key>name</key>
+		<string>Glass Roof</string>
+		<key>description</key>
+		<string>Model S 2017 Production Refresh</string>
+	</dict>
+	<key>RFPO</key>
+	<dict>
+		<key>name</key>
+		<string>All Glass Panoramic Roof</string>
+		<key>description</key>
+		<string>Model S 2015 Production Refresh</string>
+	</dict>
+	<key>RFP2</key>
+	<dict>
+		<key>name</key>
+		<string>Sunroof</string>
+		<key>description</key>
+		<string>Model S 2016 Production Refresh</string>
+	</dict>
+	<key>RFPX</key>
+	<dict>
+		<key>name</key>
+		<string>Glass Roof</string>
+		<key>description</key>
+		<string>Model X</string>
+	</dict>
+	<key>RSF1</key>
+	<dict>
+		<key>name</key>
+		<string>Rear Heated Seats</string>
+	</dict>
+	<key>RU00</key>
+	<dict>
+		<key>name</key>
+		<string>No Range Upgrade</string>
+	</dict>
+	<key>S01B</key>
+	<dict>
+		<key>name</key>
+		<string>Black Textile Seats</string>
+	</dict>
+	<key>S02B</key>
+	<dict>
+		<key>name</key>
+		<string>Seat</string>
+		<key>description</key>
+		<string>BLK Leather</string>
+	</dict>
+	<key>S02P</key>
+	<dict>
+		<key>name</key>
+		<string>S02P</string>
+	</dict>
+	<key>S02W</key>
+	<dict>
+		<key>name</key>
+		<string>White Seats</string>
+	</dict>
+	<key>S07W</key>
+	<dict>
+		<key>name</key>
+		<string>White Seats</string>
+	</dict>
+	<key>S31B</key>
+	<dict>
+		<key>name</key>
+		<string>S31B</string>
+	</dict>
+	<key>S32C</key>
+	<dict>
+		<key>name</key>
+		<string>S32C</string>
+	</dict>
+	<key>S32P</key>
+	<dict>
+		<key>name</key>
+		<string>S32P</string>
+	</dict>
+	<key>S32W</key>
+	<dict>
+		<key>name</key>
+		<string>S32W</string>
+	</dict>
+	<key>S3PB</key>
+	<dict>
+		<key>name</key>
+		<string>Seat Black PUR Premium Seats</string>
+	</dict>
+	<key>S3PW</key>
+	<dict>
+		<key>name</key>
+		<string>Seat White PUR Premium Seats</string>
+	</dict>
+	<key>SA3P</key>
+	<dict>
+		<key>name</key>
+		<string>Seat Adjustment - Power</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>SC00</key>
+	<dict>
+		<key>name</key>
+		<string>No Supercharging</string>
+	</dict>
+	<key>SC01</key>
+	<dict>
+		<key>name</key>
+		<string>Supercharging Enabled</string>
+	</dict>
+	<key>SC04</key>
+	<dict>
+		<key>name</key>
+		<string>Pay Per Use Supercharging</string>
+	</dict>
+	<key>SC05</key>
+	<dict>
+		<key>name</key>
+		<string>Free Supercharging</string>
+	</dict>
+	<key>SLR0</key>
+	<dict>
+		<key>name</key>
+		<string>No Rear Spoiler</string>
+	</dict>
+	<key>SP00</key>
+	<dict>
+		<key>name</key>
+		<string>No Security Package</string>
+	</dict>
+	<key>SP01</key>
+	<dict>
+		<key>name</key>
+		<string>Security Package</string>
+	</dict>
+	<key>SR01</key>
+	<dict>
+		<key>name</key>
+		<string>Standard 2nd row</string>
+		<key>description</key>
+		<string>Second Row Seat</string>
+	</dict>
+	<key>SR06</key>
+	<dict>
+		<key>name</key>
+		<string>Seven Seat Interior</string>
+	</dict>
+	<key>SR07</key>
+	<dict>
+		<key>name</key>
+		<string>Standard 2nd row</string>
+	</dict>
+	<key>ST00</key>
+	<dict>
+		<key>name</key>
+		<string>Non-leather Steering Wheel</string>
+	</dict>
+	<key>ST01</key>
+	<dict>
+		<key>name</key>
+		<string>Non-heated Leather Steering Wheel</string>
+	</dict>
+	<key>ST31</key>
+	<dict>
+		<key>name</key>
+		<string>Steering Wheel</string>
+		<key>description</key>
+		<string>Premium Steering Wheel</string>
+	</dict>
+	<key>STCP</key>
+	<dict>
+		<key>name</key>
+		<string>Steering Wheel</string>
+		<key>description</key>
+		<string>Steering Column (Power)</string>
+	</dict>
+	<key>STY5S</key>
+	<dict>
+		<key>name</key>
+		<string>Five Seat Interior</string>
+	</dict>
+	<key>STY7S</key>
+	<dict>
+		<key>name</key>
+		<string>Seven Seat Interior</string>
+	</dict>
+	<key>SU00</key>
+	<dict>
+		<key>name</key>
+		<string>Standard Suspension</string>
+	</dict>
+	<key>SU01</key>
+	<dict>
+		<key>name</key>
+		<string>Smart Air Suspension</string>
+	</dict>
+	<key>SU03</key>
+	<dict>
+		<key>name</key>
+		<string>Suspension    Update</string>
+		<key>description</key>
+		<string>Model X 2020</string>
+	</dict>
+	<key>SU3C</key>
+	<dict>
+		<key>name</key>
+		<string>Coil Spring Suspension</string>
+	</dict>
+	<key>T3MA</key>
+	<dict>
+		<key>name</key>
+		<string>Tires M3</string>
+		<key>description</key>
+		<string>18 Michelin All Season, Square</string>
+	</dict>
+	<key>TIC4</key>
+	<dict>
+		<key>name</key>
+		<string>Tires</string>
+		<key>description</key>
+		<string>All-Season Tires</string>
+	</dict>
+	<key>TIG2</key>
+	<dict>
+		<key>name</key>
+		<string>Summer Tires</string>
+	</dict>
+	<key>TIM7</key>
+	<dict>
+		<key>name</key>
+		<string>Summer Tires</string>
+	</dict>
+	<key>TIMP</key>
+	<dict>
+		<key>name</key>
+		<string>Tires</string>
+		<key>description</key>
+		<string>Michelin Primacy 19\&quot; Tire</string>
+	</dict>
+	<key>TIP0</key>
+	<dict>
+		<key>name</key>
+		<string>All-season Tires</string>
+		<key>description</key>
+		<string>Pirelli Scorpion Zero Asimmetrico 22” Tire</string>
+	</dict>
+	<key>TM00</key>
+	<dict>
+		<key>name</key>
+		<string>Model Trim</string>
+		<key>description</key>
+		<string>General Production Series Vehicle</string>
+	</dict>
+	<key>TM02</key>
+	<dict>
+		<key>name</key>
+		<string>General Production Signature Trim</string>
+	</dict>
+	<key>TM0A</key>
+	<dict>
+		<key>name</key>
+		<string>ALPHA PRE-PRODUCTION NON-SALEABLE</string>
+	</dict>
+	<key>TM0B</key>
+	<dict>
+		<key>name</key>
+		<string>BETA PRE-PRODUCTION NON-SALEABLE</string>
+	</dict>
+	<key>TM0C</key>
+	<dict>
+		<key>name</key>
+		<string>PRE-PRODUCTION SALEABLE</string>
+	</dict>
+	<key>TP00</key>
+	<dict>
+		<key>name</key>
+		<string>No Technology Package</string>
+	</dict>
+	<key>TP01</key>
+	<dict>
+		<key>name</key>
+		<string>Tech Package - No Autopilot</string>
+	</dict>
+	<key>TP02</key>
+	<dict>
+		<key>name</key>
+		<string>Tech Package with Autopilot</string>
+	</dict>
+	<key>TP03</key>
+	<dict>
+		<key>name</key>
+		<string>Tech Package with Enhanced Autopilot</string>
+	</dict>
+	<key>TR00</key>
+	<dict>
+		<key>name</key>
+		<string>No Rear Facing Seats</string>
+	</dict>
+	<key>TR01</key>
+	<dict>
+		<key>name</key>
+		<string>Third Row Seating</string>
+	</dict>
+	<key>TRA1</key>
+	<dict>
+		<key>name</key>
+		<string>Third Row HVAC</string>
+	</dict>
+	<key>TW00</key>
+	<dict>
+		<key>name</key>
+		<string>No Tow Package</string>
+	</dict>
+	<key>TW01</key>
+	<dict>
+		<key>name</key>
+		<string>Tow Package</string>
+	</dict>
+	<key>UM01</key>
+	<dict>
+		<key>name</key>
+		<string>Universal Mobile Charger - US Port (Single)</string>
+	</dict>
+	<key>UT3P</key>
+	<dict>
+		<key>name</key>
+		<string>Suede Grey Premium Headliner</string>
+	</dict>
+	<key>UTAB</key>
+	<dict>
+		<key>name</key>
+		<string>Black Alcantara Headliner</string>
+	</dict>
+	<key>UTAW</key>
+	<dict>
+		<key>name</key>
+		<string>Light Headliner</string>
+	</dict>
+	<key>UTMF</key>
+	<dict>
+		<key>name</key>
+		<string>Headliner</string>
+	</dict>
+	<key>UTPB</key>
+	<dict>
+		<key>name</key>
+		<string>Dark Headliner</string>
+	</dict>
+	<key>UTSB</key>
+	<dict>
+		<key>name</key>
+		<string>Dark Headliner</string>
+	</dict>
+	<key>UTZW</key>
+	<dict>
+		<key>name</key>
+		<string>Light Headliner</string>
+	</dict>
+	<key>USSB</key>
+	<dict>
+		<key>name</key>
+		<string>Safety</string>
+		<key>description</key>
+		<string>Safety US Black</string>
+	</dict>
+	<key>USSW</key>
+	<dict>
+		<key>name</key>
+		<string>US Safety Kit White</string>
+	</dict>
+	<key>SLR1</key>
+	<dict>
+		<key>name</key>
+		<string>Carbon Fibre Spoiler</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>SPT31</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Upgrade</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>SPTY1</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Upgrade</string>
+		<key>description</key>
+		<string>Model Y</string>
+	</dict>
+	<key>W32P</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Performance Wheels</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>W32D</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Gray Performance Wheels</string>
+		<key>description</key>
+		<string>Model 3</string>
+	</dict>
+	<key>W38B</key>
+	<dict>
+		<key>name</key>
+		<string>18\&quot; Aero Wheels</string>
+		<key>description</key>
+		<string>For the Model 3 and Model Y</string>
+	</dict>
+	<key>W39B</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Sport Wheels</string>
+	</dict>
+	<key>WR00</key>
+	<dict>
+		<key>name</key>
+		<string>No Wrap</string>
+	</dict>
+	<key>WT19</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Wheels</string>
+	</dict>
+	<key>WT20</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Silver Slipstream Wheels</string>
+	</dict>
+	<key>WT22</key>
+	<dict>
+		<key>name</key>
+		<string>22\&quot; Silver Turbine Wheels</string>
+	</dict>
+	<key>WTAB</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Black Arachnid Wheels</string>
+	</dict>
+	<key>WTAS</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Silver Slipstream Wheels</string>
+	</dict>
+	<key>WTDS</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Grey Slipstream Wheels</string>
+	</dict>
+	<key>WTNN</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Nokian Winter Tires (non-studded)</string>
+	</dict>
+	<key>WTNS</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Nokian Winter Tires (studded)</string>
+	</dict>
+	<key>WTP2</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Pirelli Winter Tires</string>
+	</dict>
+	<key>WTSC</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Sonic Carbon Wheels</string>
+	</dict>
+	<key>WTSD</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Two-Tone Slipstream Wheels</string>
+	</dict>
+	<key>WTSG</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Turbine Wheels</string>
+	</dict>
+	<key>WTSP</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Turbine Wheels</string>
+	</dict>
+	<key>WTSS</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Turbine Wheels</string>
+	</dict>
+	<key>WTHX</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Turbine Wheels</string>
+	</dict>
+	<key>WTTG</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Cyclone Wheels</string>
+	</dict>
+	<key>WTTB</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Cyclone Wheels</string>
+	</dict>
+	<key>WTTC</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Sonic Carbon Twin Turbine Wheels</string>
+	</dict>
+	<key>WTUT</key>
+	<dict>
+		<key>name</key>
+		<string>22\&quot; Onyx Black Wheels</string>
+		<key>description</key>
+		<string>22\&quot; Ultrasonic Turbine wheels</string>
+	</dict>
+	<key>WTW2</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Nokian Winter Wheel Set</string>
+	</dict>
+	<key>WTW3</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Pirelli Winter Wheel Set</string>
+	</dict>
+	<key>WTW4</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Winter Tire Set</string>
+	</dict>
+	<key>WTW5</key>
+	<dict>
+		<key>name</key>
+		<string>21\&quot; Winter Tire Set</string>
+	</dict>
+	<key>WTW6</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Nokian Winter Tires (studded)</string>
+	</dict>
+	<key>WTW7</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Nokian Winter Tires (non-studded)</string>
+	</dict>
+	<key>WTW8</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Pirelli Winter Tires</string>
+	</dict>
+	<key>WTX1</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Michelin Primacy Tire Upgrade</string>
+	</dict>
+	<key>WXNN</key>
+	<dict>
+		<key>name</key>
+		<string>No 20\&quot; Nokian Winter Tires (non-studded)</string>
+	</dict>
+	<key>WXNS</key>
+	<dict>
+		<key>name</key>
+		<string>No 20\&quot; Nokian Winter Tires (studded)</string>
+	</dict>
+	<key>WXP2</key>
+	<dict>
+		<key>name</key>
+		<string>No 20\&quot; Pirelli Winter Tires</string>
+	</dict>
+	<key>WXW2</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Wheels with Nokian Winter Tyres</string>
+	</dict>
+	<key>WXW3</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Wheels with Pirelli Winter Tyres</string>
+	</dict>
+	<key>WXW4</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Winter Tire Set</string>
+	</dict>
+	<key>WXW5</key>
+	<dict>
+		<key>name</key>
+		<string>No 21\&quot; Winter Tire Set</string>
+	</dict>
+	<key>WXW6</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Nokian Winter Tires (studded)</string>
+	</dict>
+	<key>WXW7</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Nokian Winter Tires (non-studded)</string>
+	</dict>
+	<key>WXW8</key>
+	<dict>
+		<key>name</key>
+		<string>No 19\&quot; Pirelli Winter Tires</string>
+	</dict>
+	<key>WY18B</key>
+	<dict>
+		<key>name</key>
+		<string>18\&quot; Aero Wheels</string>
+	</dict>
+	<key>WY19B</key>
+	<dict>
+		<key>name</key>
+		<string>19\&quot; Sport Wheels</string>
+	</dict>
+	<key>WY20P</key>
+	<dict>
+		<key>name</key>
+		<string>20\&quot; Performance Wheels</string>
+	</dict>
+	<key>X001</key>
+	<dict>
+		<key>name</key>
+		<string>Override: Power Liftgate</string>
+	</dict>
+	<key>X002</key>
+	<dict>
+		<key>name</key>
+		<string>Override: Manual Liftgate</string>
+	</dict>
+	<key>X003</key>
+	<dict>
+		<key>name</key>
+		<string>Maps &amp; Navigation</string>
+	</dict>
+	<key>X004</key>
+	<dict>
+		<key>name</key>
+		<string>Override: No Navigation</string>
+	</dict>
+	<key>X007</key>
+	<dict>
+		<key>name</key>
+		<string>Exterior Lights    Override: Premium exterior lighting YES</string>
+	</dict>
+	<key>X010</key>
+	<dict>
+		<key>name</key>
+		<string>Base Mirrors</string>
+	</dict>
+	<key>X011</key>
+	<dict>
+		<key>name</key>
+		<string>Override: Homelink</string>
+	</dict>
+	<key>X012</key>
+	<dict>
+		<key>name</key>
+		<string>Override: No Homelink</string>
+	</dict>
+	<key>X013</key>
+	<dict>
+		<key>name</key>
+		<string>Override: Satellite Radio</string>
+	</dict>
+	<key>X014</key>
+	<dict>
+		<key>name</key>
+		<string>Override: No Satellite Radio</string>
+	</dict>
+	<key>X019</key>
+	<dict>
+		<key>name</key>
+		<string>Carbon Fiber Spoiler</string>
+	</dict>
+	<key>X020</key>
+	<dict>
+		<key>name</key>
+		<string>No Performance Exterior</string>
+	</dict>
+	<key>X021</key>
+	<dict>
+		<key>name</key>
+		<string>No Rear Carbon Fiber Spoiler</string>
+	</dict>
+	<key>X024</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Package</string>
+	</dict>
+	<key>X025</key>
+	<dict>
+		<key>name</key>
+		<string>Performance Powertrain</string>
+	</dict>
+	<key>X026</key>
+	<dict>
+		<key>name</key>
+		<string>Door handle</string>
+		<key>description</key>
+		<string>No light handle</string>
+	</dict>
+	<key>X027</key>
+	<dict>
+		<key>name</key>
+		<string>Lighted Door Handles</string>
+		<key>description</key>
+		<string>Light handle</string>
+	</dict>
+	<key>X028</key>
+	<dict>
+		<key>name</key>
+		<string>Battery Badge</string>
+		<key>description</key>
+		<string>Normal Badging</string>
+	</dict>
+	<key>X029</key>
+	<dict>
+		<key>name</key>
+		<string>Remove Battery Badge</string>
+	</dict>
+	<key>X030</key>
+	<dict>
+		<key>name</key>
+		<string>Override: No Passive Entry Pkg</string>
+	</dict>
+	<key>X031</key>
+	<dict>
+		<key>name</key>
+		<string>Keyless Entry</string>
+		<key>description</key>
+		<string>Passive Entry Pkg</string>
+	</dict>
+	<key>X037</key>
+	<dict>
+		<key>name</key>
+		<string>Powerfolding Mirrors</string>
+	</dict>
+	<key>X039</key>
+	<dict>
+		<key>name</key>
+		<string>DAB Radio</string>
+	</dict>
+	<key>X040</key>
+	<dict>
+		<key>name</key>
+		<string>No DAB Radio</string>
+	</dict>
+	<key>X041</key>
+	<dict>
+		<key>name</key>
+		<string>No Auto Presenting Door</string>
+	</dict>
+	<key>X042</key>
+	<dict>
+		<key>name</key>
+		<string>Auto Presenting Door</string>
+	</dict>
+	<key>X043</key>
+	<dict>
+		<key>name</key>
+		<string>No Phone Dock Kit</string>
+	</dict>
+	<key>X044</key>
+	<dict>
+		<key>name</key>
+		<string>Phone Dock Kit</string>
+	</dict>
+	<key>YF00</key>
+	<dict>
+		<key>name</key>
+		<string>No Yacht Floor</string>
+	</dict>
+	<key>YF01</key>
+	<dict>
+		<key>name</key>
+		<string>Matching Yacht Floor</string>
+	</dict>
+	<key>YFCC</key>
+	<dict>
+		<key>name</key>
+		<string>YFCC</string>
+	</dict>
+	<key>YFFC</key>
+	<dict>
+		<key>name</key>
+		<string>Integrated Center Console</string>
+	</dict>
+</dict>
+</plist>
