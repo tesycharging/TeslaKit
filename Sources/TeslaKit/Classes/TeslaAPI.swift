@@ -50,7 +50,7 @@ let ErrorInfo = "ErrorInfo"
 private var nullBody = ""
 
 open class TeslaAPI: NSObject, URLSessionDelegate {
-    open var debuggingEnabled = false
+    open var debuggingEnabled = true
 	open var demoMode = false
     open var addDemoVehicle = true
 
