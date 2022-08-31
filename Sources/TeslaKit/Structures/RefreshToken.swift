@@ -5,7 +5,7 @@
 //  Created by Jaren Hamblin on 5/24/18.
 //  Copyright © 2018 HamblinSoft. All rights reserved.
 //
-
+/*
 import Foundation
 import ObjectMapper
 
@@ -54,3 +54,4 @@ extension RefreshToken.Request: Mappable {
         refreshToken <- map["refresh_token"]
     }
 }
+*/

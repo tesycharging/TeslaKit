@@ -240,8 +240,8 @@ extension TeslaAPI {
         if self.demoMode {
             return ["VIN#DEMO_#TESTING":DemoTesla.shared.vehicle!]
         } else {
-			let response: VehicleCollection = try await self.getDataFromRequest(.vehicles, body: nullBody)
-			//let response: VehicleCollection = try await vehicleRequest(.vehicles, body: nullBody)
+            //let response: VehicleCollection = try await self.getDataFromRequest(Endpoint.vehicles, body: nullBody)
+			let response: VehicleCollection = try await vehicleRequest(.vehicles, body: nullBody)
             var dict = [String:Vehicle]()
             for element in response.vehicles {
                 dict[element.vin?.vinString ?? ""] = element
@@ -269,7 +269,7 @@ extension TeslaAPI {
 		.wakeUp(vehicleID: String)
     - returns: A Vehicle.
     */
-    public func getVehicleData(_ method: Endpoint) async throws -> Vehicle {
+    public func getVehicleData(_ method: Endpoint) async throws -> DataResponse {
         _ = try await checkAuthentication()
         if self.demoMode {
             switch method {
@@ -291,7 +291,7 @@ extension TeslaAPI {
                 throw TeslaError.failedToParseData
             }
         } else {
-			let response = try await self.getDataFromRequest(.vehicles, body: nullBody) // DataResponse
+            let response: Vehicle = try await self.vehicleRequest(Endpoint.vehicles, body: nullBody)
             return response
         }
     }
@@ -303,7 +303,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicle(_ vehicleID: String) async throws -> Vehicle {
-        return try await getVehicleData(.allStates(vehicleID: vehicleID))
+        return try await getVehicleData(.allStates(vehicleID: vehicleID)) as! Vehicle
     }
 	
 	/**
@@ -313,7 +313,7 @@ extension TeslaAPI {
     */
     public func getVehicle(_ vehicle: Vehicle) async throws -> Vehicle {
         self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-        return try await getVehicleData(.allStates(vehicleID: vehicle.id))
+        return try await getVehicleData(.allStates(vehicleID: vehicle.id)) as! Vehicle
     }
 	
 	/**
@@ -323,7 +323,7 @@ extension TeslaAPI {
      */
     public func getAllData(_ vehicle: Vehicle) async throws -> Vehicle {
         self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-		return try await getVehicleData(.allStates(vehicleID: vehicle.id))
+		return try await getVehicleData(.allStates(vehicleID: vehicle.id)) as! Vehicle
 	}
 	
 	/**
@@ -337,8 +337,8 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: DataResponse = try await self.getDataFromRequest(.mobileAccess(vehicleID: vehicle.id), body: nullBody)
-            return response != nil
+            let response: MobileAccess = try await self.vehicleRequest(Endpoint.mobileAccess(vehicleID: vehicle.id), body: nullBody)
+            return response.response
         }
     }
     
@@ -368,7 +368,7 @@ extension TeslaAPI {
             return sites
         } else {
             _ = try await checkAuthentication()
-            let response: Chargingsites = try await self.getDataFromRequest(.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
+            let response: Chargingsites = try await self.getDataFromRequest(Endpoint.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
             return response
         }
     }
@@ -384,7 +384,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: DataResponse = try await self.getDataFromRequest(.wakeUp(vehicleID: vehicle.id), body: nullBody)
+            let response: Vehicle = try await self.vehicleRequest(Endpoint.wakeUp(vehicleID: vehicle.id), body: nullBody)
             return response != nil
         }
 	}
@@ -581,8 +581,12 @@ extension TeslaAPI {
     }
     
 	
-	public func getDataFromRequest<T: DataResponse>(_ method: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
-		return self.vehicleRequest(method, body: nullBody, parameter: parameter)
+	public func getDataFromRequest<T: DataResponse, BodyType: Encodable>(_ method: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
+        do {
+            return try await self.vehicleRequest(method, body: nullBody, parameter: parameter)
+        } catch let error {
+            throw error
+        }
 	}
 
     
@@ -690,15 +694,15 @@ extension TeslaAPI {
             return response
         } else {
             _ = try await checkAuthentication()
-			let response: CommandResponse = try await self.getDataFromRequest(.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter)
+            let response: CommandResponse = try await self.vehicleRequest(Endpoint.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter)
             return response
         }
 	}
 	
-	public func commandAction(_ vehicle: Vehicle, command: Command, parameter: Any? = nil, completion: @escaping (Reuslt<CommandResponse, Error>) -> Void) {
+	public func commandAction(_ vehicle: Vehicle, command: Command, parameter: Any? = nil, completion: @escaping (Result<CommandResponse, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let commandResponse = try await teslaAPI.setCommand(vehicle, command: command)
+                let commandResponse = try await self.setCommand(vehicle, command: command)
                 completion (Result.success(commandResponse))				
             } catch let error {
                 completion(Result.failure(error))
