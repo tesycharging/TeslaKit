@@ -5,9 +5,42 @@
 //  Created by Jaren Hamblin on 11/19/17.
 //  Copyright © 2018 HamblinSoft. All rights reserved.
 //
-
+/*
 import Foundation
 import ObjectMapper
+import CryptoKit
+
+private let oAuthClientID: String = "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"
+private let oAuthWebClientID: String = "ownerapi"
+private let oAuthClientSecret: String = "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
+private let oAuthScope: String = "openid email offline_access"
+private let oAuthRedirectURI: String = "https://auth.tesla.com/void/callback"
+
+public struct AccessToken {
+	public var accessToken: String = ""
+    public var tokenType: String = ""
+    public var createdAt: Date = Date()
+    public var expiresIn: TimeInterval = Date().TimeInterval
+    public var refreshToken: String = ""
+    public var idToken: String = ""
+	
+	public init() {}
+	
+	public init(accessToken: String) {
+        self.accessToken = accessToken
+    }
+}
+
+extension AccessToken: DataResponse {
+    public mutating func mapping(map: Map) {
+		accessToken <- map["response.access_token"]
+		tokenType <- map["response.token_type"]
+		createdAt <- map["response.created_at"]
+		expiresIn <- map["response.expires_in"]
+		refreshToken <- map["response.refresh_token"]
+		idToken <- map["response.id_token"]
+	}
+}
 
 /// Response Object
 public enum AccessToken {
@@ -107,3 +140,4 @@ extension AccessToken.Response: Mappable {
         refreshToken <- map["refresh_token"]
     }
 }
+**/
