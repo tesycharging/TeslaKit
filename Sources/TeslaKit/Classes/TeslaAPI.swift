@@ -160,21 +160,7 @@ extension TeslaAPI {
         }
     }
     
-    public func refreshMyWebToken() throws -> AuthToken {
-        var token: AuthToken = AuthToken(accessToken: "")
-
-        Task { @MainActor in
-            do {
-                token = try await refreshWebToken()
-            } catch let error {
-                print("refresh web token failed: \(error)")
-                throw error
-            }
-        }
-        return token
-    }
-
-
+  
     /**
     Use this method to reuse a previous authentication token
 
@@ -254,7 +240,8 @@ extension TeslaAPI {
         if self.demoMode {
             return ["VIN#DEMO_#TESTING":DemoTesla.shared.vehicle!]
         } else {
-            let response: VehicleCollection = try await vehicleRequest(.vehicles, body: nullBody)
+			let response: VehicleCollection = try await self.getDataFromRequest(.vehicles, body: nullBody)
+			//let response: VehicleCollection = try await vehicleRequest(.vehicles, body: nullBody)
             var dict = [String:Vehicle]()
             for element in response.vehicles {
                 dict[element.vin?.vinString ?? ""] = element
@@ -266,19 +253,6 @@ extension TeslaAPI {
         }
     }
     
-    public func getMyVehicles() throws -> [String:Vehicle] {
-        var vehicles: [String:Vehicle] = [String:Vehicle]()
-
-        Task { @MainActor in
-            do {
-                vehicles = try await getVehicles()
-            } catch let error {
-                print("Authentication failed: \(error)")
-                throw error
-            }
-        }
-        return vehicles
-    }
 	
 	/**
     Fetchs the vehicle according its method
@@ -317,7 +291,7 @@ extension TeslaAPI {
                 throw TeslaError.failedToParseData
             }
         } else {
-            let response: Vehicle = try await vehicleRequest(.vehicles, body: nullBody)
+			let response = try await self.getDataFromRequest(.vehicles, body: nullBody) // DataResponse
             return response
         }
     }
@@ -363,7 +337,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: Vehicle = try await self.vehicleRequest(.mobileAccess(vehicleID: vehicle.id), body: nullBody)
+            let response: DataResponse = try await self.getDataFromRequest(.mobileAccess(vehicleID: vehicle.id), body: nullBody)
             return response != nil
         }
     }
@@ -394,7 +368,7 @@ extension TeslaAPI {
             return sites
         } else {
             _ = try await checkAuthentication()
-            let response: Chargingsites = try await self.vehicleRequest(.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
+            let response: Chargingsites = try await self.getDataFromRequest(.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
             return response
         }
     }
@@ -410,7 +384,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: Vehicle = try await self.vehicleRequest(.wakeUp(vehicleID: vehicle.id), body: nullBody)
+            let response: DataResponse = try await self.getDataFromRequest(.wakeUp(vehicleID: vehicle.id), body: nullBody)
             return response != nil
         }
 	}
@@ -606,6 +580,10 @@ extension TeslaAPI {
         }
     }
     
+	
+	public func getDataFromRequest<T: DataResponse>(_ method: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
+		return self.vehicleRequest(method, body: nullBody, parameter: parameter)
+	}
 
     
 	/**
@@ -712,10 +690,21 @@ extension TeslaAPI {
             return response
         } else {
             _ = try await checkAuthentication()
-            let response: CommandResponse = try await self.vehicleRequest(.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter)
+			let response: CommandResponse = try await self.getDataFromRequest(.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter)
             return response
         }
 	}
+	
+	public func commandAction(_ vehicle: Vehicle, command: Command, parameter: Any? = nil, completion: @escaping (Reuslt<CommandResponse, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let commandResponse = try await teslaAPI.setCommand(vehicle, command: command)
+                completion (Result.success(commandResponse))				
+            } catch let error {
+                completion(Result.failure(error))
+            }
+        }
+    }
 }
 
 
