@@ -50,7 +50,7 @@ extension AllVehicleValues {
     }
 	
 	public func printDescription() {
-		values.forEach {
+		values().forEach {
 			print("key: \($0.key), value: \($0.value)")
 		}
 	}
