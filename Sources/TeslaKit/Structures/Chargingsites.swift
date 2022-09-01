@@ -9,16 +9,20 @@ import Foundation
 import ObjectMapper
 //import TeslaKit
 
-public struct Chargingsites {
+public struct Chargingsites: AllVehicleValues {
+    public var allValues: Map
     public var congestion_sync_time_utc_secs: TimeInterval = 0
     public var destination_charging: [DestinationCharging] = []
     public var superchargers: [Superchargers] = []
     public var timestamp: TimeInterval = 0
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 }
 
 extension Chargingsites: DataResponse {
     public mutating func mapping(map: Map) {
+		allValues = map
         let hasData: Bool = !(map.JSON["congestion_sync_time_utc_secs"] is TimeInterval)
         if hasData {
             congestion_sync_time_utc_secs <- map["response.congestion_sync_time_utc_secs"]
@@ -31,6 +35,7 @@ extension Chargingsites: DataResponse {
             superchargers <- map["superchargers"]
             timestamp <- map["timestamp"]
         }
+		self.printDescription()
     }
 }
 

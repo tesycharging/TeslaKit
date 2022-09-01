@@ -48,4 +48,10 @@ extension AllVehicleValues {
         }
         return result
     }
+	
+	public func printDescription() {
+		values.forEach {
+			print("key: \($0.key), value: \($0.value)")
+		}
+	}
 }

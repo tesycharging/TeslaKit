@@ -111,6 +111,7 @@ extension Vehicle: DataResponse {
             optionValues.append(VehicleAllData(entry.code, (entry.name + " " + entry.description), i % 2 == 0))
 			i = i + 1
 		}
+		self.printDescription()
     }
 }
 

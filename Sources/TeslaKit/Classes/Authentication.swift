@@ -15,7 +15,54 @@ private let oAuthClientSecret: String = "c7257eb71a564034f9419ee651c7d0e5f7aa6bf
 private let oAuthScope: String = "openid email offline_access"
 private let oAuthRedirectURI: String = "https://auth.tesla.com/void/callback"
 
-open class AuthToken: Codable {
+
+public struct AuthToken: AllVehicleValues {
+    public var allValues: Map
+	public var accessToken: String = ""
+    public var tokenType: String = ""
+    public var createdAt: Date = Date()
+    public var expiresIn: TimeInterval = Date().TimeInterval
+    public var refreshToken: String = ""
+    public var idToken: String = ""
+	
+	public init() {
+		allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+	}
+	
+	public init(accessToken: String) {
+        self.accessToken = accessToken
+		allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
+	
+	public var isValid: Bool {
+        if let createdAt = createdAt, let expiresIn = expiresIn {
+            return -createdAt.timeIntervalSinceNow < expiresIn
+        } else {
+            return false
+        }
+    }
+	
+	public var isOAuth: Bool {
+        // idToken is only present on the new oAuth authentications
+        return idToken != nil
+    }
+}
+
+extension AuthToken: DataResponse {
+    public mutating func mapping(map: Map) {
+		allValues = map
+		accessToken <- map["response.access_token"]
+		tokenType <- map["response.token_type"]
+		createdAt <- map["response.created_at"]
+		expiresIn <- map["response.expires_in"]
+		refreshToken <- map["response.refresh_token"]
+		idToken <- map["response.id_token"]
+		self.printDescription()
+	}
+}
+
+
+/*open class AuthToken: Codable {
     
     open var accessToken: String?
     open var tokenType: String?
@@ -61,7 +108,7 @@ open class AuthToken: Codable {
         case refreshToken  = "refresh_token"
         case idToken = "id_token"
     }
-}
+}*/
 
 
 class AuthTokenRequestWeb: Encodable {
@@ -120,7 +167,7 @@ public class AuthCodeRequest: Encodable {
     var scope = oAuthScope
     let codeChallenge: String
     var codeChallengeMethod = "S256"
-    var state = "teslaSwift"
+    var state = "tesycharging"
 
     init() {
         self.codeChallenge = clientID.codeVerifier.challenge

@@ -10,13 +10,16 @@ import Foundation
 import ObjectMapper
 
 /// Determines if mobile access to the vehicle is enabled.
-public struct MobileAccess {
+public struct MobileAccess: AllVehicleValues {
+    public var allValues: Map
 
     ///
     public var response: Bool = false
 
     ///
-    public init() {}
+    public init() {
+		allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+	}
 
     ///
     public init(response: Bool) {
@@ -26,6 +29,8 @@ public struct MobileAccess {
 
 extension MobileAccess: DataResponse {
     public mutating func mapping(map: Map) {
+		allValues = map
         response <- map["response"]
+		self.printDescription()
     }
 }

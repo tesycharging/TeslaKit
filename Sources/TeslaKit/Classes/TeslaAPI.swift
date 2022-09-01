@@ -55,8 +55,6 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
     open var addDemoVehicle = true
 
     open fileprivate(set) var token: AuthToken?
-
-    open fileprivate(set) var email: String?
 }
 
 
@@ -168,11 +166,9 @@ extension TeslaAPI {
     If the token is invalid a new authentication will be required
 
     - parameter token:      The previous token
-    - parameter email:      Email is required for streaming
     */
-    public func reuse(token: AuthToken, email: String? = nil) {
+    public func reuse(token: AuthToken) {
         self.token = token
-        self.email = email
     }
     
     
@@ -199,7 +195,6 @@ extension TeslaAPI {
     
     */
     public func logout() {
-        //email = nil
         cleanToken()
         #if canImport(WebKit) && canImport(UIKit)
         TeslaWebLoginViewController.removeCookies()
@@ -436,7 +431,7 @@ extension TeslaAPI {
     }
             
         
-    private func authRequest<ReturnType: Decodable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType) async throws -> ReturnType {
+   /* private func authRequest<ReturnType: Decodable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType) async throws -> ReturnType {	
 		// Create the request
         let request = prepareRequest(endpoint, body: body)
         let debugEnabled = debuggingEnabled
@@ -501,8 +496,13 @@ extension TeslaAPI {
                 throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo: nil))
             }
         }
-	}
+	}*/
     
+	private func authRequest<T: Mappable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
+		authToken: AuthToken = try await self.vehicleRequest(endpoint, body: body)
+		return authToken
+	}
+	
     private func vehicleRequest<T: Mappable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
         // Create the request
         let request = prepareRequest(endpoint, body: body, parameter: parameter)
