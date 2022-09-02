@@ -12,7 +12,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public struct Vehicle: AllVehicleValues {
+public struct Vehicle {
     public var allValues: Map
 
     /// The unique identifier of the vehicle
@@ -111,7 +111,6 @@ extension Vehicle: DataResponse {
             optionValues.append(VehicleAllData(entry.code, (entry.name + " " + entry.description), i % 2 == 0))
 			i = i + 1
 		}
-		self.printDescription()
     }
 }
 

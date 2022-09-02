@@ -8,6 +8,7 @@
 
 import Foundation
 import CryptoKit
+import ObjectMapper
 
 private let oAuthClientID: String = "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"
 private let oAuthWebClientID: String = "ownerapi"
@@ -16,14 +17,14 @@ private let oAuthScope: String = "openid email offline_access"
 private let oAuthRedirectURI: String = "https://auth.tesla.com/void/callback"
 
 
-public struct AuthToken: AllVehicleValues {
+public struct AuthToken {
     public var allValues: Map
-	public var accessToken: String = ""
-    public var tokenType: String = ""
-    public var createdAt: Date = Date()
-    public var expiresIn: TimeInterval = Date().TimeInterval
-    public var refreshToken: String = ""
-    public var idToken: String = ""
+	public var accessToken: String?
+    public var tokenType: String?
+    public var createdAt: Date? = Date()
+    public var expiresIn: TimeInterval?
+    public var refreshToken: String?
+    public var idToken: String?
 	
 	public init() {
 		allValues = Map(mappingType: .fromJSON, JSON: ["":""])
@@ -51,64 +52,25 @@ public struct AuthToken: AllVehicleValues {
 extension AuthToken: DataResponse {
     public mutating func mapping(map: Map) {
 		allValues = map
-		accessToken <- map["response.access_token"]
-		tokenType <- map["response.token_type"]
-		createdAt <- map["response.created_at"]
-		expiresIn <- map["response.expires_in"]
-		refreshToken <- map["response.refresh_token"]
-		idToken <- map["response.id_token"]
-		self.printDescription()
+		accessToken <- map["access_token"]
+		tokenType <- map["token_type"]
+		createdAt <- map["created_at"]
+		expiresIn <- map["expires_in"]
+		refreshToken <- map["refresh_token"]
+		idToken <- map["id_token"]
 	}
-}
-
-
-/*open class AuthToken: Codable {
     
-    open var accessToken: String?
-    open var tokenType: String?
-    open var createdAt: Date? = Date()
-    open var expiresIn: TimeInterval?
-    open var refreshToken: String?
-    open var idToken: String?
-    
-    open var isValid: Bool {
-        if let createdAt = createdAt, let expiresIn = expiresIn {
-            return -createdAt.timeIntervalSinceNow < expiresIn
-        } else {
-            return false
+    public static func loadToken(jsonString: String) -> AuthToken? {
+        let data = Data(jsonString.utf8)
+        do {
+            let json: Any = try JSONSerialization.jsonObject(with: data)
+            return Mapper<AuthToken>().map(JSONObject: json)
+        } catch let error {
+            print(error.localizedDescription)
+            return nil
         }
     }
-
-    open var isOAuth: Bool {
-        // idToken is only present on the new oAuth authentications
-        return idToken != nil
-    }
-    
-    public init(accessToken: String) {
-        self.accessToken = accessToken
-    }
-
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        accessToken = try? container.decode(String.self, forKey: .accessToken)
-        tokenType = try? container.decode(String.self, forKey: .tokenType)
-        createdAt = (try? container.decode(Date.self, forKey: .createdAt)) ?? Date()
-        expiresIn = try? container.decode(TimeInterval.self, forKey: .expiresIn)
-        refreshToken = try? container.decode(String.self, forKey: .refreshToken)
-        idToken = try? container.decode(String.self, forKey: .idToken)
-    }
-    
-    // MARK: Codable protocol
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case tokenType = "token_type"
-        case createdAt = "created_at"
-        case expiresIn = "expires_in"
-        case refreshToken  = "refresh_token"
-        case idToken = "id_token"
-    }
-}*/
+}
 
 
 class AuthTokenRequestWeb: Encodable {
@@ -167,7 +129,7 @@ public class AuthCodeRequest: Encodable {
     var scope = oAuthScope
     let codeChallenge: String
     var codeChallengeMethod = "S256"
-    var state = "tesycharging"
+    var state = "TesyCharging"
 
     init() {
         self.codeChallenge = clientID.codeVerifier.challenge
@@ -236,18 +198,21 @@ extension String {
     }
 }
 
-open class BoolResponse: Decodable {
+
+public struct BoolResponse {
+    public var response: Bool
+    public var allValues: Map
     
-    open var response: Bool
-    
-    public init(response: Bool) {
-        self.response = response
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+        response = false
     }
+}
+
+extension BoolResponse: DataResponse {
     
-    // MARK: Codable protocol
-    
-    enum CodingKeys: String, CodingKey {
-        case response = "response"
+    public mutating func mapping(map: Map) {
+        allValues = map
+        response <- map["response"]
     }
-    
 }

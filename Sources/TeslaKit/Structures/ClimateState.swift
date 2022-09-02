@@ -12,7 +12,7 @@ import Foundation
 import ObjectMapper
 
 /// Response object containing information about the current temperature and climate control state of a vehicle
-public struct ClimateState: AllVehicleValues {
+public struct ClimateState {
     public var allValues: Map
     
     ///

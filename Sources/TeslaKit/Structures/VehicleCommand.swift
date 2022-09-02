@@ -11,7 +11,8 @@ import ObjectMapper
 
 /// The vehicle command response object indicating whether the command was issued successfully
 public struct CommandResponse {
-
+    public var allValues: Map
+    
     /// Commmand result
     public var result: Bool = false
 
@@ -30,18 +31,22 @@ public struct CommandResponse {
     }
 
     ///
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 
     ///
     public init(result: Bool, reason: String) {
         self.result = result
         self.reason = reason
         self.error = reason
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
 }
 
-extension CommandResponse: Mappable {
+extension CommandResponse: DataResponse {
     public mutating func mapping(map: Map) {
+        allValues = map
         result <- map["response.result"]
         reason <- map["response.reason"]
         error <- map["error"]

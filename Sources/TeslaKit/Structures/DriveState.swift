@@ -12,7 +12,7 @@ import Foundation
 import ObjectMapper
 
 /// Response object containing information about the driving and position state of the vehicle
-public struct DriveState: AllVehicleValues {
+public struct DriveState {
     public var allValues: Map
 
     ///

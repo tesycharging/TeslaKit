@@ -13,7 +13,7 @@ import Foundation
 import ObjectMapper
 
 /// Returns various information about the GUI settings of the car, such as unit format and range display.
-public struct GUISettings: AllVehicleValues {
+public struct GUISettings {
     public var allValues: Map
     
     /// Distance units (mi/hr)

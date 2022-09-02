@@ -4,7 +4,7 @@
 //
 //  Created by David Lüthi on 12.08.22.
 //
-
+/*
 import Foundation
 import ObjectMapper
 
@@ -37,7 +37,11 @@ extension AllVehicleValues {
                 for (k1, v1) in (v as! NSDictionary) {
                     //print("key: \(k).\(k1), value: \(v1)")
                     let p = k.replacingOccurrences(of: "_", with: " ")
-                    result.append(VehicleAllData("   "+p+"."+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v1)", i % 2 == 0))
+                    var v11 = v1
+                    if (v1 is NSDictionary) {
+                        v11 = "{..}"
+                    }
+                    result.append(VehicleAllData("   "+p+"."+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v11)", i % 2 == 0))
                     i = i + 1
                 }
             } else {
@@ -54,4 +58,4 @@ extension AllVehicleValues {
 			print("key: \($0.key), value: \($0.value)")
 		}
 	}
-}
+}*/

@@ -9,7 +9,7 @@ import Foundation
 import ObjectMapper
 //import TeslaKit
 
-public struct Chargingsites: AllVehicleValues {
+public struct Chargingsites {
     public var allValues: Map
     public var congestion_sync_time_utc_secs: TimeInterval = 0
     public var destination_charging: [DestinationCharging] = []
@@ -35,20 +35,23 @@ extension Chargingsites: DataResponse {
             superchargers <- map["superchargers"]
             timestamp <- map["timestamp"]
         }
-		self.printDescription()
     }
 }
 
 public struct DestinationCharging {
+    public var allValues: Map
     public var location: Location = Location()
     public var name: String = ""
     public var type: String = ""
     public var distance_miles: Double = 0
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 }
 
 extension DestinationCharging: DataResponse {
     public mutating func mapping(map: Map) {
+        allValues = map
         location <- map["location"]
         name <- map["name"]
         type <- map["type"]
@@ -70,6 +73,7 @@ extension Location {
 }
 
 public struct Superchargers {
+    public var allValues: Map
     public var location: Location = Location()
     public var name: String = ""
     public var type: String = ""
@@ -80,11 +84,14 @@ public struct Superchargers {
     public var siteclosed: Bool {
         site_closed != 0
     }
-    public init() {}
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 }
 
 extension Superchargers: DataResponse {
     public mutating func mapping(map: Map) {
+        allValues = map
         location <- map["location"]
         name <- map["name"]
         type <- map["type"]

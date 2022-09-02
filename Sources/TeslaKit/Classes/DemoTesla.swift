@@ -36,7 +36,7 @@ public class DemoTesla {
 	
 	public init() {
         self.vehicle = requestDemoVehicle()
-        self.vehicle?.vin?.vinString = "VIN#DEMO_#TESTING"
+        self.vehicle?.vin = VIN(vinString: "VIN#DEMO_#TESTING")
         self.vehicle?.chargeState.chargeEnergyAdded = 0
         self.vehicle?.chargeState.batteryLevel = 50
         self.vehicle?.chargeState.batteryRange = 180

@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public struct VehicleConfig: AllVehicleValues {
+public struct VehicleConfig {
     public var allValues: Map
     
 
@@ -86,7 +86,7 @@ public struct VehicleConfig: AllVehicleValues {
     }
 }
 
-extension VehicleConfig: Mappable {
+extension VehicleConfig: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
         canActuateTrunks <- map["can_actuate_trunks"]

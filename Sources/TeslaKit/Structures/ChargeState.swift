@@ -10,7 +10,7 @@ import Foundation
 import ObjectMapper
 
 /// Response object containing information about the charge state of the vehicle
-public struct ChargeState: AllVehicleValues {
+public struct ChargeState {
     public var allValues: Map
     
 

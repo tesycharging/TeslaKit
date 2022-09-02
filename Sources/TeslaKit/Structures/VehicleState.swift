@@ -13,7 +13,7 @@ import Foundation
 import ObjectMapper
 
 ///
-public struct VehicleState: AllVehicleValues {
+public struct VehicleState {
     public var allValues: Map
 
     ///
