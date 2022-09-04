@@ -264,9 +264,9 @@ extension TeslaAPI {
 		.wakeUp(vehicleID: String)
     - returns: A Vehicle.
     */
-    public func getVehicleData<T: DataResponse>(_ method: Endpoint) async throws -> T? {
+    public func getVehicleData<T: DataResponse>(_ method: Endpoint, demoMode: Bool = false) async throws -> T? {
         _ = try await checkAuthentication()
-        if self.demoMode {
+        if self.demoMode  || demoMode {
             switch method {
             case .vehicles:
                 return ([DemoTesla.shared.vehicle!] as! T)
@@ -309,8 +309,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicle(_ vehicle: Vehicle) async throws -> Vehicle? {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-        return try await getVehicleData(.allStates(vehicleID: vehicle.id))
+        return try await getVehicleData(.allStates(vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
     }
 	
 	/**
@@ -319,8 +318,7 @@ extension TeslaAPI {
      - returns: A completion handler with all the data
      */
     public func getAllData(_ vehicle: Vehicle) async throws -> Vehicle? {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-		return try await getVehicleData(.allStates(vehicleID: vehicle.id))
+		return try await getVehicleData(.allStates(vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
 	}
 	
 	/**
@@ -329,8 +327,7 @@ extension TeslaAPI {
 	- returns: The mobile access state.
 	*/
     public func getVehicleMobileAccessState(_ vehicle: Vehicle) async throws -> Bool {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-        if demoMode {
+        if demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             return true
         } else {
             _ = try await checkAuthentication()
@@ -345,8 +342,7 @@ extension TeslaAPI {
      - returns: The nearby charging sites
      */
     public func getNearbyChargingSites(_ vehicle: Vehicle) async throws -> Chargingsites {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-        if demoMode {
+        if demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             var sites = Chargingsites()
             var dest = DestinationCharging()
             dest.name = "Charger Zuoz"
@@ -365,7 +361,7 @@ extension TeslaAPI {
             return sites
         } else {
             _ = try await checkAuthentication()
-            let response: Chargingsites = try await self.getDataFromRequest(Endpoint.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
+            let response: Chargingsites = try await self.request(Endpoint.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
             return response
         }
     }
@@ -376,8 +372,7 @@ extension TeslaAPI {
 	- returns: The current Vehicle
 	*/
     public func wakeUp(_ vehicle: Vehicle) async throws -> Bool {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING") 
-        if demoMode {
+        if demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             return true
         } else {
             _ = try await checkAuthentication()
@@ -492,13 +487,15 @@ extension TeslaAPI {
                 print(error.localizedDescription)
                 throw TeslaError.failedToParseData
             }
+        } else if httpResponse.statusCode == 401 {
+            throw TeslaError.authenticationFailed
         } else {
             if debugEnabled {
                 let objectString = String.init(data: data, encoding: String.Encoding.utf8) ?? "No Body"
                 print("RESPONSE BODY ERROR: \(objectString)")
             }
             if let wwwauthenticate = httpResponse.allHeaderFields["Www-Authenticate"] as? String,
-                wwwauthenticate.contains("invalid_token") {
+               wwwauthenticate.contains("invalid_token") {
                 throw TeslaError.tokenRevoked
             } else if httpResponse.allHeaderFields["Www-Authenticate"] != nil, httpResponse.statusCode == 401 {
                 throw TeslaError.authenticationFailed
@@ -511,15 +508,6 @@ extension TeslaAPI {
             }
         }
     }
-    
-	
-	public func getDataFromRequest<T: DataResponse, BodyType: Encodable>(_ method: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
-        do {
-            return try await self.request(method, body: nullBody, parameter: parameter)
-        } catch let error {
-            throw error
-        }
-	}
 
     
 	/**
@@ -531,8 +519,7 @@ extension TeslaAPI {
 	- returns: A completion handler with the CommandResponse object containing the results of the command.
 	*/
     public func setCommand(_ vehicle: Vehicle, command: Command, parameter: BaseMappable? = nil) async throws -> CommandResponse {
-        self.demoMode = (vehicle.vin?.vinString == "VIN#DEMO_#TESTING")
-        if self.demoMode {
+        if self.demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             var response = CommandResponse(result: true, reason: "")
             switch command {
             case .setValetMode:
@@ -630,18 +617,6 @@ extension TeslaAPI {
             return response
         }
 	}
-	
-	public func commandAction(_ vehicle: Vehicle, command: Command, parameter: BaseMappable? = nil, completion: @escaping (Result<CommandResponse, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let commandResponse = try await self.setCommand(vehicle, command: command, parameter: parameter)
-                print(commandResponse.toJSONString())
-                completion (Result.success(commandResponse))				
-            } catch let error {
-                completion(Result.failure(error))
-            }
-        }
-    }
 }
 
 

@@ -13,7 +13,6 @@ public class DemoTesla {
     public static let shared = DemoTesla()
 	public var vehicle: Vehicle?
 	public var vehicles: VehicleCollection = VehicleCollection()
-    private var isTimerRunning = false
     
     public var chargingState: ChargingState = ChargingState.disconnected
     public var chargePortLatch: ChargePortLatchState = ChargePortLatchState.disengaged
@@ -54,9 +53,6 @@ public class DemoTesla {
         var vehicles = [Vehicle]()
         vehicles.append(self.vehicle ?? Vehicle())
         self.vehicles = VehicleCollection(vehicles: vehicles)
-        _ = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { timer in
-            self.charging()
-        }
 	}
     
     public func engageCable() {
@@ -77,20 +73,21 @@ public class DemoTesla {
             self.vehicle?.chargeState.chargingState = ChargingState.stopped
         } else {
             self.vehicle?.chargeState.chargingState = ChargingState.charging
-            self.isTimerRunning = true
+            self.charging()
         }
     }
     
     private func charging() {
-        if self.isTimerRunning {
-            self.vehicle!.chargeState.chargeEnergyAdded = self.vehicle!.chargeState.chargeEnergyAdded + 2.0
-            let bat = ((self.vehicle?.chargeState.batteryLevel) ?? 0) + 2.0
-            self.vehicle?.chargeState.batteryLevel = bat
-            let t1 = 75 / 100 * (Double((self.vehicle?.chargeState.chargeLimitSoc) ?? 0))
-            self.vehicle!.chargeState.timeToFullCharge = (t1 - self.vehicle!.chargeState.chargeEnergyAdded) / 45 * exp(0.153007256714785)
-            
-            if Double((self.vehicle?.chargeState.chargeLimitSoc)!) <= (self.vehicle?.chargeState.batteryLevel)! {
-                self.vehicle!.chargeState.chargingState = ChargingState.complete
+        let bat = ((self.vehicle?.chargeState.batteryLevel) ?? 0) + 2.0
+        self.vehicle?.chargeState.batteryLevel = bat
+        let t1 = 75 / 100 * (Double((self.vehicle?.chargeState.chargeLimitSoc) ?? 0))
+        self.vehicle!.chargeState.timeToFullCharge = (t1 - self.vehicle!.chargeState.chargeEnergyAdded) / 45 * exp(0.153007256714785)
+        self.vehicle!.chargeState.chargeEnergyAdded = self.vehicle!.chargeState.chargeEnergyAdded + 1.5
+        if (Double((self.vehicle?.chargeState.chargeLimitSoc)!) <= (self.vehicle?.chargeState.batteryLevel)!) {
+            self.vehicle!.chargeState.chargingState = ChargingState.complete
+        } else if self.vehicle!.chargeState.chargingState != ChargingState.stopped {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+3.0) {
+                self.charging()
             }
         }
     }
@@ -102,7 +99,6 @@ public class DemoTesla {
             self.vehicle?.chargeState.chargePortLatch = .disengaged
         } else {
             self.vehicle!.chargeState.chargingState = ChargingState.stopped
-            self.isTimerRunning = false
         }
     }
     

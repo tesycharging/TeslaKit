@@ -5,7 +5,7 @@
 //  Created by Joao Nunes on 28/02/2017.
 //  Copyright © 2017 Joao Nunes. All rights reserved.
 //
-
+/*
 import Foundation
 
 open class ErrorMessage: Codable {
@@ -18,3 +18,4 @@ open class ErrorMessage: Codable {
         case description = "error_description"
     }
 }
+*/

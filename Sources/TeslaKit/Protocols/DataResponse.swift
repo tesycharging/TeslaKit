@@ -25,12 +25,15 @@ extension DataResponse {
             if (v is NSDictionary) && childStructs {
                 for (k1, v1) in (v as! NSDictionary) {
                     //print("key: \(k).\(k1), value: \(v1)")
-                    let p = k.replacingOccurrences(of: "_", with: " ")
+                    var p = ""
+                    if k != "response" {
+                        p = "   "+k.replacingOccurrences(of: "_", with: " ")+"."
+                    }
                     var v11 = v1
                     if (v1 is NSDictionary) {
                         v11 = "{..}"
                     }
-                    result.append(VehicleAllData("   "+p+"."+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v11)", i % 2 == 0))
+                    result.append(VehicleAllData(p+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v11)", i % 2 == 0))
                     i = i + 1
                 }
             } else {
