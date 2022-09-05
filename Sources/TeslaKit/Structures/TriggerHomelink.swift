@@ -1,9 +1,11 @@
 //
 //  TriggerHomelink.swift
-//  Tesy
+//  TeslaKit
 //
 //  Created by David Lüthi on 16.01.21.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
+
 
 import Foundation
 import ObjectMapper

@@ -1,8 +1,10 @@
 //
 //  ChargePortLatchState.swift
-//  Pods
+//  TeslaKit
 //
-//  Created by Jaren Hamblin on 2/5/18.
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Jaren Hamblin on 2/5/18.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 import Foundation

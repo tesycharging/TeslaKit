@@ -1,8 +1,9 @@
 //
 //  DemoTesla.swift
-//  Tesy
+//  TeslaKit
 //
-//  Created by David Lüthi on 14.03.21.
+//  Created by David Lüthi on 14.03.21
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 import Foundation

@@ -4,6 +4,15 @@
 //
 //  Created by David Lüthi on 08.08.22.
 //
+
+//
+//  WindowsControl.swift
+//  TeslaKit
+//
+//  Created by David Lüthi on 08.08.22.
+//  Copyright © 2022 David Lüthi. All rights reserved.
+//
+
 import Foundation
 import ObjectMapper
 

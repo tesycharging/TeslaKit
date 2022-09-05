@@ -1,9 +1,10 @@
 //
 //  DistanceUnit.swift
-//  Tests
+//  TeslaKit
 //
-//  Created by Jaren Hamblin on 2/3/18.
-//  Copyright © 2018 HamblinSoft. All rights reserved.
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Jaren Hamblin on 2/3/18.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 import Foundation

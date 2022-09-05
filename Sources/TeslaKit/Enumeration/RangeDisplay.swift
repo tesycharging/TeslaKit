@@ -1,6 +1,6 @@
 //
 //  RangeDisplay.swift
-//  Tests
+//  TeslaKit
 //
 //  Created by Jaren Hamblin on 2/3/18.
 //  Copyright © 2018 HamblinSoft. All rights reserved.

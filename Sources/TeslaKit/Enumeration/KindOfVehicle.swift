@@ -1,8 +1,9 @@
 //
 //  KindOfVehicle.swift
-//  Tesy
+//  TeslaKit
 //
-//  Created by David Lüthi on 14.08.22.
+//  Created by David Lüthi on 14.08.22
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 import Foundation

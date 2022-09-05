@@ -6,6 +6,16 @@
 //  Copyright © 2018 HamblinSoft. All rights reserved.
 //
 
+//
+//  ChargeState.swift
+//  TeslaKit
+//
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Jaren Hamblin on 11/20/17.
+//  Copyright © 2022 David Lüthi. All rights reserved.
+//
+
+
 import Foundation
 import ObjectMapper
 

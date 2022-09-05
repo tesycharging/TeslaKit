@@ -1,6 +1,6 @@
 //
 //  Mappable.swift
-//  TeslaApp
+//  TeslaKit
 //
 //  Created by Jaren Hamblin on 11/19/17.
 //  Copyright © 2018 HamblinSoft. All rights reserved.

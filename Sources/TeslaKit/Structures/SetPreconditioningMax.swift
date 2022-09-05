@@ -5,6 +5,15 @@
 //  Created by David Lüthi on 23.12.20.
 //
 
+//
+//  SetPreconditioningMax.swift
+//  TeslaKit
+//
+//  Created by David Lüthi on 23.12.20.
+//  Copyright © 2022 David Lüthi. All rights reserved.
+//
+
+
 import Foundation
 import ObjectMapper
 //import TeslaKit

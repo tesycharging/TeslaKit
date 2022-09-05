@@ -1,13 +1,14 @@
 //
 //  Chargingsites.swift
-//  Tesy
+//  TeslaKit
 //
-//  Created by David Lüthi on 08.10.21.
+//  Update by David Lüthi on 10.06.2021
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
+
 
 import Foundation
 import ObjectMapper
-//import TeslaKit
 
 public struct Chargingsites {
     public var allValues: Map

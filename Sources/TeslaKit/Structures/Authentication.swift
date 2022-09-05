@@ -1,9 +1,10 @@
 //
 //  AuthToken.swift
-//  TeslaSwift
+//  TeslaKit
 //
-//  Created by Joao Nunes on 04/03/16.
-//  Copyright © 2016 Joao Nunes. All rights reserved.
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Joao Nunes on 04/03/16.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 import Foundation

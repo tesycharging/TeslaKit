@@ -1,9 +1,10 @@
 //
 //  TeslaWebLoginViewContoller.swift
-//  TeslaSwift
+//  TeslaKit
 //
-//  Created by João Nunes on 22/11/2020.
-//  Copyright © 2020 Joao Nunes. All rights reserved.
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Joao Nunes on 22/11/2020.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
 
 #if canImport(WebKit) && canImport(UIKit)
@@ -60,6 +61,38 @@ extension TeslaWebLoginViewController {
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
             }
         }
+    }
+}
+
+public struct WebLogin: UIViewControllerRepresentable {
+    public typealias UIViewControllerType = TeslaWebLoginViewController
+	public var teslaAPI: TeslaAPI
+    public let action: () -> Void
+    
+    public init(teslaAPI: TeslaAPI, action: @escaping () -> Void) {
+        self.teslaAPI = teslaAPI
+        self.action = action
+    }
+	
+    public func makeUIViewController(context: Context) -> TeslaWebLoginViewController {
+        let (webloginViewController, result) = teslaAPI.authenticateWeb()
+        guard let safeWebloginViewController = webloginViewController else {
+            return TeslaWebLoginViewController(url: URL(string: "https://www.tesla.com")!)
+        }
+        
+        Task { @MainActor in
+            do {
+                _ = try await result()
+                self.action()
+            } catch let error {
+                print("Authentication failed: \(error)")
+            }
+        }
+        return safeWebloginViewController
+        
+    }
+
+    public func updateUIViewController(_ uiViewController: TeslaWebLoginViewController, context: Context) {
     }
 }
 #endif

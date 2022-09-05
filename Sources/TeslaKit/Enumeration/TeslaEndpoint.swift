@@ -1,12 +1,12 @@
 //
 //  TeslaEndpoint.swift
-//  TeslaSwift
+//  TeslaKit
 //
-//  Created by Joao Nunes on 16/04/16.
-//  Copyright © 2016 Joao Nunes. All rights reserved.
+//  Update by David Lüthi on 10.06.2021
+//  based on code from Joao Nunes on 16/04/16.
+//  Copyright © 2022 David Lüthi. All rights reserved.
 //
-//  Updated by David Lüthi on 23/08/2022
-//
+
 import Foundation
 
 public enum Endpoint {
