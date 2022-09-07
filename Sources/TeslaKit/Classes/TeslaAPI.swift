@@ -199,7 +199,7 @@ extension TeslaAPI {
         #if canImport(WebKit) && canImport(UIKit)
         TeslaWebLoginViewController.removeCookies()
         #endif
-    }}
+    }
     
 	/**
     Checks if the authenication is valid and refreshes the token if required
@@ -507,7 +507,7 @@ extension TeslaAPI {
                 guard let mappedVehicle = Mapper<T>().map(JSONObject: json) else {
                     throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo: ["ErrorInfo": TeslaError.failedToParseData]))
                 }
-                throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo:"ErrorInfo": mappedVehicle]))
+                throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo:["ErrorInfo": mappedVehicle]))
             }
         }
     }
@@ -613,6 +613,9 @@ extension TeslaAPI {
                     print("lat/lon not nearby")
                 }
             }
+            if #available(iOS 16.0, *) {
+                try await Task.sleep(until: .now + .seconds(1.5), clock: .continuous)
+            }
             return response
         } else {
             _ = try await checkAuthentication()
@@ -621,43 +624,5 @@ extension TeslaAPI {
         }
 	}
 }
-
-
-/*extension DispatchQueue {
-
-    ///
-    fileprivate func asyncAfter(seconds: Double, _ completion: @escaping ()->()) {
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + seconds) {
-            completion()
-        }
-    }
-}*/
-
-/*
-public let teslaJSONEncoder: JSONEncoder = {
-	let encoder = JSONEncoder()
-	encoder.outputFormatting = .prettyPrinted
-	encoder.dateEncodingStrategy = .secondsSince1970
-	return encoder
-}()*/
-/*
-public let teslaJSONDecoder: JSONDecoder = {
-	let decoder = JSONDecoder()
-    decoder.dateDecodingStrategy = .custom({ (decoder) -> Date in
-            let container = try decoder.singleValueContainer()
-            if let dateDouble = try? container.decode(Double.self) {
-                return Date(timeIntervalSince1970: dateDouble)
-            } else {
-                let dateString = try container.decode(String.self)
-                let dateFormatter = ISO8601DateFormatter()
-                var date = dateFormatter.date(from: dateString)
-                guard let date = date else {
-                    throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
-                }
-                return date
-            }
-        })
-	return decoder
-}()*/
 
 

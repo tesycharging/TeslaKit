@@ -1,12 +1,5 @@
 //
 //  SetPreconditioningMax.swift
-//  Tesy
-//
-//  Created by David Lüthi on 23.12.20.
-//
-
-//
-//  SetPreconditioningMax.swift
 //  TeslaKit
 //
 //  Created by David Lüthi on 23.12.20.

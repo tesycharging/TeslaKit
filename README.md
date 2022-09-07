@@ -1,14 +1,11 @@
 #################
 # TeslaKit
-#################
 
 #################
 # TeslaKit is a framework written in Swift that makes it easy for you to interface with Tesla's mobile API and communicate with your Tesla automobiles.
-#################
 
 #################
 # Features
-#################
 - Authenticate with Tesla's API to obtain an access token
 - Retrieve a list of vehicles associated with your Tesla account
 - Obtain all data on your vehicle
@@ -20,29 +17,25 @@
 
 #################
 # Inspiration
-#################
 I drive a Tesla Model 3 since 2019. The possiblity to connect to your car and bring some more additional value facinate me.
 In 2020, I have officially release my app, called TesyCharging, on the App Store.
 In the beginning I have taken the API provided by https://github.com/HamblinSoft/TeslaKit. I continued the work on the API and decided to make it available as open source, so others could build really cool apps too.
 
 #################
 # Contributing
-#################
 Contributions are very welcome.
 Before submitting any pull request, please ensure you have run the included tests and they have passed. If you are including new functionality, please write test cases for it as well.
 
 #################
 # Installation - Swift Package Manager
-#################
 To add TeslaKit to a Swift Package Manager based project, add:
-.package(url: "https://github.com/tesycharging/TeslaKit.git", .upToNextMajor(from: "2.0.0")),
+<sub>.package(url: "https://github.com/tesycharging/TeslaKit.git", .upToNextMajor(from: "2.0.0")),</sub>
 to your Package.swift files dependencies array.
 
 #################
 # Usage
-#################
 Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
-	<key>NSAppTransportSecurity</key>
+	<sub><key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
@@ -56,38 +49,38 @@ Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
 				<true/>
 			</dict>
 		</dict>
-	</dict>
+	</dict></sub>
 
 Add an import statement for TeslaKit into your file
 	import TeslaKit
 
-# TeslaAPI
+## TeslaAPI
 Create a new TeslaAPI instance
 Default:
-	let teslaAPI = TeslaAPI()
+	<sub>let teslaAPI = TeslaAPI()</sub>
 Debug Mode:
-	let teslaAPI = TeslaAPI(debuggingEnabled = true)
+	<sub>let teslaAPI = TeslaAPI(debuggingEnabled = true)</sub>
 Demo Mode:
-	let teslaAPI = TeslaAPI(demoMode = true)
+	<sub>let teslaAPI = TeslaAPI(demoMode = true)</sub>
 Add Mock to your vehicles list
-	let teslaAPI = TeslaAPI(addDemoVehicle = true)
+	<sub>let teslaAPI = TeslaAPI(addDemoVehicle = true)</sub>
 
-# authentication with your Tesla credentials using the oAuth2 flow with MFA support
+## authentication with your Tesla credentials using the oAuth2 flow with MFA support
 Uses the WebLogin provided by Tesla
-	WebLogin(teslaAPI: teslaAPI, action: {
+	<sub>WebLogin(teslaAPI: teslaAPI, action: {
 		UserDefaults.standard.set(teslaAPI.token?.toJSONString(), forKey: "tesla.token")
 		UserDefaults.standard.synchronize()
-	})
+	})</sub>
 
-# Token reuse
+## Token reuse
 After authentication, store the AuthToken in a safe place. The next time the app starts-up you can reuse the token:
-	if let jsonString = UserDefaults.standard.object(forKey: "tesla.token") as? String, let token = AuthToken.loadToken(jsonString: jsonString) {
+	<sub>if let jsonString = UserDefaults.standard.object(forKey: "tesla.token") as? String, let token = AuthToken.loadToken(jsonString: jsonString) {
 		teslaAPI.reuse(token: token)
-	}
+	}</sub>
 
-# Token refresh
+## Token refresh
 After reusing the token, it might need to be refrehed
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			_ = try await teslaAPI.refreshWebToken()
 			UserDefaults.standard.set(teslaAPI.token?.toJSONString(), forKey: "tesla.token")
@@ -95,34 +88,34 @@ After reusing the token, it might need to be refrehed
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
-# Vehicle List
+## Vehicle List
 Obtain a list of vehicles associated with your account
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			let vehicles: [String:Vehicle] = try await teslaAPI.getVehicles()
 			//Process some code
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
-# Wake up 
+## Wake up 
 In case the vehicle is in status "asleep" it has to be wake up to request all data from the vehicle
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			_ = try await teslaAPI.wakeUp(vehicle)
 			//Process some code
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 It takes up to 30 seconds after receiving the wakUp call till the vehicle changes it status to "online"
 
-# Mobile Remote Access
+## Mobile Remote Access
 Check if mobile remote access is granted to be able to obtain all data from the vehicle. To check if mobile remote access is granted, the vehicle must be in status "online"
-Task { @MainActor in
+<sub>Task { @MainActor in
 	do {
 		let mobileAccess = try await teslaAPI.getVehicleMobileAccessState(vehicle)
 		if !mobileAccess {
@@ -134,41 +127,41 @@ Task { @MainActor in
 	} catch (let error) {
 		//Process error
 	}
-}
+}</sub>
 
-# Vehicle Data
+## Vehicle Data
 Obtain all data for a vehicle
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			guard let current_vehicle = try await teslaAPI.getVehicle(vehicle) else { return }
 			//Process some code
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
 Generic approach to obtain all data or specific data, e.g. driveState
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			guard let current_vehicle = try await teslaAPI.getVehicleData(.allStates(vehicleID: vehicle.id)) else { return }
 			//Process some code
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
 or specific data, e.g. driveState	
-	Task { @MainActor in
+	<sub>Task { @MainActor in
 		do {
 			guard let driveState = try await teslaAPI.getVehicleData(.driveState(vehicleID: vehicle.id)) else { return }
 			//Process some code
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
-# nearby Charging Sites	
-Fetches the nearby charging sites
+## nearby Charging Sites	
+<sub>Fetches the nearby charging sites
 	Task { @MainActor in
 		do {
 			let chargingsites: Chargingsites = try await teslaAPI.getNearbyChargingSites(vehicle)
@@ -176,10 +169,10 @@ Fetches the nearby charging sites
 		} catch (let error) {
 			//Process error
 		}
-	}
+	}</sub>
 
-# Send Command
-Send a command to a vehicle
+## Send Command
+<sub>Send a command to a vehicle
 	Task { @MainActor in
 		do {
 			_ = try await teslaAPI.setCommand(vehicle, command: Command.flashLights)
@@ -187,25 +180,23 @@ Send a command to a vehicle
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
-Send a command to a vehicle with request parameters
+<sub>Send a command to a vehicle with request parameters
 	Task { @MainActor in
 		do {
 			_ = try await teslaAPI.setCommand(vehicle, command: Command.sentryMode, parameter: SentryMode(isOn: true))
 		} catch let error {
 			//Process error
 		}
-	}
+	}</sub>
 
 #################
 # Author
-#################
 David Lüthi, tesyios@gmail.com
 
 #################
 # License
-#################
 This project is licensed under the terms of the MIT license. See the LICENSE file.
 
 This project is in no way affiliated with Tesla Inc. This project is open source under the MIT license, which means you have full access to the source code and can modify it to fit your own needs.
@@ -229,10 +220,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-#################
-# TODOs
-#################
-- Remove code at the end of teslaAPI.swift
-- refactoring ChargerType.chargingQ to "unknown"; chargingTCS to Supercharger, ... including init/mapping
-- VehicleOption using resouce file

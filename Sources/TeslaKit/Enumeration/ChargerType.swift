@@ -9,11 +9,11 @@
 import Foundation
 
 public enum ChargerType: String, CustomStringConvertible, Decodable,  CaseIterable {
-    case chargingTCS = "TCS"
+    case supercharger = "Supercharger"
     case chargingCCS = "CCS"
     case charging230V = "230V"
     case charging360V = "360V"
-    case chargingQ = "unknown"
+    case unknown = "unknown"
     case none = "none"
    
     public var description: String {
@@ -28,5 +28,24 @@ public enum ChargerType: String, CustomStringConvertible, Decodable,  CaseIterab
     
     public static func toType(type: String) -> ChargerType{
         ChargerType(rawValue: type) ?? .none
+    }
+}
+
+extension String {
+    public var toChargerType: ChargerType {
+        switch self {
+        case "Supercharger", "TCS":
+            return .supercharger
+        case "CCS":
+            return .chargingCCS
+        case "230V":
+            return .charging230V
+        case "360V":
+            return .charging360V
+        case "unknown":
+            return .unknown
+        default:
+            return .none
+        }
     }
 }

@@ -22,14 +22,14 @@ public struct VehicleOption {
     
     /// The dicitonary containing the option name and description keyed by the option code
     private static let data: [String: [String: String]] = {
-        let countryCode: String = "US".uppercased()
-        guard let url: URL = Bundle.main.url(forResource: "TeslaVehicleOptionCodes", withExtension: "plist"),
+        //let countryCode: String = "US".uppercased()
+        guard let url: URL = Bundle.main.url(forResource: "TeslaKit_TeslaKit.bundle/TeslaVehicleOptionCodes", withExtension: "plist"),
             let data: Data = try? Data(contentsOf: url),
-            let plist: [String: Any] = (try? PropertyListSerialization.propertyList(from: data, options: [], format: nil)) as? [String: Any],
-            let options: [String: [String: String]] = plist[countryCode] as? [String: [String: String]] else {
+            let plist: [String: [String: String]] = (try? PropertyListSerialization.propertyList(from: data, options: [], format: nil)) as? [String: [String: String]] else {
+                print("error, could not read from plist file")
                 return [:]
         }
-        return options
+        return plist
     }()
     
 

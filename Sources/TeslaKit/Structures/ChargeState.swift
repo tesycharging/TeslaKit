@@ -1,13 +1,5 @@
 //
 //  ChargeState.swift
-//  TeslaApp
-//
-//  Created by Jaren Hamblin on 11/20/17.
-//  Copyright © 2018 HamblinSoft. All rights reserved.
-//
-
-//
-//  ChargeState.swift
 //  TeslaKit
 //
 //  Update by David Lüthi on 10.06.2021
@@ -220,10 +212,10 @@ extension ChargeState: DataResponse {
 extension ChargeState {
     public var chargerType : ChargerType {
         if fastChargerBrand == nil {
-            return ChargerType.chargingQ
+            return ChargerType.unknown
         } else {
             if ((fastChargerBrand ?? "") == "Tesla") {
-                return ChargerType.chargingTCS
+                return ChargerType.supercharger
             } else if ((fastChargerType ?? "") == "Combo") {
                 return ChargerType.chargingCCS
             } else if ((fastChargerType ?? "") == "MCSingleWireCAN") {
@@ -231,7 +223,7 @@ extension ChargeState {
             } else if !fastChargerPresent{
                 return ChargerType.charging360V
             } else {
-                return ChargerType.chargingQ
+                return ChargerType.unknown
             }
         }
     }

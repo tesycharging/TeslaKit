@@ -9,6 +9,8 @@
 
 #if canImport(WebKit) && canImport(UIKit)
 import WebKit
+import UIKit
+import SwiftUI
 
 public class TeslaWebLoginViewController: UIViewController {
     var webView = WKWebView()
