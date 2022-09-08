@@ -197,7 +197,8 @@ Task { @MainActor in
 	} catch (let error) {
 		//Process error
 	}
-}```
+}
+```
 
 ## Send Command
 Send a command to a vehicle
@@ -212,7 +213,7 @@ Task { @MainActor in
 }
 ```
 
-<sub>Send a command to a vehicle with request parameters
+Send a command to a vehicle with request parameters
 ```
 Task { @MainActor in
 	do {
