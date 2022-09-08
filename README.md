@@ -35,7 +35,7 @@ to your Package.swift files dependencies array.
 #################
 # Usage
 Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
-	```swift
+	```
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -50,7 +50,8 @@ Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
 				<true/>
 			</dict>
 		</dict>
-	</dict>```
+	</dict>
+	```
 
 Add an import statement for TeslaKit into your file
 	import TeslaKit
