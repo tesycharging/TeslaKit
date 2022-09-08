@@ -35,23 +35,23 @@ to your Package.swift files dependencies array.
 #################
 # Usage
 Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
-	```
-	<key>NSAppTransportSecurity</key>
+```
+<key>NSAppTransportSecurity</key>
+<dict>
+	<key>NSExceptionDomains</key>
 	<dict>
-		<key>NSExceptionDomains</key>
+		<key>owner-api.teslamotors.com</key>
 		<dict>
-			<key>owner-api.teslamotors.com</key>
-			<dict>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-				<key>NSExceptionMinimumTLSVersion</key>
-				<string>TLSv3.0</string>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+			<key>NSExceptionMinimumTLSVersion</key>
+			<string>TLSv3.0</string>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
 		</dict>
 	</dict>
-	```
+</dict>
+```
 
 Add an import statement for TeslaKit into your file
 	import TeslaKit
@@ -59,20 +59,30 @@ Add an import statement for TeslaKit into your file
 ## TeslaAPI
 Create a new TeslaAPI instance
 Default:
-	<sub>let teslaAPI = TeslaAPI()</sub>
+```
+let teslaAPI = TeslaAPI()
+```
 Debug Mode:
-	<sub>let teslaAPI = TeslaAPI(debuggingEnabled = true)</sub>
+```
+let teslaAPI = TeslaAPI(debuggingEnabled = true)
+```
 Demo Mode:
-	<sub>let teslaAPI = TeslaAPI(demoMode = true)</sub>
+```
+let teslaAPI = TeslaAPI(demoMode = true)
+```
 Add Mock to your vehicles list
-	<sub>let teslaAPI = TeslaAPI(addDemoVehicle = true)</sub>
+```
+let teslaAPI = TeslaAPI(addDemoVehicle = true)
+```
 
 ## authentication with your Tesla credentials using the oAuth2 flow with MFA support
 Uses the WebLogin provided by Tesla
-	<sub>WebLogin(teslaAPI: teslaAPI, action: {
-		UserDefaults.standard.set(teslaAPI.token?.toJSONString(), forKey: "tesla.token")
-		UserDefaults.standard.synchronize()
-	})</sub>
+```
+WebLogin(teslaAPI: teslaAPI, action: {
+	UserDefaults.standard.set(teslaAPI.token?.toJSONString(), forKey: "tesla.token")
+	UserDefaults.standard.synchronize()
+})
+```
 
 ## Token reuse
 After authentication, store the AuthToken in a safe place. The next time the app starts-up you can reuse the token:
