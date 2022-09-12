@@ -14,17 +14,17 @@ import CoreLocation
  Stream message with its result
  
  **/
-class StreamMessage {
+public class StreamMessage {
     public var allValues: Map
     
-    var messageType: String = ""
-    var value: String?
-    var tag: String?
-    var errorType: String?
-    var connectionTimeout: Int?
-    var streamResult: StreamResult = StreamResult(values: "")
+    public var messageType: String = ""
+    public var value: String?
+    public var tag: String?
+    public var errorType: String?
+    public var connectionTimeout: Int?
+    public var streamResult: StreamResult = StreamResult(values: "")
     
-    required init() {
+    required public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
 }
