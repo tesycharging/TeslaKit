@@ -9,7 +9,6 @@
 import Foundation
 import Starscream
 import SwiftUI
-import TeslaKit
 import ObjectMapper
 import Combine
 
