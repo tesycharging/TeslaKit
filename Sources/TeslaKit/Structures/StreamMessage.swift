@@ -41,36 +41,19 @@ extension StreamMessage: DataResponse {
     }
 }
 
-open class StreamResult/*: Codable*/ {
+open class StreamResult {
+    open var speed: Int?
+    open var shiftState: ShiftState = ShiftState.park
+    open var latitude: Double?
+    open var longitude: Double?
+    open var headingValue: Double?
     open var timestamp: Double?
-    open var speed: CLLocationSpeed? // mph
-    open var speedUnit: String?
     open var odometer: Double? // miles
-    open var soc: Int?
-    open var elevation: Int? // feet
-    open var estLat: CLLocationDegrees?
-    open var estLng: CLLocationDegrees?
-    open var power: Int? // kW
-    open var shiftState: String?
+	open var elevation: Int? // feet
+	open var power: Int?
+    open var soc: Int?    
     open var range: Double? // miles
     open var estRange: Double? // miles
-    open var estHeading: CLLocationDirection?
-    open var heading: CLLocationDirection?    
-    open var position: CLLocation? {
-        if let latitude = estLat,
-            let longitude = estLng,
-            let heading = heading,
-            let timestamp = timestamp {
-            let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            return CLLocation(coordinate: coordinate,
-                              altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0,
-                              course: heading,
-                              speed: speed ?? 0,
-                              timestamp: Date(timeIntervalSince1970: timestamp/1000))
-            
-        }
-        return nil
-    }
     
     init(values: String) {
         let separatedValues = values.components(separatedBy: ",")
@@ -78,33 +61,59 @@ open class StreamResult/*: Codable*/ {
         if let timeValue = Double(separatedValues[0]) {
             timestamp = timeValue
         }
-        speed = CLLocationSpeed(separatedValues[1])
-        odometer = Double(separatedValues[2])
+		
+		speed = Int(separatedValues[1])
+		odometer = Double(separatedValues[2])
         soc = Int(separatedValues[3])
-        elevation = Int(separatedValues[4])
-        estHeading = CLLocationDirection(separatedValues[5])
-        estLat = CLLocationDegrees(separatedValues[6])
-        estLng = CLLocationDegrees(separatedValues[7])
-        power = Int(separatedValues[8])
-        shiftState = separatedValues[9]
-        range = Double(separatedValues[10])
+		elevation = Int(separatedValues[4])
+		headingValue = Double(separatedValues[5])
+		latitude = Double(separatedValues[6])
+        longitude = Double(separatedValues[7])
+		power = Int(separatedValues[8])
+        switch (separatedValues[9]) {
+		case "D":
+			shiftState = ShiftState.drive
+		case "R":
+			shiftState = ShiftState.reverse
+		case "N":
+			shiftState = ShiftState.neutral
+		default:
+			shiftState = ShiftState.park
+		}
+		range = Double(separatedValues[10])
         estRange = Double(separatedValues[11])
-        heading = CLLocationDirection(separatedValues[12])
+    }
+}
+
+extension StreamResult {
+    public func localizedOdometer(distanceUnit: DistanceUnit) -> String {
+        if distanceUnit == .metric {
+            return Distance(imperial: odometer ?? 0).localizedMetric
+        } else {
+            return Distance(imperial: odometer ?? 0).localizedImperial
+        }
     }
     
-   /* enum CodingKeys: String, CodingKey {
-        case timestamp
-        case speed
-        case odometer
-        case soc
-        case elevation
-        case estLat
-        case estLng
-        case power
-        case shiftState
-        case range
-        case estRange
-        case estHeading
-        case heading
-    }*/
+    public func localizedSpeed(distanceUnit: DistanceUnit) -> String {
+        if distanceUnit == .imperial {
+            return Speed(imperial: self.speed ?? 0).localizedImperial
+        } else {
+            return Speed(imperial: self.speed ?? 0).localizedMetric
+        }
+    }
+    
+    public var heading: Heading {
+        switch Double(self.headingValue ?? 0) {
+        case 0..<22.5: return .north
+        case 22.5..<67.5: return .northEast
+        case 67.5..<112.5: return .east
+        case 112.5..<157.5: return .southEast
+        case 157.5..<202.5: return .south
+        case 202.5..<247.5: return .southWest
+        case 247.5..<292.5: return .west
+        case 292.5..<337.5: return .northWest
+        case 337.5..<360: return .north
+        default: return .north
+        }
+    }
 }
