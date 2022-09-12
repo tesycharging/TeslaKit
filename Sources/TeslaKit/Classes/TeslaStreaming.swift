@@ -9,6 +9,7 @@
 import Foundation
 import Starscream
 import SwiftUI
+import TeslaKit
 import ObjectMapper
 import Combine
 
@@ -30,9 +31,9 @@ public class TeslaStreaming {
     private var socket: WebSocket
     
     public init() {
-		var request: URLRequest(url: URL(string: "wss://streaming.vn.teslamotors.com/streaming/")!)
-		request.itimeoutInterval = 5
-        socket = WebSocket()
+		var request = URLRequest(url: URL(string: "wss://streaming.vn.teslamotors.com/streaming/")!)
+		request.timeoutInterval = 5
+        socket = WebSocket(request: request)
     }
 
     /**
@@ -42,19 +43,19 @@ public class TeslaStreaming {
 	 - parameter accessToken: token?.accessToken
      - parameter dataReceived: callback to receive the websocket data
      */
-    public func openStream(vehicle: Vehicle, accessToken: String, dataReceived: @escaping (TeslaStreamingResult) -> Void) {
+	public func openStream(vehicle: Vehicle, accessToken: String, dataReceived: @escaping (TeslaStreamingResult) -> Void) {
 		if !isConnected {
 			print("Opening Stream")
 			if (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
-				isConnected = true
+				self.isConnected = true
 				let demoValue = String(Date().timeIntervalSince1970) + ",\(vehicle.driveState.speed),\(vehicle.vehicleState.odometer),\(vehicle.chargeState.batteryLevel),459,175.0,\(vehicle.driveState.latitude),\(vehicle.driveState.longitude),\(vehicle.chargeState.chargerPower),shift,\(vehicle.chargeState.batteryRange),\(vehicle.chargeState.estBatteryRange),175.0"
-				dataReceived(TeslaStreamingResult.result(StreamResult(value: demoValue)))
+				dataReceived(TeslaStreamingResult.result(StreamResult(values: demoValue)))
 			} else {      
-				socket.onEvent = { [weak self] event in
+				self.socket.onEvent = { [weak self] event in
 					guard let self = self else { return }
 					switch event {
 					case let .connected(headers):
-						isConnected = true
+						self.isConnected = true
 						print("websocket is connected: \(headers)")
 						DispatchQueue.main.async {
 							let encoder = JSONEncoder()
@@ -69,7 +70,7 @@ public class TeslaStreaming {
 							}
 						}
 					case let .disconnected(reason, code):
-						isConnected = false
+						self.isConnected = false
 						print("websocket is disconnected: \(reason) with code: \(code)")
 						DispatchQueue.main.async {
 							dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: Int(code), userInfo: ["error": reason])))
@@ -104,7 +105,7 @@ public class TeslaStreaming {
 						print("Received ping: \(String(describing: ping))")
 						break
 					case let .pong(data):
-						print("Received pong data: \(data.count) - \(String(data: data, encoding: .utf8) ?? "")")
+						print("Received pong data")
 						DispatchQueue.main.async {
 							self.socket.write(pong: data ?? Data())
 						}
@@ -116,10 +117,10 @@ public class TeslaStreaming {
 						break
 					case .cancelled:
 						print("Received cancelled")
-						isConnected = false
+						self.isConnected = false
 					case let .error(error):
 						print("Received error:\(String(describing: error))")
-						isConnected = false
+						self.isConnected = false
 						DispatchQueue.main.async {
 							if let e = error as? WSError {
 								dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: 0, userInfo: ["error": e.message])))
@@ -131,7 +132,7 @@ public class TeslaStreaming {
 						}
 					}
 				}
-				socket.connect()
+				self.socket.connect()
 			}
 		} else {
 			print("Stream is already open")
@@ -144,11 +145,10 @@ public class TeslaStreaming {
     public func closeStream(vehicle: Vehicle) {
 		if isConnected {
 			if (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
-				isConnected = false
+				self.isConnected = false
 				print("websocket is disconnected")
-				dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: Int(code), userInfo: ["error": "demo finished"])))
 			}
-			socket.disconnect()
+			self.socket.disconnect()
 			print("Stream closed")
 		} else {
 			print("Stream is already closed")
@@ -158,8 +158,8 @@ public class TeslaStreaming {
 
 extension TeslaStreaming  {
 
-    public func streamPublisher(vehicle: Vehicle) -> TeslaStreamingPublisher {
-        return TeslaStreamingPublisher(vehicle: vehicle, stream: self)
+    public func streamPublisher(vehicle: Vehicle, accessToken: String) -> TeslaStreamingPublisher {
+        return TeslaStreamingPublisher(vehicle: vehicle, accessToken: accessToken, stream: self)
     }
 
     public struct TeslaStreamingPublisher: Publisher, Cancellable {
@@ -194,7 +194,7 @@ extension TeslaStreaming  {
         }
 
         public func cancel() {
-            stream.closeStream(vehicle: Vehicle)
+            stream.closeStream(vehicle: vehicle)
         }
     }
 }

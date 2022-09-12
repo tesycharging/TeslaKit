@@ -236,12 +236,12 @@ var stream: TeslaStreaming = TeslaStreaming()
 
 func startStream() {
 	if !streaming {
-		_ = stream.streamPublisher(vehicle: vehicle, token: teslaAPI.token?.accessToken ?? "").sink(receiveCompletion: { (completion) in
+		_ = stream.streamPublisher(vehicle: vehicle, accessToken: teslaAPI.token?.accessToken ?? "").sink(receiveCompletion: { (completion) in
 		}) { (result) in
 			switch result {
 			case .error(let error):
 				print(error.localizedDescription)
-				stream.closeStream()
+				stream.closeStream(vehicle: vehicle)
 				streaming = false				
 			case .result(let result):
 				self.streamResult = result
@@ -259,7 +259,7 @@ func startStream() {
 e.g. at onDisappear of a View
 ```
 func stopStream() {
-	stream.closeStream()
+	stream.closeStream(vehicle: vehicle)
 	streaming = false
 }
 ```
