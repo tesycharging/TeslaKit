@@ -231,7 +231,7 @@ Receive a continous stream
 e.g. at onAppear of a View
 ```
 var stream: TeslaStreaming = TeslaStreaming()
-@State var streamResult : StreamResult = StreamResult(value: "")
+@State var streamResult : StreamResult = StreamResult(values: "")
 @State var streaming = false
 
 func startStream() {
