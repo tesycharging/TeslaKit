@@ -13,6 +13,7 @@
 - Obtain data from nearby charging sites
 - Utilizes ObjectMapper for JSON mapping
 - includes a mock/demo to be able to release it easily to the app store (works wihtout connected Tesla)
+- streaming from Tesla's websocket
 - Summon - Coming soon
 
 #################
@@ -221,6 +222,45 @@ Task { @MainActor in
 	} catch let error {
 		//Process error
 	}
+}
+```
+
+## Streaming from Tesla's Websocket
+Receive a continous stream
+# start stream
+e.g. at onAppear of a View
+```
+var stream: TeslaStreaming = TeslaStreaming()
+@State var streamResult : StreamResult = StreamResult(value: "")
+@State var streaming = false
+
+func startStream() {
+	if !streaming {
+		_ = stream.streamPublisher(vehicle: vehicle, token: teslaAPI.token?.accessToken ?? "").sink(receiveCompletion: { (completion) in
+		}) { (result) in
+			switch result {
+			case .error(let error):
+				print(error.localizedDescription)
+				stream.closeStream()
+				streaming = false				
+			case .result(let result):
+				self.streamResult = result
+			case .disconnected:
+				break
+			case .open:
+				print("open")
+			}
+		}
+		self.streaming = true
+	}
+}
+```
+# stop stream
+e.g. at onDisappear of a View
+```
+func stopStream() {
+	stream.closeStream()
+	streaming = false
 }
 ```
 
