@@ -41,21 +41,21 @@ extension StreamMessage: DataResponse {
     }
 }
 
-open class StreamResult {
-    open var speed: Int?
-    open var shiftState: ShiftState = ShiftState.park
-    open var latitude: Double?
-    open var longitude: Double?
-    open var headingValue: Double?
-    open var timestamp: Double?
-    open var odometer: Double? // miles
-	open var elevation: Int? // feet
-	open var power: Int?
-    open var soc: Int?    
-    open var range: Double? // miles
-    open var estRange: Double? // miles
+public class StreamResult {
+    public var speed: Int?
+    public var shiftState: ShiftState = ShiftState.park
+    public var latitude: Double?
+    public var longitude: Double?
+    public var headingValue: Double?
+    public var timestamp: Double?
+    public var odometer: Double? // miles
+    public var elevation: Int? // feet
+    public var power: Int?
+    public var soc: Int?
+    public var range: Double? // miles
+    public var estRange: Double? // miles
     
-    init(values: String) {
+    public init(values: String) {
         let separatedValues = values.components(separatedBy: ",")
         guard separatedValues.count > 11 else { return }
         if let timeValue = Double(separatedValues[0]) {

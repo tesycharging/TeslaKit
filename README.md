@@ -30,7 +30,7 @@ Before submitting any pull request, please ensure you have run the included test
 #################
 # Installation - Swift Package Manager
 To add TeslaKit to a Swift Package Manager based project, add:
-<sub>.package(url: "https://github.com/tesycharging/TeslaKit.git", .upToNextMajor(from: "2.0.0")),</sub>
+<sub>.package(url: "https://github.com/tesycharging/TeslaKit.git", .upToNextMajor(from: "2.1.1")),</sub>
 to your Package.swift files dependencies array.
 
 #################
