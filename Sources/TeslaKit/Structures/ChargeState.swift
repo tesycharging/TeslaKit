@@ -229,11 +229,11 @@ extension ChargeState {
     }
     
     public var localizedChargeLimitSoc: String {
-        String(self.chargeLimitSoc)+" %"
+        String(self.chargeLimitSoc)+"%"
     }
     
     public var localizedBatteryLevel: String {
-        String(format:"%.0f", self.batteryLevel*1)+" %"
+        String(format:"%.0f", self.batteryLevel*1)+"%"
     }
     
     public func localizedBatteryRange(distanceUnit: DistanceUnit) -> String {
