@@ -197,6 +197,35 @@ public struct VehicleState {
     ///
     public var isPassengerRearWindowOpen: Bool { return rp_window != 0 }
 
+    public var tpms_last_seen_presure_time_fl: TimeInterval = 0
+    public var tpms_last_seen_presure_time_fr: TimeInterval = 0
+    public var tpms_last_seen_presure_time_rl: TimeInterval = 0
+    public var tpms_last_seen_presure_time_rr: TimeInterval = 0
+    
+    public var tpms_pressure_fl: Double = 0
+    public var tpms_pressure_fr: Double = 0
+    public var tpms_pressure_rl: Double = 0
+    public var tpms_pressure_rr: Double = 0
+    
+    public var tpms_hard_warning_fl: Int = 0
+    public var tpms_hard_warning_fr: Int = 0
+    public var tpms_hard_warning_rl: Int = 0
+    public var tpms_hard_warning_rr: Int = 0
+    
+    public var tpms_soft_warning_fl: Int = 0
+    public var tpms_soft_warning_fr: Int = 0
+    public var tpms_soft_warning_rl: Int = 0
+    public var tpms_soft_warning_rr: Int = 0
+    
+    public var tpms_h_warning_fl: Bool { return tpms_hard_warning_fl != 0 }
+    public var tpms_h_warning_fr: Bool { return tpms_hard_warning_fr != 0 }
+    public var tpms_h_warning_rl: Bool { return tpms_hard_warning_rl != 0 }
+    public var tpms_h_warning_rr: Bool { return tpms_hard_warning_rr != 0 }
+    
+    public var tpms_s_warning_fl: Bool { return tpms_soft_warning_fl != 0 }
+    public var tpms_s_warning_fr: Bool { return tpms_soft_warning_fr != 0 }
+    public var tpms_s_warning_rl: Bool { return tpms_soft_warning_rl != 0 }
+    public var tpms_s_warning_rr: Bool { return tpms_soft_warning_rr != 0 }
 }
 
 extension VehicleState: DataResponse {
@@ -254,6 +283,16 @@ extension VehicleState: DataResponse {
         rp_window <- map["rp_window"]
         fd_window <- map["fd_window"]
         fp_window <- map["fp_window"]
+        
+        tpms_hard_warning_fl <- map["tpms_hard_warning_fl"]
+        tpms_hard_warning_fr <- map["tpms_hard_warning_fr"]
+        tpms_hard_warning_rl <- map["tpms_hard_warning_rl"]
+        tpms_hard_warning_rr <- map["tpms_hard_warning_rr"]
+        
+        tpms_soft_warning_fl <- map["tpms_soft_warning_fl"]
+        tpms_soft_warning_fr <- map["tpms_soft_warning_fr"]
+        tpms_soft_warning_rl <- map["tpms_soft_warning_rl"]
+        tpms_soft_warning_rr <- map["tpms_soft_warning_rr"]
     }
 }
 
