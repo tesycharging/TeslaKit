@@ -197,10 +197,10 @@ public struct VehicleState {
     ///
     public var isPassengerRearWindowOpen: Bool { return rp_window != 0 }
 
-    public var tpms_last_seen_presure_time_fl: TimeInterval = 0
-    public var tpms_last_seen_presure_time_fr: TimeInterval = 0
-    public var tpms_last_seen_presure_time_rl: TimeInterval = 0
-    public var tpms_last_seen_presure_time_rr: TimeInterval = 0
+    public var tpms_last_seen_pressure_time_fl: TimeInterval = 0
+    public var tpms_last_seen_pressure_time_fr: TimeInterval = 0
+    public var tpms_last_seen_pressure_time_rl: TimeInterval = 0
+    public var tpms_last_seen_pressure_time_rr: TimeInterval = 0
     
     public var tpms_pressure_fl: Double = 0
     public var tpms_pressure_fr: Double = 0
@@ -284,10 +284,10 @@ extension VehicleState: DataResponse {
         fd_window <- map["fd_window"]
         fp_window <- map["fp_window"]
         
-        tpms_last_seen_presure_time_fl <- map["tpms_last_seen_presure_time_fl"]
-        tpms_last_seen_presure_time_fr <- map["tpms_last_seen_presure_time_fr"]
-        tpms_last_seen_presure_time_rl <- map["tpms_last_seen_presure_time_rl"]
-        tpms_last_seen_presure_time_rr <- map["tpms_last_seen_presure_time_rr"]
+        tpms_last_seen_pressure_time_fl <- map["tpms_last_seen_pressure_time_fl"]
+        tpms_last_seen_pressure_time_fr <- map["tpms_last_seen_pressure_time_fr"]
+        tpms_last_seen_pressure_time_rl <- map["tpms_last_seen_pressure_time_rl"]
+        tpms_last_seen_pressure_time_rr <- map["tpms_last_seen_pressure_time_rr"]
         
         tpms_pressure_fl <- map["tpms_pressure_fl"]
         tpms_pressure_fr <- map["tpms_pressure_fr"]
