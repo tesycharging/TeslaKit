@@ -284,6 +284,16 @@ extension VehicleState: DataResponse {
         fd_window <- map["fd_window"]
         fp_window <- map["fp_window"]
         
+        tpms_last_seen_presure_time_fl <- map["tpms_last_seen_presure_time_fl"]
+        tpms_last_seen_presure_time_fr <- map["tpms_last_seen_presure_time_fr"]
+        tpms_last_seen_presure_time_rl <- map["tpms_last_seen_presure_time_rl"]
+        tpms_last_seen_presure_time_rr <- map["tpms_last_seen_presure_time_rr"]
+        
+        tpms_pressure_fl <- map["tpms_pressure_fl"]
+        tpms_pressure_fr <- map["tpms_pressure_fr"]
+        tpms_pressure_rl <- map["tpms_pressure_rl"]
+        tpms_pressure_rr <- map["tpms_pressure_rr"]
+        
         tpms_hard_warning_fl <- map["tpms_hard_warning_fl"]
         tpms_hard_warning_fr <- map["tpms_hard_warning_fr"]
         tpms_hard_warning_rl <- map["tpms_hard_warning_rl"]
