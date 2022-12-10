@@ -6,10 +6,14 @@
 //  based on code from Jaren Hamblin on 11/25/17.
 //  Copyright © 2022 David Lüthi. All rights reserved.
 //
+//  Update on 10.12.2022
+//  add func getPlacemark()
+//
 
 
 import Foundation
 import ObjectMapper
+import CoreLocation
 
 /// Response object containing information about the driving and position state of the vehicle
 public struct DriveState {
@@ -80,6 +84,10 @@ public struct DriveState {
             return Speed(imperial: self.speed).localizedMetric
         }
     }
+    
+    public func getPlacemark() async throws -> CLPlacemark {
+        return try await CLLocation(latitude: self.latitude, longitude: self.longitude).placemark()
+    }
 }
 
 extension DriveState: DataResponse {
@@ -112,3 +120,18 @@ extension DriveState: DataResponse {
 //    "timestamp" : 1513809833025
 //}
 
+extension CLLocation {
+    public func placemark() async throws -> CLPlacemark {
+        let placemarks = try await CLGeocoder().reverseGeocodeLocation(self)
+        if placemarks.isEmpty {
+            throw NSError()
+        } else {
+            let placemark = placemarks.first
+            if placemark == nil {
+                throw NSError()
+            } else {
+                return placemark!
+            }
+        }
+    }
+}

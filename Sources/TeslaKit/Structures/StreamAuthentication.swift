@@ -21,7 +21,7 @@ class StreamAuthentication: Encodable {
     
     init?(vehicleId: String, accessToken: String) {
         self.messageType = "data:subscribe_oauth"
-        self.token = accessToken ?? ""
+        self.token = accessToken
         self.tag = vehicleId
     }
     
