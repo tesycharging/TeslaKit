@@ -566,8 +566,13 @@ extension TeslaAPI {
             case .remoteStart:
                 DemoTesla.shared.vehicle?.vehicleState.remoteStart.toggle()
             case .openTrunk:
-                let r = ((DemoTesla.shared.vehicle?.vehicleState.rearTrunkState ?? 0) + 1) % 2
-                DemoTesla.shared.vehicle?.vehicleState.rearTrunkState = r
+                if (parameter as! OpenTrunk).trunkType == .front {
+                    let f = ((DemoTesla.shared.vehicle?.vehicleState.frontTrunkState ?? 0) + 1) % 2
+                    DemoTesla.shared.vehicle?.vehicleState.frontTrunkState = f
+                } else {
+                    let r = ((DemoTesla.shared.vehicle?.vehicleState.rearTrunkState ?? 0) + 1) % 2
+                    DemoTesla.shared.vehicle?.vehicleState.rearTrunkState = r
+                }
             case .setPreconditioningMax, .speedLimitActivate, .speedLimitDeactivate, .speedLimitClearPIN, .setSpeedLimit:
                 print("Command \(command.description) not implemented")
                 response.result = false
@@ -615,8 +620,10 @@ extension TeslaAPI {
             }
             if #available(iOS 16.0, *) {
                 try await Task.sleep(until: .now + .seconds(1.5), clock: .continuous)
+                return response
+            } else {
+                return response
             }
-            return response
         } else {
             _ = try await checkAuthentication()
             let response: CommandResponse = try await self.request(Endpoint.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter?.toJSON())

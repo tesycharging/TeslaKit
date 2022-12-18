@@ -5,9 +5,12 @@
 //  Created by Jaren Hamblin on 2/3/18.
 //  Copyright © 2018 HamblinSoft. All rights reserved.
 //
+//  Update by David Lüthi on 17/12/22
+//
 
 import Foundation
 import ObjectMapper
+import SwiftUI
 
 ///
 public struct VehicleConfig {
@@ -79,6 +82,9 @@ public struct VehicleConfig {
 
     ///
     public var canAcceptNavigationRequests: Bool = false
+    
+    private var color:String = "0,0,0,0,0"
+    public var paint_color_override: Color = Color(UIColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
 
     ///
     public init() {
@@ -111,6 +117,13 @@ extension VehicleConfig: DataResponse {
         trimBadging <- map["trim_badging"]
         wheelType <- map["wheel_type"]
         canAcceptNavigationRequests <- map["can_accept_navigation_requests"]
+        color <- map["paint_color_override"]
+        let separatedValues = color.components(separatedBy: ",")
+        if separatedValues.count > 4 && !(color == "0,0,0,0,0") {
+            paint_color_override = Color(UIColor(red: CGFloat((separatedValues[0] as NSString).floatValue)/255, green: CGFloat((separatedValues[1] as NSString).floatValue)/255, blue: CGFloat((separatedValues[2] as NSString).floatValue)/255, alpha: CGFloat((separatedValues[3] as NSString).floatValue)))
+        } else {
+            paint_color_override = Color(UIColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
+        }
     }
 }
 
