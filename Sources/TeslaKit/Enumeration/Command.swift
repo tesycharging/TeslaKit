@@ -72,15 +72,15 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     /// Opens and closes the configured Homelink garage door of the vehicle. Keep in mind this is a toggle and the garage door state is unknown - a major limitation of Homelink
     //    case triggerHomelink = "trigger_homelink"
     ///
-    ///    case frontDefrosterOn = "front_defrost_on"
+    case frontDefrosterOn = "front_defrost_on"
     ///
-    ///    case frontDefrosterOff = "front_defrost_off"
+    case frontDefrosterOff = "front_defrost_off"
     ///
-    ///    case rearDefrosterOn = "rear_defrost_on"
+    case rearDefrosterOn = "rear_defrost_on"
     ///
-    ///    case rearDefrosterOff = "rear_defrost_off"
+    case rearDefrosterOff = "rear_defrost_off"
     ///
-        case setPreconditioningMax = "set_preconditioning_max"
+    case setPreconditioningMax = "set_preconditioning_max"
     case speedLimitActivate = "speed_limit_activate"
 
     ///
@@ -142,6 +142,8 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     //// lat and lon values must be near the current location of the car for close operation to succeed. 
     //// For vent, the lat and lon values are ignored, and may both be 0 (which has been observed from the app itself).
     case openWindow = "window_control"
+	
+	case setClimateMode = "set_climate_keeper_mode"
 
     ///
     public var description: String {
