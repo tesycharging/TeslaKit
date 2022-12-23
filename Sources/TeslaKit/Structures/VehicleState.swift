@@ -73,6 +73,9 @@ public struct VehicleState {
     public var apiVersion: Int = 0
 
     ///
+    public var homelinkdevicecount: Int = 0
+    
+    ///
     public var homelinkNearby: Bool = false
 
     ///
@@ -246,6 +249,7 @@ extension VehicleState: DataResponse {
         exteriorColor <- map["exterior_color"]
         frontTrunkState <- map["ft"]
         hasSpoiler <- map["has_spoiler"]
+        homelinkdevicecount <- map ["homelink_device_count"]
         homelinkNearby <- map["homelink_nearby"]
         lastAutoparkError <- map["last_autopark_error"]
         notificationsSupported <- map["notifications_supported"]

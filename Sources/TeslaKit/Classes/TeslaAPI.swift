@@ -573,7 +573,28 @@ extension TeslaAPI {
                     let r = ((DemoTesla.shared.vehicle?.vehicleState.rearTrunkState ?? 0) + 1) % 2
                     DemoTesla.shared.vehicle?.vehicleState.rearTrunkState = r
                 }
-            case .setPreconditioningMax, .speedLimitActivate, .speedLimitDeactivate, .speedLimitClearPIN, .setSpeedLimit:
+            case .setPreconditioningMax:
+                if (parameter as! SetPreconditioningMax).isOn {
+                    DemoTesla.shared.vehicle?.climateState.defrostMode = 1
+                    DemoTesla.shared.vehicle?.climateState.isFrontDefrosterOn = true
+                    DemoTesla.shared.vehicle?.climateState.isRearDefrosterOn = true
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterLeft = 3
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRight = 3
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearLeft = 3
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearCenter = 3
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearRight = 3
+                } else {
+                    DemoTesla.shared.vehicle?.climateState.defrostMode = 0
+                    DemoTesla.shared.vehicle?.climateState.isFrontDefrosterOn = false
+                    DemoTesla.shared.vehicle?.climateState.isRearDefrosterOn = false
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterLeft = 0
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRight = 0
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearLeft = 0
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearCenter = 0
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearRight = 0
+                    DemoTesla.shared.vehicle?.climateState.isClimateOn = false
+                }
+            case .speedLimitActivate, .speedLimitDeactivate, .speedLimitClearPIN, .setSpeedLimit:
                 print("Command \(command.description) not implemented")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
@@ -616,6 +637,15 @@ extension TeslaAPI {
                     response.result = false
                     response.reason = "lat/lon not nearby"
                     print("lat/lon not nearby")
+                }
+            case .setClimateMode:
+                let mode = (parameter as? SetClimateMode)?.climate_keeper_mode
+                if mode == 0 {
+                    DemoTesla.shared.vehicle?.climateState.isClimateOn = false
+                    DemoTesla.shared.vehicle?.vehicleState.centerDisplayState = 0
+                } else {
+                    DemoTesla.shared.vehicle?.climateState.isClimateOn = true
+                    DemoTesla.shared.vehicle?.vehicleState.centerDisplayState = ClimateMode.camp.toNumber == mode ? 2 : (ClimateMode.dog.toNumber == mode ? 8 : 0)
                 }
             }
             if #available(iOS 16.0, *) {

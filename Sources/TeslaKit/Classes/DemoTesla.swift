@@ -51,6 +51,11 @@ public class DemoTesla {
         self.vehicle?.chargeState.fastChargerType = "Combo"
         self.vehicle?.chargeState.chargerPower = 100
         self.vehicle?.vehicleState.odometer = Date().timeIntervalSince1970 / 20000
+        self.vehicle?.vehicleState.tpms_pressure_fl = 3.2
+        self.vehicle?.vehicleState.tpms_pressure_fr = 3.2
+        self.vehicle?.vehicleState.tpms_pressure_rl = 2.9
+        self.vehicle?.vehicleState.tpms_pressure_rr = 2.9
+        self.vehicle?.vehicleState.homelinkdevicecount = 1
         var vehicles = [Vehicle]()
         vehicles.append(self.vehicle ?? Vehicle())
         self.vehicles = VehicleCollection(vehicles: vehicles)

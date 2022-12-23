@@ -29,6 +29,11 @@ public struct ClimateState {
 
     ///
     public var isClimateOn: Bool = false
+    
+    ///
+    public var isDefrostMode: Bool { !(defrostMode == 0) }
+    
+    public var defrostMode: Int = 0
 
     ///
     public var seatHeaterRearLeft: Int = 0
@@ -114,6 +119,7 @@ extension ClimateState: DataResponse {
         insideTemperature <- map["inside_temp"]
         isAutoConditioningOn <- map["is_auto_conditioning_on"]
         isClimateOn <- map["is_climate_on"]
+        defrostMode <- map["defrost_mode"]
         isFrontDefrosterOn <- map["is_front_defroster_on"]
         isRearDefrosterOn <- map["is_rear_defroster_on"]
         leftTemperatureDirection <- map["left_temp_direction"]

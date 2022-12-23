@@ -15,12 +15,12 @@ public enum ClimateMode: String {
     case dog = "Dog Mode"
 	case camp = "Camp Mode"
 	
-	public var noNumber: Int {
+	public var toNumber: Int {
 		switch(self) {
 		case .off: return 0
 		case .on: return 1
 		case .dog: return 2
-		case . camp: return 3
+		case .camp: return 3
 		}
 	}
 }
@@ -34,7 +34,7 @@ public struct SetClimateMode {
     public init() {}
 
     public init(mode: ClimateMode) {
-		self.climate_keeper_mode = mode.toNumber
+        self.climate_keeper_mode = mode.toNumber
     }
 }
 

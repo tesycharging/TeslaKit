@@ -72,14 +72,6 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     /// Opens and closes the configured Homelink garage door of the vehicle. Keep in mind this is a toggle and the garage door state is unknown - a major limitation of Homelink
     //    case triggerHomelink = "trigger_homelink"
     ///
-    case frontDefrosterOn = "front_defrost_on"
-    ///
-    case frontDefrosterOff = "front_defrost_off"
-    ///
-    case rearDefrosterOn = "rear_defrost_on"
-    ///
-    case rearDefrosterOff = "rear_defrost_off"
-    ///
     case setPreconditioningMax = "set_preconditioning_max"
     case speedLimitActivate = "speed_limit_activate"
 
