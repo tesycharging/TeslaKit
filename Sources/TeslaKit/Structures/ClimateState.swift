@@ -105,6 +105,11 @@ public struct ClimateState {
     public var wiperBladeHeater: Int = 0
 
     ///
+    public var auto_seat_climate_left: Int = 0
+    
+    ///
+    public var auto_seat_climate_right: Int = 0
+    
     public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
@@ -144,6 +149,8 @@ extension ClimateState: DataResponse {
         steeringWheelHeater <- map["steering_wheel_heater"]
         batteryHeater <- map["battery_heater"]
         wiperBladeHeater <- map["wiper_blade_heater"]
+        auto_seat_climate_left <- map["auto_seat_climate_left"]
+        auto_seat_climate_right <- map["auto_seat_climate_right"]
     }
 }
 

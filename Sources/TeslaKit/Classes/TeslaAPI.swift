@@ -425,6 +425,13 @@ extension TeslaAPI {
             request.setValue("application/json", forHTTPHeaderField: "content-type")
             request.setValue("no-cache", forHTTPHeaderField: "cache-control")
             request.httpBody = try? JSONSerialization.data(withJSONObject: parameter)
+            if debuggingEnabled {
+                var httpBodyString = "HTTP Body:\n"
+                request.httpBody?.forEach{(body) in
+                    httpBodyString += String(UnicodeScalar(UInt8(body)))
+                }
+                print(httpBodyString)
+            }
         }
         
         return request
@@ -532,9 +539,33 @@ extension TeslaAPI {
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .openChargePort:
-                DemoTesla.shared.engageCable()
+                if !(DemoTesla.shared.vehicle?.chargeState.chargePortDoorOpen ?? false) {
+                    //open
+                    DemoTesla.shared.vehicle?.chargeState.chargePortDoorOpen = true
+                    //plug it after 10 seconds
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+5.0) {
+                        DemoTesla.shared.plug_unplug()
+                    }
+                } else if (DemoTesla.shared.vehicle?.chargeState.chargingState == .stopped || DemoTesla.shared.vehicle?.chargeState.chargingState == .complete) &&  DemoTesla.shared.vehicle?.chargeState.chargingState != .charging {
+                    //disengage it
+                    DemoTesla.shared.vehicle?.chargeState.chargePortLatch = .disengaged
+                    //re-engage after 10 seconds
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+10.0) {
+                        if (DemoTesla.shared.vehicle?.chargeState.chargePortDoorOpen ?? false) && DemoTesla.shared.vehicle?.chargeState.chargePortLatch == .disengaged && DemoTesla.shared.vehicle?.chargeState.chargingState != .disconnected {
+                            DemoTesla.shared.vehicle?.chargeState.chargePortLatch = .engaged
+                        }
+                    }
+                } else {
+                    response.result = false
+                    response.reason = "Command \(command.description) error"
+                } 
             case .closeChargePort:
-                DemoTesla.shared.vehicle?.chargeState.chargePortDoorOpen = false
+                if DemoTesla.shared.vehicle?.chargeState.chargingState == .disconnected {
+                    DemoTesla.shared.vehicle?.chargeState.chargePortDoorOpen = false
+                } else {
+                    response.result = false
+                    response.reason = "Command \(command.description) error"
+                }
             case .setChargeLimitToStandard:
                 DemoTesla.shared.vehicle?.chargeState.chargeLimitSocStd = Int((parameter as! SetChargeLimit).limitValue)
             case .setChargeLimitToMaxRange:
@@ -542,9 +573,19 @@ extension TeslaAPI {
             case .setChargeLimit:
                 DemoTesla.shared.vehicle?.chargeState.chargeLimitSoc = Int((parameter as! SetChargeLimit).limitValue)
             case .startCharging:
-                DemoTesla.shared.startCharging()
+                if (DemoTesla.shared.vehicle?.chargeState.chargeLimitSoc ?? 0) <= (DemoTesla.shared.vehicle?.chargeState.usableBatteryLevel ?? 0){
+                    DemoTesla.shared.vehicle?.chargeState.chargingState = ChargingState.complete
+                } else {
+                    DemoTesla.shared.vehicle?.chargeState.chargingState = ChargingState.charging
+                    DemoTesla.shared.charging()
+                }
             case .stopCharging:
-                DemoTesla.shared.stopCharging()
+                if DemoTesla.shared.vehicle?.chargeState.chargingState == .charging {
+                    DemoTesla.shared.vehicle?.chargeState.chargingState = ChargingState.stopped
+                } else {
+                    response.result = false
+                    response.reason = "Command \(command.description) error"
+                }
             case .flashLights, .honkHorn:
                 print("Command: \(command.description)")
                 response.reason = "succesful \(command.description)"
@@ -605,15 +646,36 @@ extension TeslaAPI {
             case .navigationRequest:
                 print("Command \(command.description) not implemented")
                 response.result = false
-                response.reason = "Command \(command.description) not implemented"
+                response.reason = "Command \(command.description) not implemented, use share instead"
             case .scheduleSoftwareUpdate, .cancelSoftwareUpdate:
                 print("Command \(command.description) not implemented")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
-            case .remoteSeatHeater, .remoteSteeringWheelHeater:
+            case .remoteSteeringWheelHeater:
                 print("Command \(command.description) not implemented")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
+            case .remoteSeatHeater:
+                guard let seat = (parameter as? RemoteSeatHeaterRequest)?.heater else {
+                    response.result = false
+                    response.reason = "error"
+                    return response
+                }
+                switch seat {
+                case .frontLeft:
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterLeft = (parameter as? RemoteSeatHeaterRequest)?.level ?? 1
+                case .frontRight:
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRight = (parameter as? RemoteSeatHeaterRequest)?.level ?? 1
+                case .rearLeft:
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearLeft = (parameter as? RemoteSeatHeaterRequest)?.level ?? 1
+                case .rearCenter:
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearCenter = (parameter as? RemoteSeatHeaterRequest)?.level ?? 1
+                case .rearRight:
+                    DemoTesla.shared.vehicle?.climateState.seatHeaterRearRight = (parameter as? RemoteSeatHeaterRequest)?.level ?? 1
+                default:
+                    response.result = false
+                    response.reason = "Command \(command.description) not implemented"
+                }
             case .sentryMode:
                 DemoTesla.shared.vehicle?.vehicleState.sentryMode = (parameter as! SentryMode).isOn
             case .homelink:
@@ -646,6 +708,27 @@ extension TeslaAPI {
                 } else {
                     DemoTesla.shared.vehicle?.climateState.isClimateOn = true
                     DemoTesla.shared.vehicle?.vehicleState.centerDisplayState = ClimateMode.camp.toNumber == mode ? 2 : (ClimateMode.dog.toNumber == mode ? 8 : 0)
+                }
+            case .share:
+                response.result = false
+                response.reason = "not implemented"
+                print("not implemented")
+            case .remoteAutoSeatClimateRequest:
+                guard let param = (parameter as? RemoteAutoSeatClimateRequest) else {
+                    response.result = false
+                    response.reason = "error"
+                    return response
+                }
+                if param.auto_seat_position == .frontRight {
+                    DemoTesla.shared.vehicle?.climateState.auto_seat_climate_left = param.auto_climate_on ? 1 : 0
+                    if !param.auto_climate_on {
+                        DemoTesla.shared.vehicle?.climateState.seatHeaterLeft = 0
+                    }
+                } else {
+                    DemoTesla.shared.vehicle?.climateState.auto_seat_climate_right = param.auto_climate_on ? 1 : 0
+                    if !param.auto_climate_on {
+                        DemoTesla.shared.vehicle?.climateState.seatHeaterRight = 0
+                    }
                 }
             }
             if #available(iOS 16.0, *) {

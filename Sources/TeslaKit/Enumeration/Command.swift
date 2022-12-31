@@ -109,6 +109,8 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     // MARK: - Navigation
     ///
     case navigationRequest = "navigation_request"
+    
+    case share = "share"
 
     // MARK: - Software Update
     ///
@@ -120,6 +122,8 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     // MARK: - Seat/Wheel Heaters
     ///
     case remoteSeatHeater = "remote_seat_heater_request"
+    
+    case remoteAutoSeatClimateRequest = "remote_auto_seat_climate_request"
 
     ///
     case remoteSteeringWheelHeater = "remote_steering_wheel_heater_request"

@@ -61,29 +61,27 @@ public class DemoTesla {
         self.vehicles = VehicleCollection(vehicles: vehicles)
 	}
     
-    public func engageCable() {
-        self.vehicle!.chargeState.chargePortDoorOpen = true
-        if self.vehicle?.chargeState.chargingState == .disconnected {
-            self.vehicle?.chargeState.chargingState = .stopped
-            self.vehicle?.chargeState.chargePortLatch = .engaged
-        } else if self.vehicle?.chargeState.chargingState == .stopped || self.vehicle?.chargeState.chargingState == .complete {
-            self.vehicle?.chargeState.chargingState = .disconnected
-            self.vehicle?.chargeState.chargePortLatch = .disengaged
-        }
-        
-    }
-    
-    
-    public func startCharging() {
-        if (self.vehicle?.chargeState.chargeLimitSoc ?? 0) <= (self.vehicle?.chargeState.usableBatteryLevel ?? 0){
-            self.vehicle?.chargeState.chargingState = ChargingState.stopped
-        } else {
-            self.vehicle?.chargeState.chargingState = ChargingState.charging
-            self.charging()
+    public func plug_unplug() {
+        if (self.vehicle?.chargeState.chargePortDoorOpen ?? true) {
+            if self.vehicle?.chargeState.chargingState == .disconnected {
+                //plug in
+                self.vehicle?.chargeState.chargePortLatch = .engaged
+                self.vehicle?.chargeState.chargingState = .stopped
+            }
+            if self.vehicle?.chargeState.chargePortLatch == .disengaged {
+                //unplug
+                self.vehicle?.chargeState.chargingState = .disconnected
+                //close latch
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+5.0) {
+                    if (self.vehicle?.chargeState.chargePortDoorOpen ?? true) && (self.vehicle?.chargeState.chargingState == .disconnected) {
+                        self.vehicle?.chargeState.chargePortDoorOpen = false
+                    }
+                }
+            }
         }
     }
     
-    private func charging() {
+    public func charging() {
         let bat = ((self.vehicle?.chargeState.batteryLevel) ?? 0) + 2.0
         self.vehicle?.chargeState.batteryLevel = bat
         let t1 = 75 / 100 * (Double((self.vehicle?.chargeState.chargeLimitSoc) ?? 0))
@@ -95,16 +93,6 @@ public class DemoTesla {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now()+3.0) {
                 self.charging()
             }
-        }
-    }
-    
-    public func stopCharging() {
-        if self.vehicle!.chargeState.chargingState == .stopped || self.vehicle!.chargeState.chargingState == .complete {
-            //self.vehicle!.chargeState.chargingState = .complete
-            self.vehicle?.chargeState.chargingState = .disconnected
-            self.vehicle?.chargeState.chargePortLatch = .disengaged
-        } else {
-            self.vehicle!.chargeState.chargingState = ChargingState.stopped
         }
     }
     
