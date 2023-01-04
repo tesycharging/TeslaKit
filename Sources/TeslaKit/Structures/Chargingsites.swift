@@ -9,6 +9,7 @@
 
 import Foundation
 import ObjectMapper
+import MapKit
 
 public struct Chargingsites {
     public var allValues: Map
@@ -39,12 +40,21 @@ extension Chargingsites: DataResponse {
     }
 }
 
-public struct DestinationCharging {
+protocol Charging {
+    var name: String { get }
+    var type: String { get }
+    var coordinate: CLLocationCoordinate2D { get }
+}
+
+public struct DestinationCharging: Charging {
     public var allValues: Map
     public var location: Location = Location()
     public var name: String = ""
     public var type: String = ""
     public var distance_miles: Double = 0
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: location.lat, longitude: location.long)
+    }
     public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
@@ -73,7 +83,7 @@ extension Location {
     }
 }
 
-public struct Superchargers {
+public struct Superchargers: Charging{
     public var allValues: Map
     public var location: Location = Location()
     public var name: String = ""
@@ -84,6 +94,9 @@ public struct Superchargers {
     private var site_closed: Int = 2
     public var siteclosed: Bool {
         site_closed != 0
+    }
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: location.lat, longitude: location.long)
     }
     public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
