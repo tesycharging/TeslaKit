@@ -40,7 +40,7 @@ extension Chargingsites: DataResponse {
     }
 }
 
-protocol Charging {
+public protocol Charging {
     var name: String { get }
     var type: String { get }
     var coordinate: CLLocationCoordinate2D { get }
@@ -52,7 +52,7 @@ public struct DestinationCharging: Charging {
     public var name: String = ""
     public var type: String = ""
     public var distance_miles: Double = 0
-    var coordinate: CLLocationCoordinate2D {
+    public var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: location.lat, longitude: location.long)
     }
     public init() {
@@ -95,7 +95,7 @@ public struct Superchargers: Charging{
     public var siteclosed: Bool {
         site_closed != 0
     }
-    var coordinate: CLLocationCoordinate2D {
+    public var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: location.lat, longitude: location.long)
     }
     public init() {
