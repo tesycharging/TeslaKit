@@ -54,6 +54,7 @@ public class StreamResult {
     public var soc: Int?
     public var range: Double? // miles
     public var estRange: Double? // miles
+    public var coordinate: CLLocationCoordinate2D?
     
     public init(values: String) {
         let separatedValues = values.components(separatedBy: ",")
@@ -82,6 +83,11 @@ public class StreamResult {
 		}
 		range = Double(separatedValues[10])
         estRange = Double(separatedValues[11])
+        if let lat = latitude, let long = longitude {
+            coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        } else {
+            coordinate = nil
+        }
     }
 }
 
