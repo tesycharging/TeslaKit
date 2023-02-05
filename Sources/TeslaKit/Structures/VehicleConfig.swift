@@ -13,6 +13,7 @@ import ObjectMapper
 import SwiftUI
 
 ///
+@available(macOS 13.1, *)
 public struct VehicleConfig {
     public var allValues: Map
     
@@ -84,14 +85,18 @@ public struct VehicleConfig {
     public var canAcceptNavigationRequests: Bool = false
     
     private var color:String = "0,0,0,0,0"
+    #if os(macOS)
+    public var paint_color_override: Color = Color(NSColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
+    #else
     public var paint_color_override: Color = Color(UIColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
-
+    #endif
     ///
     public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
     }
 }
 
+@available(macOS 13.1, *)
 extension VehicleConfig: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
@@ -120,9 +125,17 @@ extension VehicleConfig: DataResponse {
         color <- map["paint_color_override"]
         let separatedValues = color.components(separatedBy: ",")
         if separatedValues.count > 4 && !(color == "0,0,0,0,0") {
+            #if os(macOS)
+            paint_color_override = Color(NSColor(red: CGFloat((separatedValues[0] as NSString).floatValue)/255, green: CGFloat((separatedValues[1] as NSString).floatValue)/255, blue: CGFloat((separatedValues[2] as NSString).floatValue)/255, alpha: CGFloat((separatedValues[3] as NSString).floatValue)))
+            #else
             paint_color_override = Color(UIColor(red: CGFloat((separatedValues[0] as NSString).floatValue)/255, green: CGFloat((separatedValues[1] as NSString).floatValue)/255, blue: CGFloat((separatedValues[2] as NSString).floatValue)/255, alpha: CGFloat((separatedValues[3] as NSString).floatValue)))
+            #endif
         } else {
+            #if os(macOS)
+            paint_color_override = Color(NSColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
+            #else
             paint_color_override = Color(UIColor(red: 255/255, green: 22/255, blue: 198/255, alpha: 0.9))
+            #endif
         }
     }
 }

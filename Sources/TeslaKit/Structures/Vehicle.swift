@@ -12,6 +12,7 @@ import Foundation
 import ObjectMapper
 
 ///
+@available(macOS 13.1, *)
 public struct Vehicle {
     public var allValues: Map
 
@@ -74,6 +75,7 @@ public struct Vehicle {
 
 }
 
+@available(macOS 13.1, *)
 extension Vehicle: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
@@ -114,6 +116,7 @@ extension Vehicle: DataResponse {
     }
 }
 
+@available(macOS 13.1, *)
 extension Vehicle: Equatable {
     public static func == (lhs: Vehicle, rhs: Vehicle) -> Bool {
         return lhs.chargeState.batteryLevel == rhs.chargeState.batteryLevel
@@ -121,6 +124,7 @@ extension Vehicle: Equatable {
     }
 }
 
+@available(macOS 13.1, *)
 extension Vehicle {
     public var kindOfVehcile: KindOfVehicle {
         if id == "" {

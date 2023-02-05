@@ -10,6 +10,7 @@ import Foundation
 import ObjectMapper
 
 /// Retrieve a list of your owned vehicles (includes vehicles not yet shipped!)
+@available(macOS 13.1, *)
 public struct VehicleCollection {
 
     ///
@@ -24,6 +25,7 @@ public struct VehicleCollection {
     }
 }
 
+@available(macOS 13.1, *)
 extension VehicleCollection: Mappable {
     public mutating func mapping(map: Map) {
         vehicles <- map["response"]

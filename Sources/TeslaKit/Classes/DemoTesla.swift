@@ -10,6 +10,7 @@ import Foundation
 //import TeslaKit
 import ObjectMapper
 
+@available(macOS 13.1, *)
 public class DemoTesla {
     public static let shared = DemoTesla()
 	public var vehicle: Vehicle?

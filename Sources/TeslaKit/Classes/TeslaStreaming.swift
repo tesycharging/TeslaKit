@@ -25,6 +25,7 @@ public enum TeslaStreamingResult {
  Streaming class takes care of the different types of data streaming from Tesla servers
  
  **/
+@available(macOS 13.1, *)
 public class TeslaStreaming {  
 	private var isConnected = false
     private var socket: WebSocket
@@ -155,6 +156,7 @@ public class TeslaStreaming {
     }
 }
 
+@available(macOS 13.1, *)
 extension TeslaStreaming  {
 
     public func streamPublisher(vehicle: Vehicle, accessToken: String) -> TeslaStreamingPublisher {

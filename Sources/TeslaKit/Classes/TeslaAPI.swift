@@ -11,7 +11,9 @@ import Foundation
 import ObjectMapper
 import WebKit
 import Combine
+#if canImport(UIKit)
 import UIKit
+#endif
 import SwiftUI
 
 
@@ -56,6 +58,7 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
 }
 
 
+@available(macOS 13.1, *)
 extension TeslaAPI {
 
 	public var isAuthenticated: Bool {
@@ -71,8 +74,7 @@ extension TeslaAPI {
      - returns: A ViewController that your app needs to present. This ViewContoller will ask the user for his/her Tesla credentials, MFA code if set and then desmiss on successful authentication
 	 An async function that returns when the token as been retrieved
      */
-    #if canImport(WebKit) && canImport(UIKit)
-    @available(iOS 13.0, *)
+    //#if canImport(WebKit) && canImport(UIKit)
     public func authenticateWeb() -> (TeslaWebLoginViewController?, () async throws -> AuthToken) {
         let codeRequest = AuthCodeRequest()
         let endpoint = Endpoint.oAuth2Authorization(auth: codeRequest)
@@ -103,7 +105,7 @@ extension TeslaAPI {
        }
        return (teslaWebLoginViewController, result)
     }
-    #endif
+    //#endif
     
     private func getAuthenticationTokenForWeb(code: String) async throws -> AuthToken {
         let body = AuthTokenRequestWeb(code: code)
@@ -225,6 +227,7 @@ extension TeslaAPI {
     }
 }
 
+@available(macOS 13.1, *)
 extension TeslaAPI {
     /**
     Fetchs the list of your vehicles including not yet delivered ones
@@ -383,6 +386,7 @@ extension TeslaAPI {
     
 }
 
+@available(macOS 13.1, *)
 extension TeslaAPI {
     func prepareRequest<BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) -> URLRequest {
         var urlComponents = URLComponents(url: URL(string: endpoint.baseURL())!, resolvingAgainstBaseURL: true)
@@ -732,7 +736,9 @@ extension TeslaAPI {
                 }
             }
             if #available(iOS 16.0, *) {
+                #if !os(macOS)
                 try await Task.sleep(until: .now + .seconds(1.5), clock: .continuous)
+                #endif
                 return response
             } else {
                 return response
