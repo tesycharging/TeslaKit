@@ -68,7 +68,7 @@ public class StreamResult {
         soc = Int(separatedValues[3])
 		elevation = Int(separatedValues[4])
 		headingValue = Double(separatedValues[5])
-		latitude = Double(separatedValues[6])
+        latitude = Double(separatedValues[6])
         longitude = Double(separatedValues[7])
 		power = Int(separatedValues[8])
         switch (separatedValues[9]) {
