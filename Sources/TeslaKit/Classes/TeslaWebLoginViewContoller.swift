@@ -135,7 +135,7 @@ public struct WebLogin: ViewControllerRepresentable {
                 _ = try await result()
                 self.action()
             } catch let error {
-                print("Authentication failed: \(error)")
+                print("Authentication failed: \(error.localizedDescription)")
             }
         }
         return safeWebloginViewController
