@@ -15,13 +15,14 @@ import Combine
 import UIKit
 #endif
 import SwiftUI
+import os
 
 
 
 public enum TeslaError: Error, Equatable {
     case networkError(error: NSError)
     case authenticationRequired
-    case authenticationFailed
+    case authenticationFailed(msg: String)
     case tokenRevoked
     case noTokenToRefresh
     case tokenRefreshFailed
@@ -55,6 +56,8 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
     open var addDemoVehicle = true
 
     open fileprivate(set) var token: AuthToken?
+    
+    private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: TeslaAPI.self))
 }
 
 
@@ -84,31 +87,30 @@ extension TeslaAPI {
         
         guard let safeUrlComponents = urlComponents else {
             func error() async throws -> AuthToken {
-                throw TeslaError.authenticationFailed
+                throw TeslaError.authenticationFailed(msg: "")
             }
             return (nil, error)
         }
-
         let teslaWebLoginViewController = TeslaWebLoginViewController(url: safeUrlComponents.url!)
         
         func result() async throws -> AuthToken {
-           let url = try await teslaWebLoginViewController.result()
-           let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-           if let queryItems = urlComponents?.queryItems {
-               for queryItem in queryItems {
-                   if queryItem.name == "code", let code = queryItem.value {
-                       return try await self.getAuthenticationTokenForWeb(code: code)
-                   }
-               }
-           }
-           throw TeslaError.authenticationFailed
+            let url = try await teslaWebLoginViewController.result()
+            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            if let queryItems = urlComponents?.queryItems, let code = queryItems.first(where: { $0.name == "code" })?.value, let state = queryItems.first(where: { $0.name == "state" }) {
+                if "\(state)" == "state=\(codeRequest.state)" {
+                    return try await self.getAuthenticationTokenForWeb(codeRequest.codeVerifier, code: code)
+                } else {
+                    throw TeslaError.authenticationFailed(msg: "state is different in callback")
+                }
+            }
+            throw TeslaError.authenticationFailed(msg: "no code parameter in callback")
        }
        return (teslaWebLoginViewController, result)
     }
     //#endif
     
-    private func getAuthenticationTokenForWeb(code: String) async throws -> AuthToken {
-        let body = AuthTokenRequestWeb(code: code)
+    private func getAuthenticationTokenForWeb(_ codeVerifier: String = "", code: String) async throws -> AuthToken {
+        let body = AuthTokenRequestWeb(codeVerifier, code: code)
 
         do {
             let token: AuthToken = try await request(.oAuth2Token, body: body)
@@ -119,12 +121,24 @@ extension TeslaAPI {
                 if internalError.code == 302 || internalError.code == 403 {
                     return try await self.request(.oAuth2TokenCN, body: body)
                 } else if internalError.code == 401 {
-                    throw TeslaError.authenticationFailed
+                    throw TeslaError.authenticationFailed(msg: "")
                 } else {
                     throw error
                 }
             } else {
                 throw error
+            }
+        }
+    }
+    
+    @available(macOS 13.1, *)
+    public func getAuthenticationTokenForWeb(_ codeVerifier: String = "", code: String, completion: @escaping(Result<AuthToken, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let token: AuthToken = try await getAuthenticationTokenForWeb(codeVerifier, code: code)
+                completion(Result.success(token))
+            } catch let error {
+                completion(Result.failure(error))
             }
         }
     }
@@ -394,7 +408,7 @@ extension TeslaAPI {
         urlComponents?.queryItems = endpoint.queryParameters
         var request = URLRequest(url: urlComponents!.url!)
         request.httpMethod = endpoint.method
-        request.setValue("TesyCharging", forHTTPHeaderField: "User-Agent")
+        //request.setValue("curl / 6.14.0", forHTTPHeaderField: "User-Agent")
 
         if let token = self.token?.accessToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -406,46 +420,33 @@ extension TeslaAPI {
 			encoder.outputFormatting = .prettyPrinted
 			encoder.dateEncodingStrategy = .secondsSince1970
             request.httpBody = try? encoder.encode(body)
-            request.setValue("application/json", forHTTPHeaderField: "content-type")
-            if debuggingEnabled {
-                print("body: \(body)")
-            }
-        }
-        
-        if debuggingEnabled {
-            print("REQUEST: \(request)")
-            print("METHOD: \(request.httpMethod!)")
-            if let headers = request.allHTTPHeaderFields {
-                var headersString = "REQUEST HEADERS: [\n"
-                headers.forEach {(key: String, value: String) in
-                    headersString += "\"\(key)\": \"\(value)\"\n"
-                }
-                headersString += "]"
-                print(headersString)
-            }
+            request.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "content-type")
         }
         
         if let parameter = parameter {
             request.setValue("application/json", forHTTPHeaderField: "content-type")
             request.setValue("no-cache", forHTTPHeaderField: "cache-control")
             request.httpBody = try? JSONSerialization.data(withJSONObject: parameter)
-            if debuggingEnabled {
-                var httpBodyString = "HTTP Body:\n"
-                request.httpBody?.forEach{(body) in
-                    httpBodyString += String(UnicodeScalar(UInt8(body)))
-                }
-                print(httpBodyString)
-            }
         }
         
         return request
     }
             
 	
-    private func request<T: Mappable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
+    public func request<T: Mappable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
         // Create the request
         let request = prepareRequest(endpoint, body: body, parameter: parameter)
         let debugEnabled = debuggingEnabled
+        if debugEnabled {
+            TeslaAPI.logger.debug("url: \(request.url!), privacy: .public)")
+            TeslaAPI.logger.debug("method: \(request.httpMethod ?? ""), privacy: .public)")
+            if let allHTTPHeaderFields = request.allHTTPHeaderFields {
+                TeslaAPI.logger.debug("httpHeader: \(allHTTPHeaderFields), privacy: .public)")
+            }
+            if let httpBody = request.httpBody {
+                TeslaAPI.logger.debug("httpBody: \(String(data: httpBody, encoding: .utf8)!), privacy: .public)")
+            }
+        }
         
         let data: Data
         let response: URLResponse
@@ -466,31 +467,14 @@ extension TeslaAPI {
         
         guard let httpResponse = response as? HTTPURLResponse else { throw TeslaError.failedToParseData }
         if debugEnabled {
-            var responseString = "\nRESPONSE: \(String(describing: httpResponse.url))"
-            responseString += "\nSTATUS CODE: \(httpResponse.statusCode)"
-            if let headers = httpResponse.allHeaderFields as? [String: String] {
-                responseString += "\nHEADERS: [\n"
-                headers.forEach {(key: String, value: String) in
-                    responseString += "\"\(key)\": \"\(value)\"\n"
-                }
-                responseString += "]"
-            }
-            print(responseString)
+            TeslaAPI.logger.debug("RESPONSE: \(httpResponse.url!), privacy: .public)")
+            TeslaAPI.logger.debug("STATUS CODE: \(httpResponse.statusCode), privacy: .public)")
+            TeslaAPI.logger.debug("HEADERS: \(httpResponse.allHeaderFields), privacy: .public)")
+            TeslaAPI.logger.debug("DATA: \(String(data: data, encoding: .utf8) ?? ""), privacy: .public)")
         }
         
         if case 200..<300 = httpResponse.statusCode {
             // Attempt to serialize the response JSON and map to TeslaKit objects
-            if debugEnabled {
-                print("*********************")
-                var i = 0
-                var s = ""
-                while(i<data.count) {
-                    s = s + String(UnicodeScalar(UInt8(data[i])))
-                    i = i + 1
-                }
-                print(s)
-                print("*********************")
-            }
             do {
                 let json: Any = try JSONSerialization.jsonObject(with: data)
                 guard let mappedVehicle = Mapper<T>().map(JSONObject: json) else {
@@ -498,21 +482,21 @@ extension TeslaAPI {
                 }
                 return mappedVehicle
             } catch let error {
-                print(error.localizedDescription)
+                TeslaAPI.logger.debug("\(error.localizedDescription), privacy: .public)")
                 throw TeslaError.failedToParseData
             }
-        } else if httpResponse.statusCode == 401 {
-            throw TeslaError.authenticationFailed
+        } else if httpResponse.statusCode == 401 || httpResponse.statusCode == 400{
+            throw TeslaError.authenticationFailed(msg: String(data: data, encoding: .utf8) ?? "")
         } else {
             if debugEnabled {
                 let objectString = String.init(data: data, encoding: String.Encoding.utf8) ?? "No Body"
-                print("RESPONSE BODY ERROR: \(objectString)")
+                TeslaAPI.logger.debug("RESPONSE BODY ERROR: \(objectString), privacy: .public)")
             }
             if let wwwauthenticate = httpResponse.allHeaderFields["Www-Authenticate"] as? String,
                wwwauthenticate.contains("invalid_token") {
                 throw TeslaError.tokenRevoked
             } else if httpResponse.allHeaderFields["Www-Authenticate"] != nil, httpResponse.statusCode == 401 {
-                throw TeslaError.authenticationFailed
+                throw TeslaError.authenticationFailed(msg: String(data: data, encoding: .utf8) ?? "")
             } else {
                 let json: Any = try JSONSerialization.jsonObject(with: data)
                 guard let mappedVehicle = Mapper<T>().map(JSONObject: json) else {
@@ -539,7 +523,7 @@ extension TeslaAPI {
             case .setValetMode:
                 DemoTesla.shared.vehicle?.vehicleState.valetMode.toggle()
             case .resetValetPin:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .openChargePort:
@@ -591,7 +575,7 @@ extension TeslaAPI {
                     response.reason = "Command \(command.description) error"
                 }
             case .flashLights, .honkHorn:
-                print("Command: \(command.description)")
+                TeslaAPI.logger.debug("Command: \(command.description), privacy: .public)")
                 response.reason = "succesful \(command.description)"
             case .unlockDoors:
                 DemoTesla.shared.vehicle?.vehicleState.locked = false
@@ -605,7 +589,7 @@ extension TeslaAPI {
             case .stopHVAC:
                 DemoTesla.shared.vehicle?.climateState.isClimateOn = false
             case .movePanoRoof:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .remoteStart:
@@ -640,23 +624,23 @@ extension TeslaAPI {
                     DemoTesla.shared.vehicle?.climateState.isClimateOn = false
                 }
             case .speedLimitActivate, .speedLimitDeactivate, .speedLimitClearPIN, .setSpeedLimit:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .togglePlayback, .nextTrack, .previousTrack, .nextFavorite, .previousFavorite, .volumeUp, .volumeDown:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .navigationRequest:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented, use share instead"
             case .scheduleSoftwareUpdate, .cancelSoftwareUpdate:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .remoteSteeringWheelHeater:
-                print("Command \(command.description) not implemented")
+                TeslaAPI.logger.debug("Command \(command.description) not implemented, privacy: .public)")
                 response.result = false
                 response.reason = "Command \(command.description) not implemented"
             case .remoteSeatHeater:
@@ -685,12 +669,12 @@ extension TeslaAPI {
             case .homelink:
                 if ((DemoTesla.shared.vehicle?.vehicleState.homelinkNearby) != nil)  && ((DemoTesla.shared.vehicle?.driveState.nativeLatitude == (parameter as! TriggerHomelink).lat) && (
                     DemoTesla.shared.vehicle?.driveState.nativeLongitude == (parameter as! TriggerHomelink).lon)) {
-                    print("Command: \(command.description)")
+                    TeslaAPI.logger.debug("Command: \(command.description), privacy: .public)")
                     response.reason = "succesful \(command.description)"
                 } else {
                     response.result = false
                     response.reason = "no homelink nearby or lat/lon not nearby"
-                    print("no homelink nearby or lat/lon not nearby")
+                    TeslaAPI.logger.debug("no homelink nearby or lat/lon not nearby, privacy: .public)")
                 }
             case .openWindow:
                 if (parameter as? WindowsControl)?.lat == DemoTesla.shared.vehicle?.driveState.nativeLatitude && (parameter as? WindowsControl)?.lon == DemoTesla.shared.vehicle?.driveState.nativeLongitude {
@@ -702,7 +686,7 @@ extension TeslaAPI {
                 } else {
                     response.result = false
                     response.reason = "lat/lon not nearby"
-                    print("lat/lon not nearby")
+                    TeslaAPI.logger.debug("lat/lon not nearby, privacy: .public)")
                 }
             case .setClimateMode:
                 let mode = (parameter as? SetClimateMode)?.climate_keeper_mode
@@ -716,7 +700,7 @@ extension TeslaAPI {
             case .share:
                 response.result = false
                 response.reason = "not implemented"
-                print("not implemented")
+                TeslaAPI.logger.debug("not implemented, privacy: .public)")
             case .remoteAutoSeatClimateRequest:
                 guard let param = (parameter as? RemoteAutoSeatClimateRequest) else {
                     response.result = false

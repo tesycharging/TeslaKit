@@ -7,9 +7,11 @@
 //
 
 import Foundation
+import os
 
 /// Represents an option of a `Vehicle`. For all options, see TeslaVehicleOptionCodes.plist in Resources.
 public struct VehicleOption {
+    private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: VehicleOption.self))
     
     /// The option code
     public let code: String
@@ -26,8 +28,8 @@ public struct VehicleOption {
         guard let url: URL = Bundle.main.url(forResource: "TeslaKit_TeslaKit.bundle/TeslaVehicleOptionCodes", withExtension: "plist"),
             let data: Data = try? Data(contentsOf: url),
             let plist: [String: [String: String]] = (try? PropertyListSerialization.propertyList(from: data, options: [], format: nil)) as? [String: [String: String]] else {
-                print("error, could not read from plist file")
-                return [:]
+            VehicleOption.logger.error("\("error, could not read from plist file", privacy: .public)")
+            return [:]
         }
         return plist
     }()

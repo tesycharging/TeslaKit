@@ -46,7 +46,7 @@ Add an ATS exception domain for owner-api.teslamotors.com in your info.plist
 			<key>NSIncludesSubdomains</key>
 			<true/>
 			<key>NSExceptionMinimumTLSVersion</key>
-			<string>TLSv3.0</string>
+			<string>TLSv1.3</string>
 			<key>NSExceptionAllowsInsecureHTTPLoads</key>
 			<true/>
 		</dict>

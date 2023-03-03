@@ -26,7 +26,6 @@ public struct TriggerHomelink {
 
 extension TriggerHomelink: Mappable {
     public init?(map: Map) {
-        print("INIT TRIGGERHOMELINK")
     }
     
     public mutating func mapping(map: Map) {

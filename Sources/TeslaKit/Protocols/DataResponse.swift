@@ -26,7 +26,6 @@ extension DataResponse {
         for (k, v) in map {
             if (v is NSDictionary) && childStructs {
                 for (k1, v1) in (v as! NSDictionary) {
-                    //print("key: \(k).\(k1), value: \(v1)")
                     var p = ""
                     if k != "response" {
                         p = "   "+k.replacingOccurrences(of: "_", with: " ")+"."
@@ -39,18 +38,11 @@ extension DataResponse {
                     i = i + 1
                 }
             } else {
-                //print("key: \(k), value: \(v)")
                 result.append(VehicleAllData(k.replacingOccurrences(of: "_", with: " "), "\(v)", i % 2 == 0))
                 i = i + 1
             }
         }
         return result
-    }
-    
-    public func printDescription() {
-        values().forEach {
-            print("key: \($0.key), value: \($0.value)")
-        }
     }
 }
 

@@ -41,6 +41,9 @@ public class TeslaWebLoginViewController: ViewController {
     init(url: URL) {
         super.init(nibName: nil, bundle: nil)
         webView.navigationDelegate = self
+        #if targetEnvironment(macCatalyst)
+        webView.customUserAgent = "TesyCharging"
+        #endif
         webView.load(URLRequest(url: url))
     }
 
@@ -77,7 +80,7 @@ extension TeslaWebLoginViewController: WKNavigationDelegate {
         self.dismiss(navigation)
         #else
         self.dismiss(animated: true) {
-            self.continuation?.resume(throwing: TeslaError.authenticationFailed)
+            self.continuation?.resume(throwing: TeslaError.authenticationFailed(msg: "dismiss"))
         }
         #endif
     }
@@ -96,10 +99,12 @@ extension TeslaWebLoginViewController {
 @available(macOS 13.1, *)
 public struct WebLogin: ViewControllerRepresentable {
     public var teslaAPI: TeslaAPI
+    @Binding var result: Result<AuthToken, Error>
     public let action: () -> Void
     
-    public init(teslaAPI: TeslaAPI, action: @escaping () -> Void) {
+    public init(teslaAPI: TeslaAPI, result: Binding<Result<AuthToken, Error>>, action: @escaping () -> Void) {
         self.teslaAPI = teslaAPI
+        self._result = result
         self.action = action
     }
 	
@@ -113,9 +118,16 @@ public struct WebLogin: ViewControllerRepresentable {
         Task { @MainActor in
             do {
                 _ = try await result()
+                guard let token = teslaAPI.token else {
+                    self.result = Result.failure(TeslaError.internalError)
+                    self.action()
+                    return
+                }
+                self.result = .success(token)
                 self.action()
             } catch let error {
-                print("Authentication failed: \(error)")
+                self.result = Result.failure(error)
+                self.action()
             }
         }
         return safeWebloginViewController
@@ -133,9 +145,16 @@ public struct WebLogin: ViewControllerRepresentable {
         Task { @MainActor in
             do {
                 _ = try await result()
+                guard let token = teslaAPI.token else {
+                    self.result = Result.failure(TeslaError.internalError)
+                    self.action()
+                    return
+                }
+                self.result = .success(token)
                 self.action()
             } catch let error {
-                print("Authentication failed: \(error.localizedDescription)")
+                self.result = Result.failure(error)
+                self.action()
             }
         }
         return safeWebloginViewController

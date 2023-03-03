@@ -40,7 +40,6 @@ public struct SetClimateMode {
 
 extension SetClimateMode: Mappable {
     public mutating func mapping(map: Map) {
-		print(map)
         climate_keeper_mode <- map["climate_keeper_mode"]
     }
 }

@@ -28,7 +28,6 @@ public struct WindowsControl {
 
 extension WindowsControl: Mappable {
     public init?(map: Map) {
-        print("INIT WINDOWSCONTROL")
     }
     
     public mutating func mapping(map: Map) {
