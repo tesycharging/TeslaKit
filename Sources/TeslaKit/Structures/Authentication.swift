@@ -13,7 +13,7 @@ import ObjectMapper
 import os
 
 private let oAuthWebClientID: String = "ownerapi"
-private let oAuthScope: String = "openid+email+offline_access"
+private let oAuthScope: String = "openid email offline_access"
 private let oAuthRedirectURI: String = "https://auth.tesla.com/void/callback"
 private let oAuthresponseType: String = "code"
 private let oAuthcodeChallengeMethod = "S256"
