@@ -27,7 +27,7 @@ public struct Tripplan: TKMappable {
 
     public var total_charge_kWh: Double = 0
 
-    public var stops: ChargingStop = []
+    public var stops: [ChargingStop] = []
 
     public var error_message: String = "error no path found"
 
@@ -86,7 +86,7 @@ extension ChargingStop: DataResponse {
         arrival_soe <- map["arrival_soe"]
         charge_dur_s <- map["charge_dur_s"]
         departure_soe <- map["departure_soe"]
-        stop_type: String <- map["stop_type"]
+        stop_type <- map["stop_type"]
         drive_dur_s <- map["drive_dur_s"]
         drive_distance_m <- map["drive_distance_m"]
         max_power <- map["max_power"]
@@ -102,6 +102,6 @@ public struct ChargingLocation: TKMappable {
 extension ChargingLocation {
     public mutating func mapping(map: Map) {
         lat <- map["lat"]
-        long <- map["lng"]
+        lng <- map["lng"]
     }
 }

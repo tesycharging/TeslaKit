@@ -74,6 +74,11 @@ public struct Location: TKMappable {
     public var lat: Double = 0
     public var long: Double = 0
     public init() {}
+    
+    public init(long: Double, lat: Double) {
+        self.long = long
+        self.lat = lat
+    }
 }
 
 extension Location {
