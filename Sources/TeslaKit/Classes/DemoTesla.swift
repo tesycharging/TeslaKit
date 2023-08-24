@@ -14,6 +14,7 @@ import os
 public class DemoTesla {
     private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: DemoTesla.self))
     public static let shared = DemoTesla()
+	public var user: User = User()
 	public var vehicle: Vehicle?
 	public var vehicles: VehicleCollection = VehicleCollection()
     
