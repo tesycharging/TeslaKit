@@ -31,6 +31,10 @@ public enum Endpoint {
 	case wakeUp(vehicleID: String)		// returns true if wakeup command was successful (eventhought the car is not fully online yet)
 	case command(vehicleID: String, command: Command)
     case products
+
+    case user
+    case tripplan
+	
     /*case getEnergySiteStatus(siteID: String)
     case getEnergySiteLiveStatus(siteID: String)
     case getEnergySiteInfo(siteID: String)
@@ -82,6 +86,11 @@ extension Endpoint {
                 return "/api/1/vehicles/\(vehicleID)/\(command.path)"
             case .products:
                 return "/api/1/products"
+
+	    case .user:
+		return "/api/1/users/me"
+	    case .tripplan:
+		return "/trip-planner/api/v1/tripplan"
             
            /* // Energy Data
             case .getEnergySiteStatus(let siteID):
@@ -103,9 +112,9 @@ extension Endpoint {
 	
 	var method: String {
 		switch self {
-            case .revoke, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command:
+            case .revoke, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command, .tripplan:
                 return "POST"
-        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .chargeState, .climateState, .driveState, .guiSettings, .vehicleState, .vehicleConfig, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .oAuth2revokeCN, .products/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
+        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .chargeState, .climateState, .driveState, .guiSettings, .vehicleState, .vehicleConfig, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .oAuth2revokeCN, .products, .user/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
                 return "GET"
 		}
 	}
