@@ -243,6 +243,15 @@ extension TeslaAPI {
 
 @available(macOS 13.1, *)
 extension TeslaAPI {
+  /**
+  Fetches the user of the Tesla Account
+
+  - returns email, fullname and url to profile image
+  */
+  public func getUser() async throws -> User? {
+	  return try await getVehicleData(.user)
+  }
+	
     /**
     Fetchs the list of your vehicles including not yet delivered ones
     
@@ -301,6 +310,8 @@ extension TeslaAPI {
                 return (DemoTesla.shared.vehicle!.vehicleState as! T)
             case .vehicleConfig(_):
                 return (DemoTesla.shared.vehicle!.vehicleConfig as! T)
+	    case . user:
+		return [DemoTesla.shared.user as! T)
             default:
                 throw TeslaError.failedToParseData
             }
@@ -732,6 +743,38 @@ extension TeslaAPI {
             let response: CommandResponse = try await self.request(Endpoint.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter?.toJSON())
             return response
         }
+	}
+
+	/**
+	Sends a command tripplan
+	
+	- parameter for "car_trim", "car_type", "destination", "origin","origin_soe", "vin"
+	- returns: Tripplan
+	*/
+    public func tripplan(_ vehicle: Vehicle, destination: Location, origin: Location = Location(), origin_soe: Double = -1) async throws -> Tripplan {
+	var o_soe: Double = vehicle.chargeState.batteryLevel
+	if origin_soe != -1 {
+		o_soe = origin_soe
+	}
+	var o_location: Location = Location(long: vehicle.driveState.longitude, lat: vehicle.driveState.latitude)
+    	if !(origin.long == 0 && origin.lat == 0) {
+		o_location = origin
+    	}
+	var parameter: TripplanRequest = TripplanRequest(car_trim: vehicle.vehicleConfig.carTypetrimBadging, car_type: vehicle.vehicleConfig.carType, destination: destination, origin: o_location, origin_soe: o_soe, vin: vehicle.vin?.vinString)	        
+        if self.demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
+		var response = Tripplan()
+		if #available(iOS 16.0, *) {
+	                #if !os(macOS)
+	                try await Task.sleep(until: .now + .seconds(1.5), clock: .continuous)
+	                #endif
+	                return response
+	            } else {
+	                return response
+	            }
+	} else {
+		_ = try await checkAuthentication()
+		let response: Tripplan = try await self.request(Endpoint.tripplan, body: nullBody, parameter: parameter.toJSON())
+	        return response
 	}
 }
 
