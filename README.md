@@ -13,6 +13,9 @@
 - Obtain data from nearby charging sites
 - Utilizes ObjectMapper for JSON mapping
 - includes a mock/demo to be able to release it easily to the app store (works wihtout connected Tesla)
+- get user profil of your Tesla account
+- plan a trip
+- set your trip destination
 - streaming from Tesla's websocket
 - Summon - Coming soon
 
@@ -219,6 +222,51 @@ Send a command to a vehicle with request parameters
 Task { @MainActor in
 	do {
 		_ = try await teslaAPI.setCommand(vehicle, command: Command.sentryMode, parameter: SentryMode(isOn: true))
+	} catch let error {
+		//Process error
+	}
+}
+```
+
+# get Tesla account profile
+Send a command to tesla.com when you are authenticated
+```
+Task { @MainActor in
+	do {
+		guard let user = try await teslaAPI.getUser()
+	} catch let error {
+		//Process error
+	}
+}
+```
+
+# plan a trip
+Send a command to tesla.com when you are authenticated. The result tells how many charging stops, how long it takes, etc.
+```
+Task { @MainActor in
+	do {
+		guard let tripplan = try await teslaAPI.tripplan(vehicle, destination: Location(lat: 37.485767, long: -122.240207)
+	} catch let error {
+		//Process error
+	}
+}
+```
+or define your battery level and location at start of the trip
+```
+Task { @MainActor in
+	do {
+		guard let tripplan = try await teslaAPI.tripplan(vehicle, destination: Location(lat: 37.485767, long: -122.240207), origin: Location = Location(lat: 37.79307,long: -125.108), origin_soe: 0.5)
+	} catch let error {
+		//Process error
+	}
+}
+```
+
+#set your trip destination
+```
+Task { @MainActor in
+	do {
+		_ = try await teslaAPI.setCommand(vehicle, command: Command.share, parameter:  ShareParam(latitude: 37.485767, longitude: -122.240207))
 	} catch let error {
 		//Process error
 	}
