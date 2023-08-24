@@ -17,7 +17,7 @@ public struct Tripplan: TKMappable {
 
     public var origin_soe: Double = 0.8
 
-    public var status: String = "" // TRIP_PLAN_SUCCESS_DIRECT, TRIP_PLAN_SUCCESS_WITH_STOPS
+    public var status: String = "TRIP_PLAN_FAILURE_NOT_POSSIBLE" // TRIP_PLAN_SUCCESS_DIRECT, TRIP_PLAN_SUCCESS_WITH_STOPS
 
     public var total_drive_mi: Double = 0
 
@@ -29,6 +29,8 @@ public struct Tripplan: TKMappable {
 
     public var stops: ChargingStop = []
 
+    public var error_message: String = "error no path found"
+
     ///
     public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
@@ -39,16 +41,20 @@ public struct Tripplan: TKMappable {
 extension Tripplan: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
-        polylines <- (map["polylines"])
-        destination_soe <- map["destination_soe"]
-        origin_soe <- (map["origin_soe"])
         status <- map["status"]
-        total_drive_mi <- (map["total_drive_mi"])
-        if status == "TRIP_PLAN_SUCCESS_WITH_STOPS" {
-          total_drive_kWh <- map["total_drive_kWh"]
-          total_charge_dur_s <- (map["total_charge_dur_s"])
-          total_charge_kWh <- map["total_charge_kWh"]
-          stops <- map["stops"]
+        if status == "TRIP_PLAN_FAILURE_NOT_POSSIBLE" {
+            error_message <- (map["error_message"])
+        } else {
+            polylines <- (map["polylines"])
+            destination_soe <- map["destination_soe"]
+            origin_soe <- (map["origin_soe"])            
+            total_drive_mi <- (map["total_drive_mi"])
+            if status == "TRIP_PLAN_SUCCESS_WITH_STOPS" {
+              total_drive_kWh <- map["total_drive_kWh"]
+              total_charge_dur_s <- (map["total_charge_dur_s"])
+              total_charge_kWh <- map["total_charge_kWh"]
+              stops <- map["stops"]
+            }
         }
     }
 }
