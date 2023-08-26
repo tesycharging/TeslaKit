@@ -38,6 +38,9 @@ public class DemoTesla {
     public var power: Int = 100
 	
 	public init() {
+        self.user.email = "demo@tesla.com"
+        self.user.full_name = "Demo User"
+        self.user.profile_image_url = URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/bd/41/3e/bd413e6b-111e-4078-a3c6-abeb51de6c25/AppIcon-0-2x-4-0-85-220.png/1200x600wa.png")!
         self.vehicle = requestDemoVehicle()
         self.vehicle?.vin = VIN(vinString: "VIN#DEMO_#TESTING")
         self.vehicle?.chargeState.chargeEnergyAdded = 0

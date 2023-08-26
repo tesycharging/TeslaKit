@@ -752,7 +752,7 @@ extension TeslaAPI {
 	- returns: Tripplan
 	*/
     public func tripplan(_ vehicle: Vehicle, destination: Location, origin: Location = Location(), origin_soe: Double = -1) async throws -> Tripplan {
-        var o_soe: Double = vehicle.chargeState.batteryLevel
+        var o_soe: Double = vehicle.chargeState.batteryLevel / 100
         if origin_soe != -1 {
             o_soe = origin_soe
         }
@@ -760,7 +760,7 @@ extension TeslaAPI {
         if !(origin.long == 0 && origin.lat == 0) {
             o_location = origin
         }
-        let parameter: TripplanRequest = TripplanRequest(car_trim: vehicle.vehicleConfig.trimBadging , car_type: vehicle.vehicleConfig.carType ?? "", destination: destination, origin: o_location, origin_soe: o_soe, vin: vehicle.vin?.vinString ?? "")
+        let parameter: TripplanRequest = TripplanRequest(car_trim: vehicle.vehicleConfig.trimBadging , car_type: vehicle.vehicleConfig.carType ?? "", destination: destination.description, origin: o_location.description, origin_soe: o_soe, vin: vehicle.vin?.vinString ?? "")
         if self.demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             if #available(iOS 16.0, *) {
                 #if !os(macOS)

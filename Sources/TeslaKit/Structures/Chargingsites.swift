@@ -86,6 +86,10 @@ extension Location {
         lat <- map["lat"]
         long <- map["long"]
     }
+    
+    public var description: String {
+        return "\(lat), \(long)"
+    }
 }
 
 public struct Superchargers: Charging{
