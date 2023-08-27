@@ -17,12 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         xcode: ['14.3.1']
-        macos: ['macos-13.4']
+        macos: ['macos-13']
         scheme: ['TeslaKit']
         command: ['test']
         platform: ['iOS', 'mac-catalyst']
         exclude:
-          - macos: 'macos-13.4'
+          - macos: 'macos-13'
             xcode: '14.3.1'
     steps:
     - name: Switch xcode to ${{ matrix.xcode }}
