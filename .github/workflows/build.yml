@@ -40,7 +40,7 @@ jobs:
     - name: Show buildable schemes
       run: xcodebuild -list
     - name: Set Default Scheme
-        run:
+        run: |
           default='TeslaKit'
           echo $default | cat >default
           echo Using default scheme: $default
