@@ -15,9 +15,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Double-check macOS version macos-latest
-        run: sw_vers
-            echo 'david'
       - name: Check xcodebuild version
         run: xcodebuild -version
       - name: Check xcode embedded SDKs
