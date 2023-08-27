@@ -23,8 +23,7 @@ jobs:
         run: xcodebuild -list
       - name: Set Default Scheme
         run: |
-          scheme_list=$(xcodebuild -list -json | tr -d "\n")
-          default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+          default='TeslaKit'
           echo $default | cat >default
           echo Using default scheme: $default
       - name: Build
