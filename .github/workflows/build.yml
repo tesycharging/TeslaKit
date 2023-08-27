@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.command }} on  ${{ matrix.platform }} (xcode ${{ matrix.xcode }}, ${{ matrix.macos }})
+    name: test on  latest macos with xcode 14.3.1
     runs-on: macos-latest 
     strategy:
       fail-fast: false
@@ -39,8 +39,21 @@ jobs:
       run: xcodebuild -showsdks
     - name: Show buildable schemes
       run: xcodebuild -list
+    - name: build
+        env:
+          scheme: 'TeslaKit'
+          platform: ${{ 'iOS Simulator' }}
+        run: |
+          # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+          device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
+          scheme='TeslaKit'
+          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
+          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
+          xcodebuild build-for-testing -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
+      
+
     - name: Show eligible build destinations for TeslaKit
-      run: xcodebuild -showdestinations -scheme 'TeslaKit'
+      run: xcodebuild -showdestinations -scheme 'TeslaKit' 
     - uses: mxcl/xcodebuild@v1.9.2
       with:
         platform: 'iOS'
