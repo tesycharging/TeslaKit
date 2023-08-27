@@ -25,27 +25,27 @@ jobs:
           - macos: 'macos-latest'
             xcode: '14.3.1'
     steps:
-    - name: Switch xcode to ${{ matrix.xcode }}
-      uses: maxim-lobanov/setup-xcode@v1.2.3
+    - name: Switch xcode to 14.3.1
+      uses: actions/checkout@v3
       with:
-        xcode-version: ${{ matrix.xcode }}
-    - name: Double-check macOS version (${{ matrix.macos }})
+        xcode-version: '14.3.1'
+    - name: Double-check macOS version macos-latest
       run: sw_vers
     - name: Code Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Check xcodebuild version
       run: xcodebuild -version
     - name: Check xcode embedded SDKs
       run: xcodebuild -showsdks
     - name: Show buildable schemes
       run: xcodebuild -list
-    - name: Show eligible build destinations for ${{ matrix.scheme }}
-      run: xcodebuild -showdestinations -scheme ${{ matrix.scheme }}
+    - name: Show eligible build destinations for TeslaKit
+      run: xcodebuild -showdestinations -scheme 'TeslaKit'
     - uses: mxcl/xcodebuild@v1.9.2
       with:
-        platform: ${{ matrix.platform }}
-        scheme: ${{ matrix.scheme }}
-        action: ${{ matrix.command }} 
+        platform: 'iOS'
+        scheme: 'TeslaKit'
+        action: 'test'
         code-coverage: true
         verbosity: xcpretty
         upload-logs: always
