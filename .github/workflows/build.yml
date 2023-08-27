@@ -12,17 +12,17 @@ on:
 jobs:
   build:
     name: ${{ matrix.command }} on  ${{ matrix.platform }} (xcode ${{ matrix.xcode }}, ${{ matrix.macos }})
-    runs-on: ${{ matrix.macos }} 
+    runs-on: macos-latest 
     strategy:
       fail-fast: false
       matrix:
         xcode: ['14.3.1']
-        macos: ['macos-13']
+        macos: ['macos-latest']
         scheme: ['TeslaKit']
         command: ['test']
         platform: ['iOS', 'mac-catalyst']
         exclude:
-          - macos: 'macos-13'
+          - macos: 'macos-latest'
             xcode: '14.3.1'
     steps:
     - name: Switch xcode to ${{ matrix.xcode }}
