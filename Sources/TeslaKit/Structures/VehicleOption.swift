@@ -10,6 +10,7 @@ import Foundation
 import os
 
 /// Represents an option of a `Vehicle`. For all options, see TeslaVehicleOptionCodes.plist in Resources.
+@available(macOS 13.1, *)
 public struct VehicleOption {
     private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: VehicleOption.self))
     
