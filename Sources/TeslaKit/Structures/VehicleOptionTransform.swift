@@ -10,6 +10,7 @@ import Foundation
 import ObjectMapper
 
 ///
+@available(macOS 13.1, *)
 public struct VehicleOptionTransform: TransformType {
     
     ///
