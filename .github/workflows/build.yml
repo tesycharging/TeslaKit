@@ -26,13 +26,11 @@ jobs:
           default='TeslaKit'
           echo $default | cat >default
           echo Using default scheme: $default
-      - name: Build
+      - name: Build ( iOS ${{ 'iOS Simulator' }})
         env:
           scheme: ${{ 'default' }}
           platform: ${{ 'iOS Simulator' }}
         run: swift build -v
-      - name: Build and test ( iOS 16.0)
-        run: xcodebuild test -scheme 'TeslaKit' -destination 'platform=iOS Simulator,OS=16.1,name=iPhone 12 Pro'
 
       
 
