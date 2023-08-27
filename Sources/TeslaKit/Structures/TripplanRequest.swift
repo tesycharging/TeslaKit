@@ -32,7 +32,7 @@ public struct TripplanRequest {
 		self.vin = vin
     }
 }
-
+@available(macOS 13.1, *)
 extension TripplanRequest: Mappable {
     public mutating func mapping(map: Map) {
         car_trim <- map["car_trim"]
