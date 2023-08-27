@@ -8,7 +8,7 @@
 import Foundation
 import ObjectMapper
 
-
+@available(macOS 13.1, *)
 public struct TripplanRequest {
 
 	public var car_trim: String = "74D"
