@@ -132,7 +132,10 @@ public class TeslaStreaming {
 								dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: 0, userInfo: ["error": "websocket encountered an error"])))
 							}
 						}
-					}
+                    case .peerClosed:
+                        TeslaStreaming.logger.debug("\("Received peerClosed", privacy: .public)")
+                        self.isConnected = false
+                    }
 				}
 				self.socket.connect()
 			}
