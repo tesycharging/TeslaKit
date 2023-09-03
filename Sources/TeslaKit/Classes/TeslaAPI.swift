@@ -751,24 +751,15 @@ extension TeslaAPI {
 	- parameter for "car_trim", "car_type", "destination", "origin","origin_soe", "vin"
 	- returns: Tripplan
 	*/
-    public func tripplan(_ vehicle: Vehicle, destination: Location, origin: Location = Location(), origin_soe: Double = -1) async throws -> Tripplan {
-        var o_soe: Double = vehicle.chargeState.batteryLevel / 100
-        if origin_soe != -1 {
-            o_soe = origin_soe
-        }
-        var o_location: Location = Location(long: vehicle.driveState.longitude, lat: vehicle.driveState.latitude)
-        if !(origin.long == 0 && origin.lat == 0) {
-            o_location = origin
-        }
-        let parameter: TripplanRequest = TripplanRequest(car_trim: vehicle.vehicleConfig.trimBadging , car_type: vehicle.vehicleConfig.carType ?? "", destination: destination.description, origin: o_location.description, origin_soe: o_soe, vin: vehicle.vin?.vinString ?? "")
-        if self.demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
+    public func tripplan(parameter: BaseMappable) async throws -> Tripplan {
+        if self.demoMode {
             if #available(iOS 16.0, *) {
                 #if !os(macOS)
                 try await Task.sleep(until: .now + .seconds(1.5), clock: .continuous)
                 #endif
-                return Tripplan()
+                throw NSError(domain: "tripplan not available in demo mode", code: 0)
             } else {
-                return Tripplan()
+                throw NSError(domain: "tripplan not available in demo mode", code: 0)
             }
         } else {
             _ = try await checkAuthentication()

@@ -7,12 +7,14 @@
 
 import Foundation
 import ObjectMapper
+import MapKit
+import Polyline
 
 @available(macOS 13.1, *)
 public struct Tripplan: TKMappable {
     public var allValues: Map
   
-    public var polylines: String = ""
+    public var polylines: [[CLLocationCoordinate2D]] = [[CLLocationCoordinate2D]]()
     
     public var destination_soe: Double = 0.1
 
@@ -46,7 +48,15 @@ extension Tripplan: DataResponse {
         if status == "TRIP_PLAN_FAILURE_NOT_POSSIBLE" {
             error_message <- (map["error_message"])
         } else {
-            polylines <- (map["polylines"])
+            var polylinesString: [String] = []
+            polylinesString <- (map["polylines"])
+            for polyline in polylinesString {
+                let p = Polyline(encodedPolyline: polyline)
+                guard let decodedLocations = p.locations else { return }
+                var locations = [CLLocationCoordinate2D]()
+                locations = decodedLocations.map { CLLocationCoordinate2D(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)}
+                polylines.append(locations)
+            }
             destination_soe <- map["destination_soe"]
             origin_soe <- (map["origin_soe"])            
             total_drive_mi <- (map["total_drive_mi"])
@@ -74,6 +84,10 @@ public struct ChargingStop {
     public var drive_dur_s: Double = 0
     public var drive_distance_m: Double = 0
     public var max_power: Double = 0
+    
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
 }
 
 extension ChargingStop: DataResponse {
@@ -105,4 +119,20 @@ extension ChargingLocation {
         lat <- map["lat"]
         lng <- map["lng"]
     }
+}
+
+public func localizedTimeinSeconds(seconds: Double) -> String {
+    let formatter = DateComponentsFormatter()
+    formatter.unitsStyle = .short
+    formatter.allowedUnits = [.hour, .minute ]
+    formatter.zeroFormattingBehavior = [ .dropLeading]
+    return formatter.string(from: seconds) ?? "--"
+}
+
+public func localizedDistanceMile(distanceUnit: DistanceUnit, value: Double) -> String {
+    "\(String(format: "%.0f", distanceUnit == .metric ? value * Distance.distFactor : value)) \(distanceUnit.distanceUnit)"
+}
+
+public func localizedDistancekm(distanceUnit: DistanceUnit, value: Double) -> String {
+    "\(String(format: "%.0f", distanceUnit == .metric ? value : value / Distance.distFactor)) \(distanceUnit.distanceUnit)"
 }
