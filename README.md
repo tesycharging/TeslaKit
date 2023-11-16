@@ -191,6 +191,19 @@ Task { @MainActor in
 }
 ```
 
+## location data
+fetches the location data like gps dcoordinates
+```
+Task { @MainActor in
+    do {
+        let locationData: LoctionData = try await teslaAPI.getLocationData(vehicle.id)
+        //Process some code
+    } catch (let error) {
+        //Process error
+    }
+}
+```
+
 ## nearby Charging Sites	
 Fetches the nearby charging sites
 ```

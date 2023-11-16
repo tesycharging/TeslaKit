@@ -17,6 +17,7 @@ public class DemoTesla {
 	public var user: User = User()
 	public var vehicle: Vehicle?
 	public var vehicles: VehicleCollection = VehicleCollection()
+    public var locationData: LocationData?
     
     public var chargingState: ChargingState = ChargingState.disconnected
     public var chargePortLatch: ChargePortLatchState = ChargePortLatchState.disengaged
@@ -65,6 +66,12 @@ public class DemoTesla {
         var vehicles = [Vehicle]()
         vehicles.append(self.vehicle ?? Vehicle())
         self.vehicles = VehicleCollection(vehicles: vehicles)
+        
+        self.locationData = LocationData()
+        self.locationData?.status = .online
+        self.locationData?.driveState = DriveState()
+        self.locationData?.driveState.latitude = 46.49699
+        self.locationData?.driveState.longitude = 9.84191
 	}
     
     public func plug_unplug() {

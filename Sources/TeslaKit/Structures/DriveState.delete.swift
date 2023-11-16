@@ -10,12 +10,13 @@
 //  add func getPlacemark()
 //
 
-
+/*
 import Foundation
 import ObjectMapper
 import CoreLocation
 
 /// Response object containing information about the driving and position state of the vehicle
+@available(*, deprecated, message: "use location_data since API 2023.38.1")
 public struct DriveState {
     public var allValues: Map
 
@@ -135,3 +136,4 @@ extension CLLocation {
         }
     }
 }
+*/

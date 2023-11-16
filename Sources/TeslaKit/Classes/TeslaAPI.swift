@@ -251,6 +251,19 @@ extension TeslaAPI {
   public func getUser() async throws -> User? {
 	  return try await getVehicleData(.user)
   }
+    
+    /**
+        Fetches the location and drive status
+     */
+    public func getLocationData(_ vehicleID: String) async throws -> LocationData? {
+        _ = try await checkAuthentication()
+        if self.demoMode {
+            return DemoTesla.shared.locationData
+        } else {
+            let response = try await self.request(Endpoint.locationData(vehicleID: vehicleID), body: nullBody) as LocationData
+            return response
+        }
+    }
 	
     /**
     Fetchs the list of your vehicles including not yet delivered ones
