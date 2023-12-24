@@ -11,7 +11,7 @@ import Foundation
 import ObjectMapper
 
 /// Response object containing information about the charge state of the vehicle
-public struct LocationData {
+public struct EndpointData {
     public var allValues: Map
 	
 	 /// The unique identifier of the vehicle
@@ -41,8 +41,13 @@ public struct LocationData {
 	public var backseat_token: String = "" 
 	public var backseat_token_updated_at: String = ""
 	public var ble_autopair_enrolled: Bool = false 
-	
-	public var driveState = DriveState()
+
+    public var chargeState = ChargeState()
+    public var climateState = ClimateState()
+    public var driveState = DriveState()
+    public var guiSettings = GUISettings()
+    public var vehicleConfig = VehicleConfig()
+    public var vehicleState = VehicleState()
 	
 	public init() {
         allValues = Map(mappingType: .fromJSON, JSON: ["":""])
@@ -51,7 +56,7 @@ public struct LocationData {
 }
 
 @available(macOS 13.1, *)
-extension LocationData: DataResponse {
+extension EndpointData: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
         let isLocationData: Bool = !(map.JSON["id_s"] is String)
@@ -63,7 +68,13 @@ extension LocationData: DataResponse {
             status <- (map["response.state"], EnumTransform())
             tokens <- map["response.tokens"]
 			inService <- map["response.in_service"]
-            driveState <- map["response.drive_state"]
+            
+            chargeState <-  map["response.charge_state"]
+            climateState <-  map["response.climate_state"]
+            driveState  <- map["response.drive_state"]
+            guiSettings <-  map["response.gui_settings"]
+            vehicleConfig <-  map["response.vehicle_config"]
+            vehicleState <-  map["response.vehicle_state"]
 			
 			color <- map["response.color"]
 			access_type <- map["response.access_type"]

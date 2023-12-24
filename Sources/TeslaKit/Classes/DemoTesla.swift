@@ -17,7 +17,7 @@ public class DemoTesla {
 	public var user: User = User()
 	public var vehicle: Vehicle?
 	public var vehicles: VehicleCollection = VehicleCollection()
-    public var locationData: LocationData?
+    public var endpointData: EndpointData?
     
     public var chargingState: ChargingState = ChargingState.disconnected
     public var chargePortLatch: ChargePortLatchState = ChargePortLatchState.disengaged
@@ -63,16 +63,52 @@ public class DemoTesla {
         self.vehicle?.vehicleState.tpms_pressure_rl = 2.9
         self.vehicle?.vehicleState.tpms_pressure_rr = 2.9
         self.vehicle?.vehicleState.homelinkdevicecount = 1
+        self.vehicle?.driveState.latitude = 46.49699
+        self.vehicle?.driveState.longitude = 9.84191
         var vehicles = [Vehicle]()
         vehicles.append(self.vehicle ?? Vehicle())
         self.vehicles = VehicleCollection(vehicles: vehicles)
         
-        self.locationData = LocationData()
-        self.locationData?.status = .online
-        self.locationData?.driveState = DriveState()
-        self.locationData?.driveState.latitude = 46.49699
-        self.locationData?.driveState.longitude = 9.84191
+        self.endpointData = EndpointData()
+        self.endpointData?.status = .online
+        self.endpointData?.chargeState = self.vehicle?.chargeState ?? ChargeState()
+        self.endpointData?.climateState = self.vehicle?.climateState ?? ClimateState()
+        self.endpointData?.driveState = self.vehicle?.driveState ?? DriveState()
+        self.endpointData?.guiSettings = self.vehicle?.guiSettings ?? GUISettings()
+        self.endpointData?.vehicleConfig = self.vehicle?.vehicleConfig ?? VehicleConfig()
+        self.endpointData?.vehicleState = self.vehicle?.vehicleState ?? VehicleState()
 	}
+    
+    public func getEndpoint<T: DataResponse>(endpoint: VehicleEndpoint) -> T? {
+        var endpointData = EndpointData()
+        switch endpoint {
+        case .chargeState:
+            endpointData.chargeState = self.vehicle?.chargeState ?? ChargeState()
+        case .climateState:
+            endpointData.climateState = self.vehicle?.climateState ?? ClimateState()
+        case .closuresState:
+            let _ = endpointData
+        case .driveState:
+            endpointData.driveState = self.vehicle?.driveState ?? DriveState()
+        case .guiSettings:
+            endpointData.guiSettings = self.vehicle?.guiSettings ?? GUISettings()
+        case .locationData:
+            endpointData.driveState = self.vehicle?.driveState ?? DriveState()
+        case .vehicleConfig:
+            endpointData.vehicleConfig = self.vehicle?.vehicleConfig ?? VehicleConfig()
+        case .vehicleState:
+            endpointData.vehicleState = self.vehicle?.vehicleState ?? VehicleState()
+        case .vehicleDataCombo:
+            endpointData.chargeState = self.vehicle?.chargeState ?? ChargeState()
+            endpointData.climateState = self.vehicle?.climateState ?? ClimateState()
+            endpointData.driveState = self.vehicle?.driveState ?? DriveState()
+            endpointData.guiSettings = self.vehicle?.guiSettings ?? GUISettings()
+            endpointData.driveState = self.vehicle?.driveState ?? DriveState()
+            endpointData.vehicleConfig = self.vehicle?.vehicleConfig ?? VehicleConfig()
+            endpointData.vehicleState = self.vehicle?.vehicleState ?? VehicleState()
+        }
+        return endpointData as? T
+    }
     
     public func plug_unplug() {
         if (self.vehicle?.chargeState.chargePortDoorOpen ?? true) {

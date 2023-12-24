@@ -33,12 +33,14 @@ public class TeslaWebLoginViewController: ViewController {
     var webView = WKWebView()
     #endif
     private var continuation: CheckedContinuation<URL, Error>?
+    private var redirect_uri: String
 
     required init?(coder: NSCoder) {
         fatalError("not supported")
     }
 
-    init(url: URL) {
+    init(url: URL, redirect_uri: String) {
+        self.redirect_uri = redirect_uri
         super.init(nibName: nil, bundle: nil)
         webView.navigationDelegate = self
         #if targetEnvironment(macCatalyst)
@@ -60,7 +62,8 @@ public class TeslaWebLoginViewController: ViewController {
 
 extension TeslaWebLoginViewController: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let url = navigationAction.request.url, url.absoluteString.starts(with: "https://auth.tesla.com/void/callback") {
+        //if let url = navigationAction.request.url, url.absoluteString.starts(with: "https://auth.tesla.com/void/callback") {
+        if let url = navigationAction.request.url, url.absoluteString.starts(with: redirect_uri) {
             decisionHandler(.cancel)
             #if os(macOS)
             self.continuation?.resume(returning: url)
@@ -80,7 +83,7 @@ extension TeslaWebLoginViewController: WKNavigationDelegate {
         self.dismiss(navigation)
         #else
         self.dismiss(animated: true) {
-            self.continuation?.resume(throwing: TeslaError.authenticationFailed(msg: "dismiss"))
+            self.continuation?.resume(throwing: TeslaError.authenticationFailed(code: 0, msg: "dismiss"))
         }
         #endif
     }
@@ -139,14 +142,14 @@ public struct WebLogin: ViewControllerRepresentable {
     public func makeUIViewController(context: Context) -> TeslaWebLoginViewController {
         let (webloginViewController, result) = teslaAPI.authenticateWeb()
         guard let safeWebloginViewController = webloginViewController else {
-            return TeslaWebLoginViewController(url: URL(string: "https://www.tesla.com")!)
+            return TeslaWebLoginViewController(url: URL(string: "https://www.tesla.com")!, redirect_uri: "")
         }
         
         Task { @MainActor in
             do {
                 _ = try await result()
                 guard let token = teslaAPI.token else {
-                    self.result = Result.failure(TeslaError.internalError)
+                    self.result = Result.failure(TeslaError.authenticationFailed(code: 0, msg: "no token"))
                     self.action()
                     return
                 }

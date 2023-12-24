@@ -20,46 +20,88 @@ import os
 
 
 public enum TeslaError: Error, Equatable {
-    case networkError(error: NSError)
-    case authenticationRequired
-    case authenticationFailed(msg: String)
-    case tokenRevoked
-    case noTokenToRefresh
-    case tokenRefreshFailed
-    case invalidOptionsForCommand
-    case failedToParseData
-    case failedToReloadVehicle
-    case internalError 
+    public static func == (lhs: TeslaError, rhs: TeslaError) -> Bool {
+        true
+    }
+
+    case networkError(msg: String)
+    case authenticationRequired(code: Int, msg: String)
+    case authenticationFailed(code: Int, msg: String)
+    case failedToParseData(code: Int, msg: String)
     
     public var description: String {
         switch self {
-        case .networkError(let error):
-            return "Network Error: \(error)"
-        case .authenticationRequired: return "Authentication Required"
-        case .authenticationFailed: return "Authentication Failed"
-        case .tokenRevoked: return "Token Revoked"
-        case .noTokenToRefresh: return "No Token To Refresh"
-        case .tokenRefreshFailed: return "Token Refresh Failed"
-        case .invalidOptionsForCommand: return "Invalid Options For Command"
-        case .failedToParseData: return "Failed To Parse Data"
-        case .failedToReloadVehicle: return "Failed To Reload Vehicle"
-        case .internalError: return "Internal Error"
+        case .networkError(let msg): return "Network Error: \(msg)"
+        case .authenticationRequired(let code, let msg): return "Authentication Required: Error \(code) \(msg)"
+        case .authenticationFailed(let code, let msg): return "Authentication Failed: Error \(code) \(msg)"
+        case .failedToParseData(let code, let msg): return "Failed To Parse Data: Error \(code) \(msg)"
         }
     }
 }
 
-private var nullBody = ""
+public enum AuthorizationScope: String {
+    case openid = "openid"
+    case offline_access = "offline_access"
+    case user_data = "user_data"
+    case vehicle_device_data = "vehicle_device_data"
+    case vehicle_cmds = "vehicle_cmds"
+    case vehicle_charging_cmds = "vehicle_charging_cmds"
+    case energy_device_data = "energy_device_data"
+    case energy_cmds = "energy_cmds"
+}
 
 open class TeslaAPI: NSObject, URLSessionDelegate {
     open var debuggingEnabled = false
 	open var demoMode = false
     open var addDemoVehicle = true
+    public var officialAPI = true
+    public var authTokenReqest: AuthTokenRequestWeb
+    public var authCodeRequest: AuthCodeRequest
+    public let domain: String
 
     open fileprivate(set) var token: AuthToken?
+    open fileprivate(set) var fleet_api_base_url: String = ""
     
     private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: TeslaAPI.self))
+    
+    /**
+     initializing the unofficial API
+     */
+    public override init () {
+        self.officialAPI = false
+        self.authTokenReqest = AuthTokenRequestWeb(clientID: "", client_secret: "", scope: "")
+        self.authCodeRequest = AuthCodeRequest(clientID: "", redirect_uri: "", scope: "")
+        self.domain = ""
+    }
+    
+    /**
+     initalizing the official API
+     - clientID: Partner application client id.
+     - client_secret:  Partner application client secret.
+     - domain: Partner domain used to validate registration flow.
+     - redirect_uri:  Partner application callback url, spec: rfc6749.
+     - authorizationScope: list of scopes.
+     */
+    public init(clientID: String, client_secret: String, domain: String, redirect_uri: String, authorizationScope: [AuthorizationScope] = [.openid, .offline_access, .user_data, .vehicle_device_data, .vehicle_cmds, .vehicle_charging_cmds]) {
+        self.officialAPI = true
+        self.authTokenReqest = AuthTokenRequestWeb(clientID: clientID, client_secret: client_secret, scope: authorizationScope.map({$0.rawValue}).joined(separator: " "))
+        self.authCodeRequest = AuthCodeRequest(clientID: clientID, redirect_uri: redirect_uri, scope: authorizationScope.map({$0.rawValue}).joined(separator: " "))
+        self.domain = domain
+    }
+    
 }
 
+@available(macOS 13.1, *)
+extension TeslaAPI {
+    /**
+     #1: Generating a partner authentication token by POST https://auth.tesla.com/oauth2/v3/token
+     #2: register by POST https://fleet-api.prd.na.vn.cloud.tesla.com/api/1/partner_accounts
+     */
+    public func registerThirdPartyAPI() async throws {
+        let partnerToken: AuthToken = try await self.request(Endpoint.oAuth2PartnerAuthorization, parameter: self.authTokenReqest.toJSON(), token: nil)
+        let _: CommandResponse = try await self.request(Endpoint.register, parameter: RegisterAccount(domain: domain).toJSON(), token: partnerToken)
+    }
+}
 
 @available(macOS 13.1, *)
 extension TeslaAPI {
@@ -69,17 +111,19 @@ extension TeslaAPI {
     }
  
 	/**
-     Performs the authentition with the Tesla API for web logins
+      #3 Generating a third-party token on behalf of a customer initiate the authorization code flow, direct the customer to an /authorize request by GET https://auth.tesla.com/oauth2/v3/authorize
+     
+        Performs the authentition with the Tesla API for web logins
 
-     For MFA users, this is the only way to authenticate.
-     If the token expires, a token refresh will be done
+      For MFA users, this is the only way to authenticate.
+      If the token expires, a token refresh will be done
 
-     - returns: A ViewController that your app needs to present. This ViewContoller will ask the user for his/her Tesla credentials, MFA code if set and then desmiss on successful authentication
-	 An async function that returns when the token as been retrieved
+      - returns: A ViewController that your app needs to present. This ViewContoller will ask the user for his/her Tesla credentials, MFA code if set and then desmiss on successful authentication
+	  An async function that returns when the token as been retrieved
      */
     //#if canImport(WebKit) && canImport(UIKit)
     public func authenticateWeb() -> (TeslaWebLoginViewController?, () async throws -> AuthToken) {
-        let codeRequest = AuthCodeRequest()
+        let codeRequest = !officialAPI ? AuthCodeRequest() : self.authCodeRequest
         let endpoint = Endpoint.oAuth2Authorization(auth: codeRequest)
         var urlComponents = URLComponents(string: endpoint.baseURL())
         urlComponents?.path = endpoint.path
@@ -87,91 +131,82 @@ extension TeslaAPI {
         
         guard let safeUrlComponents = urlComponents else {
             func error() async throws -> AuthToken {
-                throw TeslaError.authenticationFailed(msg: "")
+                throw TeslaError.authenticationFailed(code: 0, msg: "")
             }
             return (nil, error)
         }
-        let teslaWebLoginViewController = TeslaWebLoginViewController(url: safeUrlComponents.url!)
+        let teslaWebLoginViewController = TeslaWebLoginViewController(url: safeUrlComponents.url!, redirect_uri: codeRequest.redirectURI)
         
         func result() async throws -> AuthToken {
             let url = try await teslaWebLoginViewController.result()
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             if let queryItems = urlComponents?.queryItems, let code = queryItems.first(where: { $0.name == "code" })?.value, let state = queryItems.first(where: { $0.name == "state" }) {
                 if "\(state)" == "state=\(codeRequest.state)" {
-                    return try await self.getAuthenticationTokenForWeb(codeRequest.codeVerifier, code: code)
+                    return try await self.getAuthenticationTokenForWeb(codeRequest.codeVerifier ?? "", code: code)
                 } else {
-                    throw TeslaError.authenticationFailed(msg: "state is different in callback")
+                    throw TeslaError.authenticationFailed(code: 0, msg: "state is different in callback")
                 }
             }
-            throw TeslaError.authenticationFailed(msg: "no code parameter in callback")
-       }
-       return (teslaWebLoginViewController, result)
+            throw TeslaError.authenticationFailed(code: 0, msg: "no code parameter in callback")
+        }
+        return (teslaWebLoginViewController, result)
     }
     //#endif
     
+    /**
+     #4: Execute a code exchange call to generate a token by POST https://auth.tesla.com/oauth2/v3/token
+     */
     private func getAuthenticationTokenForWeb(_ codeVerifier: String = "", code: String) async throws -> AuthToken {
-        let body = AuthTokenRequestWeb(codeVerifier, code: code)
-
-        do {
-            let token: AuthToken = try await request(.oAuth2Token, body: body)
-            self.token = token
-            return token
-        } catch let error {
-            if case let TeslaError.networkError(error: internalError) = error {
-                if internalError.code == 302 || internalError.code == 403 {
-                    return try await self.request(.oAuth2TokenCN, body: body)
-                } else if internalError.code == 401 {
-                    throw TeslaError.authenticationFailed(msg: "")
-                } else {
-                    throw error
-                }
-            } else {
-                throw error
-            }
-        }
-    }
-    
-    @available(macOS 13.1, *)
-    public func getAuthenticationTokenForWeb(_ codeVerifier: String = "", code: String, completion: @escaping(Result<AuthToken, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let token: AuthToken = try await getAuthenticationTokenForWeb(codeVerifier, code: code)
-                completion(Result.success(token))
-            } catch let error {
-                completion(Result.failure(error))
-            }
-        }
+        let parameter = !officialAPI ? AuthTokenRequestWeb(codeVerifier, code: code) : AuthTokenRequestWeb(clientID: authTokenReqest.clientID, client_secret: authTokenReqest.client_secret, redirect_uri: authCodeRequest.redirectURI, code: code)
+        let token: AuthToken = try await request(.oAuth2Token, parameter: parameter.toJSON())
+        self.token = token
+        fleet_api_base_url = try await getRegion()
+        return token
     }
     
     /**
+     #5: Use the refresh_token to generate new tokens and obtain refresh tokens by Post https://auth.tesla.com/oauth2/v3/token
+     
      Performs the token refresh with the Tesla API for Web logins
 
      - returns: The AuthToken.
 	 An async function that returns when the token as been requested
      */
     public func refreshWebToken() async throws -> AuthToken {
-        guard let token = self.token else { throw TeslaError.noTokenToRefresh }
-        let body = AuthTokenRequestWeb(grantType: .refreshToken, refreshToken: token.refreshToken)
-
-        do {
-            let authToken: AuthToken = try await request(.oAuth2Token, body: body)
-            self.token = authToken
-            return authToken
-        } catch let error {
-            if case let TeslaError.networkError(error: internalError) = error {
-                if internalError.code == 302 || internalError.code == 403 {
-                    //Handle redirection for tesla.cn
-                    return try await self.request(.oAuth2TokenCN, body: body)
-                } else if internalError.code == 401 {
-                    throw TeslaError.tokenRefreshFailed
-                } else {
-                    throw error
-                }
+        guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no valid token") }
+        let parameter = !officialAPI ? AuthTokenRequestWeb(grantType: .refreshToken, refreshToken: token.refreshToken) : AuthTokenRequestWeb(grantType: .refreshToken, clientID: authTokenReqest.clientID, refreshToken: token.refreshToken)
+        let authToken: AuthToken = try await request(.oAuth2Token, parameter: parameter.toJSON())
+        self.token = authToken
+        fleet_api_base_url = try await getRegion()
+        return authToken
+    }
+    
+    /**
+     #6: region by GET https://fleet-api.prd.na.vn.cloud.tesla.com/api/1/users/region
+     -returns https://fleet-api.prd.na.vn.cloud.tesla.com or https://fleet-api.prd.eu.vn.cloud.tesla.com
+     */
+    public func getRegion() async throws -> String {
+        func getRegion<T: DataResponse>() async throws -> T? {
+            let response = try await self.request(.region, token: token) as T
+            return response
+        }
+        
+        if officialAPI  {
+            if (fleet_api_base_url == "") {
+                guard let regionAccount: RegionAccount = try await getRegion() else { return "" }
+                fleet_api_base_url = regionAccount.fleet_api_base_url
+                return regionAccount.fleet_api_base_url
             } else {
-                throw error
+                return fleet_api_base_url
             }
+        } else {
+            fleet_api_base_url = "https://owner-api.teslamotors.com"
+            return "https://owner-api.teslamotors.com"
         }
     }
+    
+    
+    
     
   
     /**
@@ -202,7 +237,7 @@ extension TeslaAPI {
         _ = try await checkAuthentication()
         token = nil
 
-        let response: BoolResponse = try await request(.oAuth2revoke(token: accessToken), body: nullBody)
+        let response: BoolResponse = try await request(.oAuth2revoke(token: accessToken))
         return response.response
     }
     
@@ -226,15 +261,16 @@ extension TeslaAPI {
         if self.demoMode {
             return AuthToken(accessToken: "demo")
         } else {
-            guard let token = self.token else { throw TeslaError.authenticationRequired }
+            guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no valid token") }
         
             if self.isAuthenticated {
                 return token
             } else {
                 if token.refreshToken != nil {
-                    return try await refreshWebToken()
+                    self.token = try await refreshWebToken()
+                    return self.token!
                 } else {
-                    throw TeslaError.authenticationRequired
+                    throw TeslaError.authenticationRequired(code: 0, msg: "no valid token")
                 }
             }
         }
@@ -249,18 +285,18 @@ extension TeslaAPI {
   - returns email, fullname and url to profile image
   */
   public func getUser() async throws -> User? {
-	  return try await getVehicleData(.user)
+	  return try await getVehicleData(.user(fleet_api_base_url: fleet_api_base_url))
   }
     
     /**
-        Fetches the location and drive status
+        Fetches the endpoint, e.g. location_datas
      */
-    public func getLocationData(_ vehicleID: String) async throws -> LocationData? {
+    public func getLEndpoint<T: DataResponse>(_ vehicleID: String, endpoint: VehicleEndpoint) async throws -> T? {
         _ = try await checkAuthentication()
         if self.demoMode {
-            return DemoTesla.shared.locationData
+            return DemoTesla.shared.getEndpoint(endpoint: endpoint)
         } else {
-            let response = try await self.request(Endpoint.locationData(vehicleID: vehicleID), body: nullBody) as LocationData
+            let response = try await self.request(Endpoint.vehicleEndpoint(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID, endpoint: endpoint), token: token) as T
             return response
         }
     }
@@ -275,7 +311,7 @@ extension TeslaAPI {
         if self.demoMode {
             return ["VIN#DEMO_#TESTING":DemoTesla.shared.vehicle!]
         } else {
-			let response: VehicleCollection = try await request(.vehicles, body: nullBody)
+			let response: VehicleCollection = try await request(.vehicles(fleet_api_base_url: fleet_api_base_url), token: token)
             var dict = [String:Vehicle]()
             for element in response.vehicles {
                 dict[element.vin?.vinString ?? ""] = element
@@ -309,27 +345,17 @@ extension TeslaAPI {
             switch method {
             case .vehicles:
                 return ([DemoTesla.shared.vehicle!] as! T)
-            case .allStates(_), .vehicleSummary(_):
+            case .allStates(_,_), .vehicleSummary(_,_):
                 return ((DemoTesla.shared.vehicle)! as! T)
-            case .chargeState(_):
-                return (DemoTesla.shared.vehicle!.chargeState as! T)
-            case .climateState(_):
-                return (DemoTesla.shared.vehicle!.climateState as! T)
-            case .driveState(_):
-                return (DemoTesla.shared.vehicle!.driveState as! T)
-            case .guiSettings(_):
-                return (DemoTesla.shared.vehicle!.guiSettings as! T)
-            case .vehicleState(_):
-                return (DemoTesla.shared.vehicle!.vehicleState as! T)
-            case .vehicleConfig(_):
-                return (DemoTesla.shared.vehicle!.vehicleConfig as! T)
-            case . user:
+            case .user:
                 return (DemoTesla.shared.user as! T)
+            case .region:
+                return (RegionAccount() as! T)
             default:
-                throw TeslaError.failedToParseData
+                throw TeslaError.failedToParseData(code: 0, msg: "\(method) is not implemented")
             }
         } else {
-            let response = try await self.request(method, body: nullBody) as T
+            let response = try await self.request(method, token: token) as T
             return response
         }
     }
@@ -341,7 +367,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicle(_ vehicleID: String) async throws -> Vehicle? {
-        return try await getVehicleData(.allStates(vehicleID: vehicleID))
+        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID))
     }
 	
 	/**
@@ -350,7 +376,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicle(_ vehicle: Vehicle) async throws -> Vehicle? {
-        return try await getVehicleData(.allStates(vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
+        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
     }
 	
 	/**
@@ -359,7 +385,7 @@ extension TeslaAPI {
      - returns: A completion handler with all the data
      */
     public func getAllData(_ vehicle: Vehicle) async throws -> Vehicle? {
-		return try await getVehicleData(.allStates(vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
+        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
 	}
 	
 	/**
@@ -372,7 +398,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: MobileAccess = try await self.request(Endpoint.mobileAccess(vehicleID: vehicle.id), body: nullBody)
+            let response: MobileAccess = try await self.request(Endpoint.mobileAccess(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
             return response.response
         }
     }
@@ -402,7 +428,7 @@ extension TeslaAPI {
             return sites
         } else {
             _ = try await checkAuthentication()
-            let response: Chargingsites = try await self.request(Endpoint.nearbyChargingSites(vehicleID: vehicle.id), body: nullBody)
+            let response: Chargingsites = try await self.request(Endpoint.nearbyChargingSites(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
             return response
         }
     }
@@ -417,7 +443,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            _ = try await self.request(Endpoint.wakeUp(vehicleID: vehicle.id), body: nullBody) as Vehicle
+            _ = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
             return true
         }
 	}
@@ -426,28 +452,24 @@ extension TeslaAPI {
 
 @available(macOS 13.1, *)
 extension TeslaAPI {
-    func prepareRequest<BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) -> URLRequest {
+    func prepareRequest(_ endpoint: Endpoint, parameter: Any? = nil, token: AuthToken?) -> URLRequest {
         var urlComponents = URLComponents(url: URL(string: endpoint.baseURL())!, resolvingAgainstBaseURL: true)
         urlComponents?.path = endpoint.path
         urlComponents?.queryItems = endpoint.queryParameters
         var request = URLRequest(url: urlComponents!.url!)
         request.httpMethod = endpoint.method
-        //request.setValue("curl / 6.14.0", forHTTPHeaderField: "User-Agent")
 
-        if let token = self.token?.accessToken {
+        if let token = token?.accessToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-    
-        if let body = body as? String, body == nullBody {
-        } else {
-			let encoder = JSONEncoder()
-			encoder.outputFormatting = .prettyPrinted
-			encoder.dateEncodingStrategy = .secondsSince1970
-            request.httpBody = try? encoder.encode(body)
-            request.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "content-type")
         }
         
         if let parameter = parameter {
+            if debuggingEnabled {
+                TeslaAPI.logger.debug("method: \(endpoint.method), privacy: .public)")
+                TeslaAPI.logger.debug("baseURL: \(endpoint.baseURL()), privacy: .public)")
+                TeslaAPI.logger.debug("path: \(endpoint.path), privacy: .public)")
+                TeslaAPI.logger.debug("queryParameters: \(endpoint.queryParameters), privacy: .public)")
+            }
             request.setValue("application/json", forHTTPHeaderField: "content-type")
             request.setValue("no-cache", forHTTPHeaderField: "cache-control")
             request.httpBody = try? JSONSerialization.data(withJSONObject: parameter)
@@ -457,9 +479,9 @@ extension TeslaAPI {
     }
             
 	
-    public func request<T: Mappable, BodyType: Encodable>(_ endpoint: Endpoint, body: BodyType, parameter: Any? = nil) async throws -> T {
+    public func request<T: Mappable>(_ endpoint: Endpoint, parameter: Any? = nil, token: AuthToken? = nil) async throws -> T {
         // Create the request
-        let request = prepareRequest(endpoint, body: body, parameter: parameter)
+        let request = prepareRequest(endpoint, parameter: parameter, token: token)
         let debugEnabled = debuggingEnabled
         if debugEnabled {
             TeslaAPI.logger.debug("url: \(request.url!), privacy: .public)")
@@ -483,13 +505,13 @@ extension TeslaAPI {
                     if let data = data, let response = response {
                         continuation.resume(with: .success((data, response)))
                     } else {
-                        continuation.resume(with: .failure(error ?? TeslaError.internalError))
+                        continuation.resume(with: .failure(error ?? TeslaError.failedToParseData(code: 0, msg: "internal")))
                     }
                 }
             }
         }
         
-        guard let httpResponse = response as? HTTPURLResponse else { throw TeslaError.failedToParseData }
+        guard let httpResponse = response as? HTTPURLResponse else { throw TeslaError.failedToParseData(code: 0, msg: "no HTTPResponse") }
         if debugEnabled {
             TeslaAPI.logger.debug("RESPONSE: \(httpResponse.url!), privacy: .public)")
             TeslaAPI.logger.debug("STATUS CODE: \(httpResponse.statusCode), privacy: .public)")
@@ -497,37 +519,63 @@ extension TeslaAPI {
             TeslaAPI.logger.debug("DATA: \(String(data: data, encoding: .utf8) ?? ""), privacy: .public)")
         }
         
-        if case 200..<300 = httpResponse.statusCode {
+        switch httpResponse.statusCode {
+        case 200,201:
+            //200: The request was handled successfully;201: The record was created successfully.
             // Attempt to serialize the response JSON and map to TeslaKit objects
             do {
                 let json: Any = try JSONSerialization.jsonObject(with: data)
                 guard let mappedVehicle = Mapper<T>().map(JSONObject: json) else {
-                    throw TeslaError.failedToParseData
+                    throw TeslaError.failedToParseData(code: httpResponse.statusCode, msg: String(data: data, encoding: .utf8) ?? "failed to map to type")
                 }
                 return mappedVehicle
             } catch let error {
                 TeslaAPI.logger.debug("\(error.localizedDescription), privacy: .public)")
-                throw TeslaError.failedToParseData
+                throw TeslaError.failedToParseData(code: httpResponse.statusCode, msg: String(data: data, encoding: .utf8) ?? "failed to map to type")
             }
-        } else if httpResponse.statusCode == 401 || httpResponse.statusCode == 400{
-            throw TeslaError.authenticationFailed(msg: String(data: data, encoding: .utf8) ?? "")
-        } else {
-            if debugEnabled {
-                let objectString = String.init(data: data, encoding: String.Encoding.utf8) ?? "No Body"
-                TeslaAPI.logger.debug("RESPONSE BODY ERROR: \(objectString), privacy: .public)")
+        case 400, 401, 402, 403, 404, 405, 406, 408, 412, 418, 421, 422, 423, 429, 451, 499, 500, 503, 504, 540:
+            //case 400: Bad Request
+            //case 401: Unauthorized
+            //case 402: Payment Required
+            //case 403: Forbidden
+            //case 404: Not Found
+            //case 405: Not Allowed
+            //case 406: Not Acceptable
+            //case 408: Device Not Available
+            //case 412: Precondition Failed
+            //case 418: Client Too Old (Not supported)
+            //case 421: Incorrect region
+            //case 422: Invalid Resource
+            //case 423: Locked
+            //case 429: Rate limited
+            //case 451: Resource Unavailable For Legal Reasons
+            //case 499: Client Closed Request
+            //case 500: Internal server error
+            //case 503: Service Unavailable
+            //case 504: Gateway Timeout
+            //case 540: Device Unexpected response
+            let json: Any = try JSONSerialization.jsonObject(with: data)
+            guard let mappedError = Mapper<ErrorMessage>().map(JSONObject: json) else {
+                throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: String(data: data, encoding: .utf8) ?? "")
             }
-            if let wwwauthenticate = httpResponse.allHeaderFields["Www-Authenticate"] as? String,
-               wwwauthenticate.contains("invalid_token") {
-                throw TeslaError.tokenRevoked
-            } else if httpResponse.allHeaderFields["Www-Authenticate"] != nil, httpResponse.statusCode == 401 {
-                throw TeslaError.authenticationFailed(msg: String(data: data, encoding: .utf8) ?? "")
+            TeslaAPI.logger.debug("\(mappedError.toJSON()), privacy: .public)")
+            if mappedError.error == "invalid bearer token" {
+                throw TeslaError.authenticationRequired(code: httpResponse.statusCode, msg: mappedError.error)
             } else {
-                let json: Any = try JSONSerialization.jsonObject(with: data)
-                guard let mappedVehicle = Mapper<T>().map(JSONObject: json) else {
-                    throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo: ["ErrorInfo": TeslaError.failedToParseData]))
-                }
-                throw TeslaError.networkError(error: NSError(domain: "TeslaError", code: httpResponse.statusCode, userInfo:["ErrorInfo": mappedVehicle]))
+                throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: mappedError.toJSONString() ?? "")
             }
+        default:
+            let json: Any = try JSONSerialization.jsonObject(with: data)
+            guard let mappedError = Mapper<ErrorMessage>().map(JSONObject: json) else {
+                if let wwwauthenticate = httpResponse.allHeaderFields["Www-Authenticate"] as? String,
+                   wwwauthenticate.contains("invalid_token") {
+                    throw TeslaError.authenticationRequired(code: httpResponse.statusCode, msg: "invalid token")
+                } else {
+                    throw TeslaError.networkError(msg: String(data: data, encoding: .utf8) ?? "")
+                }
+            }
+            TeslaAPI.logger.debug("\(mappedError.toJSON()), privacy: .public)")
+            throw TeslaError.networkError(msg: mappedError.toJSONString() ?? "network error")
         }
     }
 
@@ -753,7 +801,7 @@ extension TeslaAPI {
             }
         } else {
             _ = try await checkAuthentication()
-            let response: CommandResponse = try await self.request(Endpoint.command(vehicleID: vehicle.id, command: command), body: nullBody, parameter: parameter?.toJSON())
+            let response: CommandResponse = try await self.request(Endpoint.command(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id, command: command), parameter: parameter?.toJSON(), token: token)
             return response
         }
 	}
@@ -776,7 +824,7 @@ extension TeslaAPI {
             }
         } else {
             _ = try await checkAuthentication()
-            let response: Tripplan = try await self.request(Endpoint.tripplan, body: nullBody, parameter: parameter.toJSON())
+            let response: Tripplan = try await self.request(Endpoint.tripplan(fleet_api_base_url: fleet_api_base_url), parameter: parameter.toJSON(), token: token)
             return response
         }
     }
