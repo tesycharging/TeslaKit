@@ -51,7 +51,7 @@ public enum AuthorizationScope: String {
 }
 
 open class TeslaAPI: NSObject, URLSessionDelegate {
-    open var debuggingEnabled = true
+    open var debuggingEnabled = false
 	open var demoMode = false
     open var addDemoVehicle = true
     public var officialAPI = true
