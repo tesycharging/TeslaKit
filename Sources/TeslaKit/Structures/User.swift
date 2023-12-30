@@ -28,10 +28,30 @@ public struct User: TKMappable {
 extension User: DataResponse {
     public mutating func mapping(map: Map) {
         allValues = map
-        email <- (map["response.email"])
+        email <- map["response.email"]
         full_name <- map["response.full_name"]
-        var url = ""
-        url <- map["response.profile_image_url"]
-        profile_image_url = URL(string: url)!
+        profile_image_url <- (map["response.profile_image_url"], URLTransform())
+    }
+}
+
+public struct URLTransform: TransformType {
+    
+    ///
+    public typealias Object = URL
+    
+    ///
+    public typealias JSON = String
+    
+    ///
+    public func transformFromJSON(_ value: Any?) -> URL? {
+        guard let value = value as? String else { return nil }
+        let url = URL(string: value)
+        return url
+    }
+    
+    ///
+    public func transformToJSON(_ value: URL?) -> String? {
+        let urlStringOrNil: String? = value?.description
+        return urlStringOrNil
     }
 }

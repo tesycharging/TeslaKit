@@ -102,6 +102,7 @@ Task { @MainActor in
             try await teslaAPI.registerThirdPartyAPI()
         }
     } catch (let error) {
+            //Process error
     }
 }
 ```
@@ -113,8 +114,9 @@ Uses the WebLogin provided by Tesla
 WebLogin(teslaAPI: teslaAPI, result: $result, action: {
     switch result {
     case .success(let token):
-        UserDefaults.group.teslatoken = token.toJSONString()
+            UserDefaults.group.teslatoken = token.toJSONString()
     case .failure(let error):
+            //Process error
     }
 })
 ```
@@ -190,31 +192,7 @@ Obtain all data for a vehicle
 ```
 Task { @MainActor in
     do {
-        guard let current_vehicle = try await teslaAPI.getVehicle(vehicle) else { return }
-        //Process some code
-    } catch let error {
-        //Process error
-    }
-}
-```
-
-Generic approach to obtain all data or specific data, e.g. driveState
-```
-Task { @MainActor in
-    do {
-        guard let current_vehicle = try await teslaAPI.getVehicleData(.allStates(vehicleID: vehicle.id)) else { return }
-        //Process some code
-    } catch let error {
-        //Process error
-    }
-}
-```
-
-or specific data, e.g. driveState    
-```
-Task { @MainActor in
-    do {
-        guard let driveState = try await teslaAPI.getVehicleData(.driveState(vehicleID: vehicle.id)) else { return }
+        guard let current_vehicle = try await teslaAPI.getAllData(vehicle) else { return }
         //Process some code
     } catch let error {
         //Process error
@@ -227,7 +205,7 @@ fetches the location data like gps dcoordinates
 ```
 Task { @MainActor in
     do {
-        let endpointData: EndpointData = try await teslaAPI.getLEndpoint(id, endpoint: .locationData)
+        let endpointData: EndpointData = try await teslaAPI.getEndpoint(id, endpoint: .locationData)
         //Process some code
     } catch (let error) {
         //Process error

@@ -51,7 +51,7 @@ public enum AuthorizationScope: String {
 }
 
 open class TeslaAPI: NSObject, URLSessionDelegate {
-    open var debuggingEnabled = false
+    open var debuggingEnabled = true
 	open var demoMode = false
     open var addDemoVehicle = true
     public var officialAPI = true
@@ -291,7 +291,7 @@ extension TeslaAPI {
     /**
         Fetches the endpoint, e.g. location_datas
      */
-    public func getLEndpoint<T: DataResponse>(_ vehicleID: String, endpoint: VehicleEndpoint) async throws -> T? {
+    public func getEndpoint<T: DataResponse>(_ vehicleID: String, endpoint: VehicleEndpoint) async throws -> T? {
         _ = try await checkAuthentication()
         if self.demoMode {
             return DemoTesla.shared.getEndpoint(endpoint: endpoint)
@@ -360,12 +360,31 @@ extension TeslaAPI {
         }
     }
     
+    
+    /**
+    Fetchs the summary of a vehicle
+    
+    - returns: A Vehicle.
+    */
+    public func getVehicleInfo(_ vehicleID: String) async throws -> Vehicle? {
+        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID))
+    }
+    
+   /**
+    Fetchs the summary of a vehicle
+    
+    - returns: A Vehicle.
+    */
+    public func getVehicleInfo(_ vehicle: Vehicle) async throws -> Vehicle? {
+        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id))
+    }
 	
 	/**
     Fetchs the summary of a vehicle
     
     - returns: A Vehicle.
     */
+    @available(*, deprecated, message: "getAllData")
     public func getVehicle(_ vehicleID: String) async throws -> Vehicle? {
         return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID))
     }
@@ -375,6 +394,7 @@ extension TeslaAPI {
     
     - returns: A Vehicle.
     */
+    @available(*, deprecated, message: "getAllData")
     public func getVehicle(_ vehicle: Vehicle) async throws -> Vehicle? {
         return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
     }
@@ -447,6 +467,36 @@ extension TeslaAPI {
             return true
         }
 	}
+    
+    public func chargingHistory(_ vehicle: Vehicle) async throws -> [ChargingSession] {
+        if demoMode {
+            return [ChargingSession]()
+        } else {
+            _ = try await checkAuthentication()
+            let chargingHistory: ChargingHistory = try await self.request(Endpoint.charging_history(fleet_api_base_url: fleet_api_base_url, query: [URLQueryItem(name: "vin", value: vehicle.vin?.vinString),URLQueryItem(name: "startTime", value: "2023-10-10T10:00:00+01:00")]), token: token)
+            return chargingHistory.data
+        }
+    }
+    
+    public func optionCodes(_ vehicle: Vehicle) async throws -> [OptionCode] {
+        if demoMode {
+            return [OptionCode]()
+        } else {
+            _ = try await checkAuthentication()
+            let optionCodes: OptionCodes = try await self.request(Endpoint.options(fleet_api_base_url: fleet_api_base_url, vin: vehicle.vin?.vinString ?? ""), token: token)
+            return optionCodes.codes
+        }
+    }
+    
+    public func getRecentAlerts(_ vehicle: Vehicle) async throws -> [Recent_Alert] {
+        if demoMode {
+            return [Recent_Alert]()
+        } else {
+            _ = try await checkAuthentication()
+            let recentAlerts: Alerts = try await self.request(Endpoint.recent_alerts(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
+            return recentAlerts.recent_alerts
+        }
+    }
     
 }
 
@@ -560,7 +610,7 @@ extension TeslaAPI {
             }
             TeslaAPI.logger.debug("\(mappedError.toJSON()), privacy: .public)")
             if mappedError.error == "invalid bearer token" {
-                throw TeslaError.authenticationRequired(code: httpResponse.statusCode, msg: mappedError.error)
+                throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: mappedError.error)
             } else {
                 throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: mappedError.toJSONString() ?? "")
             }
@@ -790,6 +840,10 @@ extension TeslaAPI {
                         DemoTesla.shared.vehicle?.climateState.seatHeaterRight = 0
                     }
                 }
+            case .take_drivenote:
+                response.result = false
+                response.reason = "not implemented"
+                TeslaAPI.logger.debug("not implemented, privacy: .public)")
             }
             if #available(iOS 16.0, *) {
                 #if !os(macOS)

@@ -140,6 +140,8 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
     case openWindow = "window_control"
 	
 	case setClimateMode = "set_climate_keeper_mode"
+    
+    case take_drivenote = "take_drivenote"
 
     ///
     public var description: String {

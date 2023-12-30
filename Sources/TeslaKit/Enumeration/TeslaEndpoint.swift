@@ -32,6 +32,10 @@ public enum Endpoint {
 
     case user(fleet_api_base_url: String)
     case tripplan(fleet_api_base_url: String)
+    case charging_history(fleet_api_base_url: String, query: [URLQueryItem])
+    case options(fleet_api_base_url: String, vin: String)
+    case recent_alerts(fleet_api_base_url: String, vehicleID: String)
+    case signed_command(fleet_api_base_url: String, vehicleID: String)
 	
     /*case getEnergySiteStatus(siteID: String)
     case getEnergySiteLiveStatus(siteID: String)
@@ -96,6 +100,14 @@ extension Endpoint {
             return "/api/1/users/me"
         case .tripplan:
             return "/trip-planner/api/v1/tripplan"
+        case .charging_history:
+            return "/api/1/dx/charging/history"
+        case .options:
+            return "/api/1/dx/vehicles/options"
+        case .recent_alerts(_,  let vehicleID):
+            return "/api/1/vehicles/\(vehicleID)/recent_alerts"
+        case .signed_command(_, let vehicleID):
+            return "/api/1/vehicles/\(vehicleID)/signed_command"
         
        /* // Energy Data
         case .getEnergySiteStatus(let siteID):
@@ -117,9 +129,9 @@ extension Endpoint {
 	
 	var method: String {
 		switch self {
-        case .revoke, .oAuth2PartnerAuthorization, .register, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command, .tripplan:
+        case .revoke, .oAuth2PartnerAuthorization, .register, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command, .tripplan,  .signed_command:
                 return "POST"
-        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .vehicleEndpoint, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .region, .oAuth2revokeCN, .products, .user/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
+        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .vehicleEndpoint, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .region, .oAuth2revokeCN, .products, .user, .charging_history, .options, .recent_alerts/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
                 return "GET"
 		}
 	}
@@ -134,6 +146,10 @@ extension Endpoint {
             return [URLQueryItem(name: "period", value: period.rawValue), URLQueryItem(name: "kind", value: "energy")]*/
         case let .vehicleEndpoint(_,_,endpoint):
             return [URLQueryItem(name: "endpoints", value: endpoint.rawValue)]
+        case let .charging_history(_, query):
+            return query
+        case let .options(_, vin):
+            return [URLQueryItem(name: "vin", value: vin)]
         default:
             return []
         }
@@ -170,6 +186,14 @@ extension Endpoint {
         case let .revoke(fleet_api_base_url):
             return fleet_api_base_url
         case let .vehicleSummary(fleet_api_base_url, _):
+            return fleet_api_base_url
+        case let .charging_history(fleet_api_base_url,_):
+            return fleet_api_base_url
+        case let .options(fleet_api_base_url, _):
+            return fleet_api_base_url
+        case let .recent_alerts(fleet_api_base_url, _):
+            return fleet_api_base_url
+        case let .signed_command(fleet_api_base_url, _):
             return fleet_api_base_url
         }
     }

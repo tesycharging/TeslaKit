@@ -46,6 +46,15 @@ public struct Vehicle {
 
     ///
     public var inService: Bool = false
+    
+    public var color: String = ""
+    public var access_type: String = ""
+    public var granular_access: String = ""
+    public var calendar_enabled: Bool = false
+    public var api_version: String = ""
+    public var backseat_token: String = ""
+    public var backseat_token_updated_at: String = ""
+    public var ble_autopair_enrolled: Bool = false
 
     ///
     public var chargeState: ChargeState = ChargeState()
@@ -81,14 +90,14 @@ extension Vehicle: DataResponse {
         allValues = map
         let isVehicleData: Bool = !(map.JSON["id_s"] is String)
         if isVehicleData {
-            displayName <- map["response.display_name"]
+            displayName <- map["response.display_name"] //+
             id <- map["response.id_s"]
             options <- (map["response.option_codes"], VehicleOptionTransform(separator: ","))
             userId <- map["response.user_id"]
             vehicleId <- map["response.vehicle_id"]
             vin <- (map["response.vin"], VINTransform())
             status <- (map["response.state"], EnumTransform())
-            remoteStartEnabled <- map["response.remote_start_enabled"]
+            remoteStartEnabled <- map["response.remote_start_enabled"]//+
             tokens <- map["response.tokens"]
             chargeState <- map["response.charge_state"]
             climateState <- map["response.climate_state"]
@@ -97,6 +106,14 @@ extension Vehicle: DataResponse {
             vehicleState <- map["response.vehicle_state"]
             vehicleConfig <- map["response.vehicle_config"]
             inService <- map["response.in_service"]
+            color <- map["response.color"]
+            access_type <- map["response.access_type"]
+            granular_access <- map["response.granular_access"]
+            calendar_enabled <- map["response.calendar_enabled"]
+            api_version <- map["response.api_version"]
+            backseat_token <- map["response.backseat_token"]
+            backseat_token_updated_at <- map["response.backseat_token_updated_at"]
+            ble_autopair_enrolled <- map["response.ble_autopair_enrolled"]
         } else {
             displayName <- map["display_name"]
             id <- map["id_s"]
@@ -107,6 +124,15 @@ extension Vehicle: DataResponse {
             status <- (map["state"], EnumTransform())
             remoteStartEnabled <- map["remote_start_enabled"]
             tokens <- map["tokens"]
+            color <- map["color"]
+            access_type <- map["access_type"]
+            granular_access <- map["granular_access"]
+            calendar_enabled <- map["calendar_enabled"]
+            inService <- map["in_service"]
+            api_version <- map["api_version"]
+            backseat_token <- map["backseat_token"]
+            backseat_token_updated_at <- map["backseat_token_updated_at"]
+            ble_autopair_enrolled <- map["ble_autopair_enrolled"]
         }
         var i = 0
 		for entry in options {
@@ -121,48 +147,6 @@ extension Vehicle: Equatable {
     public static func == (lhs: Vehicle, rhs: Vehicle) -> Bool {
         return lhs.chargeState.batteryLevel == rhs.chargeState.batteryLevel
             && lhs.chargeState.batteryRange == rhs.chargeState.batteryRange
-    }
-}
-
-@available(macOS 13.1, *)
-extension Vehicle {
-    public var kindOfVehcile: KindOfVehicle {
-        if id == "" {
-            return KindOfVehicle.novehicle
-        } else if self.id == "1" {
-            return KindOfVehicle.demovehicle
-        } else {
-            return KindOfVehicle.ledgitVehicle
-        }
-    }
-    
-    public var batteryCapacity: Double {
-        for code in self.options {
-            switch code.code {
-            case "BT37":
-                return 75
-            case "BT40":
-                return 40
-            case "BT60":
-                return 60
-            case "BT70":
-                return 70
-            case "BT85":
-                return 85
-            case "BTX4":
-                return 90
-            case "BTX5":
-                return 75
-            case "BTX6":
-                return 100
-            case "BTX7":
-                return 75
-            case "BTX8":
-                return 85
-            default: break
-            }
-        }
-        return 75
     }
 }
 

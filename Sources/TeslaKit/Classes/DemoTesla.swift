@@ -17,7 +17,6 @@ public class DemoTesla {
 	public var user: User = User()
 	public var vehicle: Vehicle?
 	public var vehicles: VehicleCollection = VehicleCollection()
-    public var endpointData: EndpointData?
     
     public var chargingState: ChargingState = ChargingState.disconnected
     public var chargePortLatch: ChargePortLatchState = ChargePortLatchState.disengaged
@@ -68,19 +67,10 @@ public class DemoTesla {
         var vehicles = [Vehicle]()
         vehicles.append(self.vehicle ?? Vehicle())
         self.vehicles = VehicleCollection(vehicles: vehicles)
-        
-        self.endpointData = EndpointData()
-        self.endpointData?.status = .online
-        self.endpointData?.chargeState = self.vehicle?.chargeState ?? ChargeState()
-        self.endpointData?.climateState = self.vehicle?.climateState ?? ClimateState()
-        self.endpointData?.driveState = self.vehicle?.driveState ?? DriveState()
-        self.endpointData?.guiSettings = self.vehicle?.guiSettings ?? GUISettings()
-        self.endpointData?.vehicleConfig = self.vehicle?.vehicleConfig ?? VehicleConfig()
-        self.endpointData?.vehicleState = self.vehicle?.vehicleState ?? VehicleState()
 	}
     
     public func getEndpoint<T: DataResponse>(endpoint: VehicleEndpoint) -> T? {
-        var endpointData = EndpointData()
+        var endpointData = Vehicle()
         switch endpoint {
         case .chargeState:
             endpointData.chargeState = self.vehicle?.chargeState ?? ChargeState()
