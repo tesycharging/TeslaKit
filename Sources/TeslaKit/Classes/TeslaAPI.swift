@@ -192,13 +192,9 @@ extension TeslaAPI {
         }
         
         if officialAPI  {
-            if (fleet_api_base_url == "") {
-                guard let regionAccount: RegionAccount = try await getRegion() else { return "" }
-                fleet_api_base_url = regionAccount.fleet_api_base_url
-                return regionAccount.fleet_api_base_url
-            } else {
-                return fleet_api_base_url
-            }
+            guard let regionAccount: RegionAccount = try await getRegion() else { return fleet_api_base_url }
+            fleet_api_base_url = regionAccount.fleet_api_base_url
+            return regionAccount.fleet_api_base_url
         } else {
             fleet_api_base_url = "https://owner-api.teslamotors.com"
             return "https://owner-api.teslamotors.com"
