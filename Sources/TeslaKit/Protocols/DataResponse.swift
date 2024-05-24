@@ -17,6 +17,24 @@ public protocol DataResponse: Mappable {
 }
 
 extension DataResponse {
+    private func iteratingThroughDictionary(i: Int, key: String, value: NSDictionary, childStructs: Bool) -> [VehicleAllData] {
+        var result = [VehicleAllData]()
+        var j = i
+        for (k1, v1) in (value) {
+            var p = ""
+            if key != "response" {
+                p = "   "+key.replacingOccurrences(of: "_", with: " ")+"."
+            }
+            var v11 = v1
+            if (v1 is NSDictionary) {
+                v11 = "{..}"
+            }
+            result.append(VehicleAllData(p+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v11)", j % 2 == 0))
+            j = j + 1
+        }
+        return result
+    }
+    
     public func values(childStructs: Bool = true) -> [VehicleAllData] {
         var result = [VehicleAllData]()
         let map = allValues.JSON.sorted{ (first, second) -> Bool in
@@ -25,17 +43,14 @@ extension DataResponse {
         var i = 0
         for (k, v) in map {
             if (v is NSDictionary) && childStructs {
-                for (k1, v1) in (v as! NSDictionary) {
-                    var p = ""
-                    if k != "response" {
-                        p = "   "+k.replacingOccurrences(of: "_", with: " ")+"."
-                    }
-                    var v11 = v1
+                result.append(contentsOf: iteratingThroughDictionary(i: i, key: k, value: v as! NSDictionary, childStructs: childStructs))
+            } else if (v is NSArray) {
+                var j = 0
+                for v1 in (v as! NSArray) {
                     if (v1 is NSDictionary) {
-                        v11 = "{..}"
+                        result.append(contentsOf: iteratingThroughDictionary(i: i, key: k + "[\(j)]", value: v1 as! NSDictionary, childStructs: childStructs))
                     }
-                    result.append(VehicleAllData(p+(k1 as! String).replacingOccurrences(of: "_", with: " "), "\(v11)", i % 2 == 0))
-                    i = i + 1
+                    j = j + 1
                 }
             } else {
                 result.append(VehicleAllData(k.replacingOccurrences(of: "_", with: " "), "\(v)", i % 2 == 0))

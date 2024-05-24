@@ -469,7 +469,7 @@ extension TeslaAPI {
             return [ChargingSession]()
         } else {
             _ = try await checkAuthentication()
-            let chargingHistory: ChargingHistory = try await self.request(Endpoint.charging_history(fleet_api_base_url: fleet_api_base_url, query: [URLQueryItem(name: "vin", value: vehicle.vin?.vinString),URLQueryItem(name: "startTime", value: "2023-10-10T10:00:00+01:00")]), token: token)
+            let chargingHistory: ChargingHistory = try await self.request(Endpoint.charging_history(fleet_api_base_url: fleet_api_base_url, query: [URLQueryItem(name: "vin", value: vehicle.vin?.vinString),URLQueryItem(name: "startTime", value: "2020-10-10T10:00:00+01:00")]), token: token)
             return chargingHistory.data
         }
     }
