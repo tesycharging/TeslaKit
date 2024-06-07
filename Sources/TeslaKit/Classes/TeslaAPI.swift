@@ -527,6 +527,9 @@ extension TeslaAPI {
 	
     public func request<T: Mappable>(_ endpoint: Endpoint, parameter: Any? = nil, token: AuthToken? = nil) async throws -> T {
         // Create the request
+        if URL(string: endpoint.baseURL()) == nil {
+            throw TeslaError.networkError(msg: "Get the proper base URL for the region.")
+        }
         let request = prepareRequest(endpoint, parameter: parameter, token: token)
         let debugEnabled = debuggingEnabled
         if debugEnabled {
