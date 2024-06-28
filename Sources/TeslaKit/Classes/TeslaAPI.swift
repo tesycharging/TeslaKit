@@ -28,6 +28,7 @@ public enum TeslaError: Error, Equatable {
     case authenticationRequired(code: Int, msg: String)
     case authenticationFailed(code: Int, msg: String)
     case failedToParseData(code: Int, msg: String)
+    case apiError(code: Int, msg: String)
     
     public var description: String {
         switch self {
@@ -35,6 +36,7 @@ public enum TeslaError: Error, Equatable {
         case .authenticationRequired(let code, let msg): return "Authentication Required: Error \(code) \(msg)"
         case .authenticationFailed(let code, let msg): return "Authentication Failed: Error \(code) \(msg)"
         case .failedToParseData(let code, let msg): return "Failed To Parse Data: Error \(code) \(msg)"
+        case .apiError(let code, let msg): return "Error \(code): \(msg)"
         }
     }
 }
@@ -459,7 +461,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            _ = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
+            let response = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
             return true
         }
 	}
@@ -528,7 +530,7 @@ extension TeslaAPI {
     public func request<T: Mappable>(_ endpoint: Endpoint, parameter: Any? = nil, token: AuthToken? = nil) async throws -> T {
         // Create the request
         if URL(string: endpoint.baseURL()) == nil {
-            throw TeslaError.networkError(msg: "Get the proper base URL for the region.")
+            throw TeslaError.authenticationFailed(code: 0, msg: "should set region by refreshing the token")
         }
         let request = prepareRequest(endpoint, parameter: parameter, token: token)
         let debugEnabled = debuggingEnabled
@@ -607,11 +609,12 @@ extension TeslaAPI {
             guard let mappedError = Mapper<ErrorMessage>().map(JSONObject: json) else {
                 throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: String(data: data, encoding: .utf8) ?? "")
             }
+            let error = mappedError.toJSON()["error"]
             TeslaAPI.logger.debug("\(mappedError.toJSON()), privacy: .public)")
             if mappedError.error == "invalid bearer token" {
                 throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: mappedError.error)
             } else {
-                throw TeslaError.authenticationFailed(code: httpResponse.statusCode, msg: mappedError.toJSONString() ?? "")
+                throw TeslaError.apiError(code: httpResponse.statusCode, msg: error as! String)
             }
         default:
             let json: Any = try JSONSerialization.jsonObject(with: data)
@@ -883,4 +886,13 @@ extension TeslaAPI {
     }
 }
 
-
+public class CountRequests: ObservableObject {
+    static public let shared = CountRequests()
+    
+    @Published public var requestAPI: [APIReqType: Int] = [APIReqType: Int]()
+    
+    func incrementRequest(endpoint: Endpoint) {
+        requestAPI[endpoint.apiRequestType] = (requestAPI[endpoint.apiRequestType] ?? 0) + 1
+    }
+    
+}

@@ -33,6 +33,7 @@ public enum Endpoint {
     case user(fleet_api_base_url: String)
     case tripplan(fleet_api_base_url: String)
     case charging_history(fleet_api_base_url: String, query: [URLQueryItem])
+    case charging_invoice(fleet_api_base_url: String, id: String)
     case options(fleet_api_base_url: String, vin: String)
     case recent_alerts(fleet_api_base_url: String, vehicleID: String)
     case signed_command(fleet_api_base_url: String, vehicleID: String)
@@ -102,6 +103,8 @@ extension Endpoint {
             return "/trip-planner/api/v1/tripplan"
         case .charging_history:
             return "/api/1/dx/charging/history"
+        case .charging_invoice(_, let id):
+            return "/api/1/dx/charging/invoice/\(id)"
         case .options:
             return "/api/1/dx/vehicles/options"
         case .recent_alerts(_,  let vehicleID):
@@ -128,10 +131,11 @@ extension Endpoint {
 	}
 	
 	var method: String {
+        CountRequests.shared.incrementRequest(endpoint: self)
 		switch self {
         case .revoke, .oAuth2PartnerAuthorization, .register, .oAuth2Token, .oAuth2TokenCN, .wakeUp, .command, .tripplan,  .signed_command:
                 return "POST"
-        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .vehicleEndpoint, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .region, .oAuth2revokeCN, .products, .user, .charging_history, .options, .recent_alerts/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
+        case .vehicles, .vehicleSummary, .mobileAccess, .allStates, .vehicleEndpoint, .nearbyChargingSites, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .region, .oAuth2revokeCN, .products, .user, .charging_history, .charging_invoice, .options, .recent_alerts/*, .getEnergySiteStatus, .getEnergySiteLiveStatus, .getEnergySiteInfo, .getEnergySiteHistory, .getBatteryStatus, .getBatteryData, .getBatteryPowerHistory*/:
                 return "GET"
 		}
 	}
@@ -189,12 +193,63 @@ extension Endpoint {
             return fleet_api_base_url
         case let .charging_history(fleet_api_base_url,_):
             return fleet_api_base_url
+        case let .charging_invoice(fleet_api_base_url,_):
+            return fleet_api_base_url
         case let .options(fleet_api_base_url, _):
             return fleet_api_base_url
         case let .recent_alerts(fleet_api_base_url, _):
             return fleet_api_base_url
         case let .signed_command(fleet_api_base_url, _):
             return fleet_api_base_url
+        }
+    }
+}
+
+public enum APIReqType: String, CaseIterable, CustomStringConvertible {
+    case devicedatareq = "devicedatareq"
+    case commandreq = "commandreq"
+    case chargingcommandreq = "chargingcommandreq"
+    case wakeupreq = "wakeupreq"
+    case accessreq = "accessreq"
+    
+    public static var values: [String] {
+        APIReqType.allCases.map { $0.rawValue }
+    }
+    
+    public var description: String {
+        get {
+            switch self {
+            case .devicedatareq:
+                "Device Data Requests"
+            case .commandreq:
+                "Command Requests"
+            case .chargingcommandreq:
+                "Charging Command Requests"
+            case .wakeupreq:
+                "Wakeup Requests"
+            case .accessreq:
+                "Access Requests"
+            }
+        }
+    }
+}
+
+extension Endpoint {
+    public var apiRequestType: APIReqType {
+        switch self {
+        case .revoke, .oAuth2PartnerAuthorization, .register, .oAuth2Token, .oAuth2TokenCN, .oAuth2Authorization, .oAuth2revoke, .oAuth2AuthorizationCN, .region, .oAuth2revokeCN, .products, .user:
+            return .accessreq
+        case .tripplan,  .signed_command, .vehicles, .vehicleSummary, .mobileAccess, .allStates, .vehicleEndpoint, .nearbyChargingSites,  .charging_history, .charging_invoice, .options, .recent_alerts:
+            return .devicedatareq
+        case .wakeUp:
+            return .wakeupreq
+        case .command(_, _, let command):
+            switch command {
+            case .openChargePort, .setChargeLimit, .setChargeLimitToMaxRange, .setChargeLimitToStandard, .startCharging, .stopCharging:
+                return .chargingcommandreq
+            default:
+                return .commandreq
+            }
         }
     }
 }

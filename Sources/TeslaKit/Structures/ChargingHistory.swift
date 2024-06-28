@@ -35,7 +35,7 @@ public struct ChargingSession: Identifiable {
     public var countryCode: String = ""
     public var fees: [ChargingFees] = []
     public var billingType: String = ""
-    public var invoices: [String] = []
+    public var invoices: [Invoices] = []
     public var vehicleMakeType: String = ""
     
     public init() {
@@ -74,5 +74,35 @@ extension ChargingSession: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(sessionId)
+    }
+}
+
+public struct Invoices {
+    public var allValues: Map
+    public var contentId: String = ""
+    public var invoiceType: String = ""
+    public var fileName: String = ""
+    public init() {
+        allValues = Map(mappingType: .fromJSON, JSON: ["":""])
+    }
+}
+
+
+extension Invoices: DataResponse {
+    public mutating func mapping(map: Map) {
+        allValues = map
+        contentId <- map["contentId"]
+        invoiceType <- map["invoiceType"]
+        fileName <- map["fileName"]
+    }
+}
+
+extension Invoices: Hashable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.contentId == rhs.contentId
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(contentId)
     }
 }
