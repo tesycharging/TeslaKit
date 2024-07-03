@@ -456,15 +456,30 @@ extension TeslaAPI {
 	
 	- returns: always true. It takes a while (~30 seconds) after return till the vehicle is online
 	*/
+    @available(*, deprecated, message: "use wakeUpVehicle")
     public func wakeUp(_ vehicle: Vehicle) async throws -> Bool {
         if demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
             return true
         } else {
             _ = try await checkAuthentication()
-            let response = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
+            _ = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
             return true
         }
 	}
+    
+    /**
+    Wakes up the vehicle
+    
+    - returns: vehicle
+    */
+    public func wakeUpVehicle(_ vehicle: Vehicle) async throws -> Vehicle {
+        if demoMode || (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
+            return vehicle
+        } else {
+            _ = try await checkAuthentication()
+            return try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
+        }
+    }
     
     public func chargingHistory(_ vehicle: Vehicle) async throws -> [ChargingSession] {
         if demoMode {
