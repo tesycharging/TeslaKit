@@ -175,7 +175,7 @@ extension TeslaAPI {
 	 An async function that returns when the token as been requested
      */
     public func refreshWebToken() async throws -> AuthToken {
-        guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no valid token") }
+        guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no token to refresh") }
         let parameter = !officialAPI ? AuthTokenRequestWeb(grantType: .refreshToken, refreshToken: token.refreshToken) : AuthTokenRequestWeb(grantType: .refreshToken, clientID: authTokenReqest.clientID, refreshToken: token.refreshToken)
         let authToken: AuthToken = try await request(.oAuth2Token, parameter: parameter.toJSON())
         self.token = authToken
@@ -259,7 +259,7 @@ extension TeslaAPI {
         if self.demoMode {
             return AuthToken(accessToken: "demo")
         } else {
-            guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no valid token") }
+            guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no token available") }
         
             if self.isAuthenticated {
                 return token
@@ -268,7 +268,7 @@ extension TeslaAPI {
                     self.token = try await refreshWebToken()
                     return self.token!
                 } else {
-                    throw TeslaError.authenticationRequired(code: 0, msg: "no valid token")
+                    throw TeslaError.authenticationRequired(code: 0, msg: "no refreshToken")
                 }
             }
         }

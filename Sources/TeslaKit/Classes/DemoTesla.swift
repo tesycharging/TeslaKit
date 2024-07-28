@@ -146,7 +146,7 @@ public class DemoTesla {
            let json: Any = try JSONSerialization.jsonObject(with: data)
            mappedData = Mapper<T>().map(JSONObject: json)
         } catch let error {
-            DemoTesla.logger.error("\(error.localizedDescription, privacy: .public)")
+            DemoTesla.logger.error("\(error.localizedDescription)")
         }
         //completion(mappedData)
         return mappedData

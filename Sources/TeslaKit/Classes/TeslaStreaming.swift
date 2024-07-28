@@ -47,7 +47,7 @@ public class TeslaStreaming {
      */
 	public func openStream(vehicle: Vehicle, accessToken: String, dataReceived: @escaping (TeslaStreamingResult) -> Void) {
 		if !isConnected {
-            TeslaStreaming.logger.debug("\("Opening Stream", privacy: .public)")
+            TeslaStreaming.logger.debug("\("Opening Stream")")
 			if (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
 				self.isConnected = true
 				let demoValue = String(Date().timeIntervalSince1970) + ",\(vehicle.driveState.speed),\(vehicle.vehicleState.odometer),\(vehicle.chargeState.batteryLevel),459,175.0,\(vehicle.driveState.latitude),\(vehicle.driveState.longitude),\(vehicle.chargeState.chargerPower),shift,\(vehicle.chargeState.batteryRange),\(vehicle.chargeState.estBatteryRange),175.0"
@@ -58,7 +58,7 @@ public class TeslaStreaming {
 					switch event {
 					case let .connected(headers):
 						self.isConnected = true
-                        TeslaStreaming.logger.debug("websocket is connected: \(headers), privacy: .public)")
+                        TeslaStreaming.logger.debug("websocket is connected: \(headers))")
 						DispatchQueue.main.async {
 							let encoder = JSONEncoder()
 							encoder.outputFormatting = .prettyPrinted
@@ -73,29 +73,29 @@ public class TeslaStreaming {
 						}
 					case let .disconnected(reason, code):
 						self.isConnected = false
-                        TeslaStreaming.logger.debug("\("websocket is disconnected: \(reason) with code: \(code)", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("websocket is disconnected: \(reason) with code: \(code)")")
 						DispatchQueue.main.async {
 							dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: Int(code), userInfo: ["error": reason])))
 						}
 					case let .text(string):
-                        TeslaStreaming.logger.debug("\("Received text: \(string)", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received text: \(string)")")
 					case let .binary(data):
-                        TeslaStreaming.logger.debug("\("Received data: \(data.count) - \(String(data: data, encoding: .utf8) ?? "")", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received data: \(data.count) - \(String(data: data, encoding: .utf8) ?? "")")")
 						do {
 							let json: Any = try JSONSerialization.jsonObject(with: data)
 							guard let message = Mapper<StreamMessage>().map(JSONObject: json) else { return }
 							DispatchQueue.main.async {
 								switch message.messageType {
 								case "control:hello":
-                                    TeslaStreaming.logger.debug("\("Stream got hello", privacy: .public)")
+                                    TeslaStreaming.logger.debug("\("Stream got hello")")
 									break
 								case "data:update":
 									if let values = message.value {
-                                        TeslaStreaming.logger.debug("\("Stream got data: \(values)", privacy: .public)")
+                                        TeslaStreaming.logger.debug("\("Stream got data: \(values)")")
 										dataReceived(TeslaStreamingResult.result(message.streamResult))
 									}
 								case "data:error":
-                                    TeslaStreaming.logger.debug("\("Stream got data error: \(message.value ?? ""), \(message.errorType ?? "")", privacy: .public)")
+                                    TeslaStreaming.logger.debug("\("Stream got data error: \(message.value ?? ""), \(message.errorType ?? "")")")
 									dataReceived(TeslaStreamingResult.error(NSError(domain: "TeslaStreamingError", code: 0, userInfo: [message.value ?? "error": message.errorType ?? ""])))
 									break
 								default:
@@ -104,24 +104,24 @@ public class TeslaStreaming {
 							}
 						} catch { return }
 					case let .ping(ping):
-                        TeslaStreaming.logger.debug("\("Received ping: \(String(describing: ping))", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received ping: \(String(describing: ping))")")
 						break
 					case let .pong(data):
-                        TeslaStreaming.logger.debug("\("Received pong data", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received pong data")")
 						DispatchQueue.main.async {
 							self.socket.write(pong: data ?? Data())
 						}
 					case let .viabilityChanged(viability):
-                        TeslaStreaming.logger.debug("\("Received viabilityChanged: \(viability)", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received viabilityChanged: \(viability)")")
 						break
 					case let .reconnectSuggested(reconnect):
-                        TeslaStreaming.logger.debug("\("Received reconnectSuggested: \(reconnect)", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received reconnectSuggested: \(reconnect)")")
 						break
 					case .cancelled:
-                        TeslaStreaming.logger.debug("\("Received cancelled", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received cancelled")")
 						self.isConnected = false
 					case let .error(error):
-                        TeslaStreaming.logger.debug("\("Received error:\(String(describing: error))", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received error:\(String(describing: error))")")
                         self.isConnected = false
 						DispatchQueue.main.async {
 							if let e = error as? WSError {
@@ -133,17 +133,17 @@ public class TeslaStreaming {
 							}
 						}
                     /*case .peerClosed:
-                        TeslaStreaming.logger.debug("\("Received peerClosed", privacy: .public)")
+                        TeslaStreaming.logger.debug("\("Received peerClosed")")
                         self.isConnected = false*/
 			default:
-			TeslaStreaming.logger.debug("\("Received \(event)", privacy: .public)")
+			TeslaStreaming.logger.debug("\("Received \(event)")")
                         self.isConnected = false
                     }
 				}
 				self.socket.connect()
 			}
 		} else {
-            TeslaStreaming.logger.debug("\("Stream is already open", privacy: .public)")
+            TeslaStreaming.logger.debug("\("Stream is already open")")
 		}
     }
 
@@ -154,12 +154,12 @@ public class TeslaStreaming {
 		if isConnected {
 			if (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"){
 				self.isConnected = false
-                TeslaStreaming.logger.debug("\("websocket is disconnected", privacy: .public)")
+                TeslaStreaming.logger.debug("\("websocket is disconnected")")
 			}
 			self.socket.disconnect()
-            TeslaStreaming.logger.debug("\("Stream closed", privacy: .public)")
+            TeslaStreaming.logger.debug("\("Stream closed")")
 		} else {
-            TeslaStreaming.logger.debug("\("Stream is already closed", privacy: .public)")
+            TeslaStreaming.logger.debug("\("Stream is already closed")")
 		}
     }
 }
