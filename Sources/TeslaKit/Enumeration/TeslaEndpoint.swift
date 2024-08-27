@@ -245,7 +245,7 @@ extension Endpoint {
             return .wakeupreq
         case .command(_, _, let command):
             switch command {
-            case .openChargePort, .setChargeLimit, .setChargeLimitToMaxRange, .setChargeLimitToStandard, .startCharging, .stopCharging:
+            case .openChargePort, .setChargeLimit, .setChargeLimitToMaxRange, .setChargeLimitToStandard, .startCharging, .stopCharging, .setChargingAmps:
                 return .chargingcommandreq
             default:
                 return .commandreq

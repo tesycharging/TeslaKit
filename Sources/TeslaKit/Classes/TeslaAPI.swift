@@ -713,6 +713,8 @@ extension TeslaAPI {
                     response.result = false
                     response.reason = "Command \(command.description) error"
                 }
+            case .setChargingAmps:
+                DemoTesla.shared.vehicle?.chargeState.chargerActualCurrent = Int((parameter as! SetChargingAmps).value)
             case .flashLights, .honkHorn:
                 TeslaAPI.logger.debug("Command: \(command.description), privacy: .public)")
                 response.reason = "succesful \(command.description)"

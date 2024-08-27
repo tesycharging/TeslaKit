@@ -38,6 +38,8 @@ public enum Command: String, CaseIterable, CustomStringConvertible {
 
     /// Stop charging. Must already be charging.
     case stopCharging = "charge_stop"
+    
+    case setChargingAmps = "set_charging_amps"
 
     /// Flash the lights once.
     case flashLights = "flash_lights"
