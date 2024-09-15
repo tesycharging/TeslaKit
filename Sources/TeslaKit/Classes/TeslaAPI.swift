@@ -62,7 +62,6 @@ open class TeslaAPI: NSObject, URLSessionDelegate {
     public let domain: String
 
     open fileprivate(set) var token: AuthToken?
-    open fileprivate(set) var fleet_api_base_url: String = ""
     
     private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier!, category: String(describing: TeslaAPI.self))
     
@@ -162,7 +161,11 @@ extension TeslaAPI {
         let parameter = !officialAPI ? AuthTokenRequestWeb(codeVerifier, code: code) : AuthTokenRequestWeb(clientID: authTokenReqest.clientID, client_secret: authTokenReqest.client_secret, redirect_uri: authCodeRequest.redirectURI, code: code)
         let token: AuthToken = try await request(.oAuth2Token, parameter: parameter.toJSON())
         self.token = token
-        fleet_api_base_url = try await getRegion()
+        if self.token != nil {
+            self.token?.clientId = self.authCodeRequest.clientID
+            let regionURL = try await getRegion()
+            self.token?.regionURL = regionURL
+        }
         return token
     }
     
@@ -177,28 +180,27 @@ extension TeslaAPI {
     public func refreshWebToken() async throws -> AuthToken {
         guard let token = self.token else { throw TeslaError.authenticationRequired(code: 0, msg: "no token to refresh") }
         let parameter = !officialAPI ? AuthTokenRequestWeb(grantType: .refreshToken, refreshToken: token.refreshToken) : AuthTokenRequestWeb(grantType: .refreshToken, clientID: authTokenReqest.clientID, refreshToken: token.refreshToken)
-        let authToken: AuthToken = try await request(.oAuth2Token, parameter: parameter.toJSON())
-        self.token = authToken
-        fleet_api_base_url = try await getRegion()
-        return authToken
+        self.token = try await request(.oAuth2Token, parameter: parameter.toJSON())
+        self.token?.clientId = self.authCodeRequest.clientID
+        let regionURL = try await getRegion()
+        self.token?.regionURL = regionURL
+        return self.token!
     }
     
     /**
      #6: region by GET https://fleet-api.prd.na.vn.cloud.tesla.com/api/1/users/region
      -returns https://fleet-api.prd.na.vn.cloud.tesla.com or https://fleet-api.prd.eu.vn.cloud.tesla.com
      */
-    public func getRegion() async throws -> String {
+    private func getRegion() async throws -> String {
         func getRegion<T: DataResponse>() async throws -> T? {
             let response = try await self.request(.region, token: token) as T
             return response
         }
         
         if officialAPI  {
-            guard let regionAccount: RegionAccount = try await getRegion() else { return fleet_api_base_url }
-            fleet_api_base_url = regionAccount.fleet_api_base_url
+            guard let regionAccount: RegionAccount = try await getRegion() else { return "" }
             return regionAccount.fleet_api_base_url
         } else {
-            fleet_api_base_url = "https://owner-api.teslamotors.com"
             return "https://owner-api.teslamotors.com"
         }
     }
@@ -283,7 +285,7 @@ extension TeslaAPI {
   - returns email, fullname and url to profile image
   */
   public func getUser() async throws -> User? {
-	  return try await getVehicleData(.user(fleet_api_base_url: fleet_api_base_url))
+      return try await getVehicleData(.user(fleet_api_base_url: token?.regionURL ?? ""))
   }
     
     /**
@@ -294,7 +296,7 @@ extension TeslaAPI {
         if self.demoMode {
             return DemoTesla.shared.getEndpoint(endpoint: endpoint)
         } else {
-            let response = try await self.request(Endpoint.vehicleEndpoint(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID, endpoint: endpoint), token: token) as T
+            let response = try await self.request(Endpoint.vehicleEndpoint(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicleID, endpoint: endpoint), token: token) as T
             return response
         }
     }
@@ -309,7 +311,7 @@ extension TeslaAPI {
         if self.demoMode {
             return ["VIN#DEMO_#TESTING":DemoTesla.shared.vehicle!]
         } else {
-			let response: VehicleCollection = try await request(.vehicles(fleet_api_base_url: fleet_api_base_url), token: token)
+			let response: VehicleCollection = try await request(.vehicles(fleet_api_base_url: token?.regionURL ?? ""), token: token)
             var dict = [String:Vehicle]()
             for element in response.vehicles {
                 dict[element.vin?.vinString ?? ""] = element
@@ -365,7 +367,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicleInfo(_ vehicleID: String) async throws -> Vehicle? {
-        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID))
+        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicleID))
     }
     
    /**
@@ -374,7 +376,7 @@ extension TeslaAPI {
     - returns: A Vehicle.
     */
     public func getVehicleInfo(_ vehicle: Vehicle) async throws -> Vehicle? {
-        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id))
+        return try await getVehicleData(.vehicleSummary(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id))
     }
 	
 	/**
@@ -384,7 +386,7 @@ extension TeslaAPI {
     */
     @available(*, deprecated, message: "getAllData")
     public func getVehicle(_ vehicleID: String) async throws -> Vehicle? {
-        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicleID))
+        return try await getVehicleData(.allStates(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicleID))
     }
 	
 	/**
@@ -394,7 +396,7 @@ extension TeslaAPI {
     */
     @available(*, deprecated, message: "getAllData")
     public func getVehicle(_ vehicle: Vehicle) async throws -> Vehicle? {
-        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
+        return try await getVehicleData(.allStates(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
     }
 	
 	/**
@@ -403,7 +405,7 @@ extension TeslaAPI {
      - returns: A completion handler with all the data
      */
     public func getAllData(_ vehicle: Vehicle) async throws -> Vehicle? {
-        return try await getVehicleData(.allStates(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
+        return try await getVehicleData(.allStates(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), demoMode: (vehicle.vin?.vinString == "VIN#DEMO_#TESTING"))
 	}
 	
 	/**
@@ -416,7 +418,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            let response: MobileAccess = try await self.request(Endpoint.mobileAccess(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
+            let response: MobileAccess = try await self.request(Endpoint.mobileAccess(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), token: token)
             return response.response
         }
     }
@@ -446,7 +448,7 @@ extension TeslaAPI {
             return sites
         } else {
             _ = try await checkAuthentication()
-            let response: Chargingsites = try await self.request(Endpoint.nearbyChargingSites(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
+            let response: Chargingsites = try await self.request(Endpoint.nearbyChargingSites(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), token: token)
             return response
         }
     }
@@ -462,7 +464,7 @@ extension TeslaAPI {
             return true
         } else {
             _ = try await checkAuthentication()
-            _ = try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
+            _ = try await self.request(Endpoint.wakeUp(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), token: token) as Vehicle
             return true
         }
 	}
@@ -477,7 +479,7 @@ extension TeslaAPI {
             return vehicle
         } else {
             _ = try await checkAuthentication()
-            return try await self.request(Endpoint.wakeUp(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token) as Vehicle
+            return try await self.request(Endpoint.wakeUp(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), token: token) as Vehicle
         }
     }
     
@@ -486,7 +488,7 @@ extension TeslaAPI {
             return [ChargingSession]()
         } else {
             _ = try await checkAuthentication()
-            let chargingHistory: ChargingHistory = try await self.request(Endpoint.charging_history(fleet_api_base_url: fleet_api_base_url, query: [URLQueryItem(name: "vin", value: vehicle.vin?.vinString),URLQueryItem(name: "startTime", value: "2020-10-10T10:00:00+01:00")]), token: token)
+            let chargingHistory: ChargingHistory = try await self.request(Endpoint.charging_history(fleet_api_base_url: token?.regionURL ?? "", query: [URLQueryItem(name: "vin", value: vehicle.vin?.vinString),URLQueryItem(name: "startTime", value: "2020-10-10T10:00:00+01:00")]), token: token)
             return chargingHistory.data
         }
     }
@@ -496,7 +498,7 @@ extension TeslaAPI {
             return [OptionCode]()
         } else {
             _ = try await checkAuthentication()
-            let optionCodes: OptionCodes = try await self.request(Endpoint.options(fleet_api_base_url: fleet_api_base_url, vin: vehicle.vin?.vinString ?? ""), token: token)
+            let optionCodes: OptionCodes = try await self.request(Endpoint.options(fleet_api_base_url: token?.regionURL ?? "", vin: vehicle.vin?.vinString ?? ""), token: token)
             return optionCodes.codes
         }
     }
@@ -506,7 +508,7 @@ extension TeslaAPI {
             return [Recent_Alert]()
         } else {
             _ = try await checkAuthentication()
-            let recentAlerts: Alerts = try await self.request(Endpoint.recent_alerts(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id), token: token)
+            let recentAlerts: Alerts = try await self.request(Endpoint.recent_alerts(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id), token: token)
             return recentAlerts.recent_alerts
         }
     }
@@ -545,7 +547,7 @@ extension TeslaAPI {
     public func request<T: Mappable>(_ endpoint: Endpoint, parameter: Any? = nil, token: AuthToken? = nil) async throws -> T {
         // Create the request
         if URL(string: endpoint.baseURL()) == nil {
-            throw TeslaError.authenticationFailed(code: 0, msg: "should set region by refreshing the token")
+            throw TeslaError.authenticationFailed(code: 401, msg: "should set region by refreshing the token")
         }
         let request = prepareRequest(endpoint, parameter: parameter, token: token)
         let debugEnabled = debuggingEnabled
@@ -874,7 +876,7 @@ extension TeslaAPI {
             }
         } else {
             _ = try await checkAuthentication()
-            let response: CommandResponse = try await self.request(Endpoint.command(fleet_api_base_url: fleet_api_base_url, vehicleID: vehicle.id, command: command), parameter: parameter?.toJSON(), token: token)
+            let response: CommandResponse = try await self.request(Endpoint.command(fleet_api_base_url: token?.regionURL ?? "", vehicleID: vehicle.id, command: command), parameter: parameter?.toJSON(), token: token)
             return response
         }
 	}
@@ -897,7 +899,7 @@ extension TeslaAPI {
             }
         } else {
             _ = try await checkAuthentication()
-            let response: Tripplan = try await self.request(Endpoint.tripplan(fleet_api_base_url: fleet_api_base_url), parameter: parameter.toJSON(), token: token)
+            let response: Tripplan = try await self.request(Endpoint.tripplan(fleet_api_base_url: token?.regionURL ?? ""), parameter: parameter.toJSON(), token: token)
             return response
         }
     }

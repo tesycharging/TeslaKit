@@ -21,6 +21,8 @@ public struct AuthToken {
     public var expiresIn: TimeInterval?
     public var refreshToken: String?
     public var idToken: String?
+    public var clientId: String?
+    public var regionURL: String?
 	
 	public init() {
 		allValues = Map(mappingType: .fromJSON, JSON: ["":""])
@@ -54,6 +56,8 @@ extension AuthToken: DataResponse {
 		expiresIn <- map["expires_in"]
 		refreshToken <- map["refresh_token"]
 		idToken <- map["id_token"]
+        clientId <- map["client_id"]
+        regionURL <- map["region_url"]
 	}
     
     public static func loadToken(jsonString: String) -> AuthToken? {
