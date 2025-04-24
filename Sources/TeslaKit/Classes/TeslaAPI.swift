@@ -46,6 +46,7 @@ public enum AuthorizationScope: String {
     case offline_access = "offline_access"
     case user_data = "user_data"
     case vehicle_device_data = "vehicle_device_data"
+    case vehicle_location = "vehicle_location"
     case vehicle_cmds = "vehicle_cmds"
     case vehicle_charging_cmds = "vehicle_charging_cmds"
     case energy_device_data = "energy_device_data"
