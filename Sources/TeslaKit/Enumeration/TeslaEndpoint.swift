@@ -162,7 +162,8 @@ extension Endpoint {
     func baseURL() -> String {
         switch self {
         case .oAuth2Authorization, .oAuth2PartnerAuthorization, .oAuth2Token, .oAuth2revoke:
-            return "https://auth.tesla.com"
+            //return "https://auth.tesla.com" //will not work any more after 1. August 2025
+	    return "fleet-auth.prd.vn.cloud.tesla.com"
         case .oAuth2AuthorizationCN, .oAuth2TokenCN, .oAuth2revokeCN:
             return "https://auth.tesla.cn"
         case .region:
